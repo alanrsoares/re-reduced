@@ -4,7 +4,8 @@
   "description": "A utility toolbelt that reduces boilerplate from your react/redux app",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -13,12 +14,17 @@
   "keywords": [
     "redux",
     "higer-order-reducer",
-    "react"
+    "react",
+    "immutable",
+    "functional programming"
   ],
   "author": "Alan Soares <alanrsoars@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/alanrsoares/re-reduce/issues"
   },
-  "homepage": "https://github.com/alanrsoares/re-reduce#readme"
+  "homepage": "https://github.com/alanrsoares/re-reduce#readme",
+  "devDependencies": {
+    "typescript": "^3.1.2"
+  }
 }
