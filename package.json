@@ -4,7 +4,7 @@
   "description": "A utility toolbelt that reduces boilerplate from your react/redux app",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --config jestconfig.json",
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json"
