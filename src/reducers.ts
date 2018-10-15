@@ -1,5 +1,5 @@
 import { applyTo, merge, mergeAll } from "ramda";
-import { AnyAction, Reducer } from "redux";
+import { Reducer } from "redux";
 
 import { ActionHandlerMap } from "./core";
 
