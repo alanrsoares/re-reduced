@@ -21,7 +21,7 @@ export interface ReducerFactory<TActions, TState> {
   (
     config: ReducerConfig<TActions, TState>,
     customHandlers?: ActionHandlerMap<TState>
-  ): Reducer<TState, AnyAction>;
+  ): Reducer<TState>;
   functor: ReducerFunctor<TActions, TState>;
 }
 
@@ -44,16 +44,16 @@ export const reducerConfigWithId = <TActions>(config: {
 export const reducerConfigWithState = <TActions, TState>(config: {
   actions: TActions;
   initialState: TState;
-}): ReducerConfig<TActions, any> => ({
+}): ReducerConfig<TActions, TState> => ({
   ...config,
   idKey: ""
 });
 
 export const handleActions = <TState>(
-  actionHandlers: ActionHandlerMap<TState>,
+  handlers: ActionHandlerMap<TState>,
   initialState: TState
-): Reducer<TState, AnyAction> => (state = initialState, action) => {
-  const actionHandler = actionHandlers[action.type];
+): Reducer<TState> => (state = initialState, action) => {
+  const actionHandler = handlers[action.type];
 
   if (typeof actionHandler === "function") {
     return actionHandler(action.payload, state);
@@ -77,8 +77,8 @@ export const createReducer = <TActions, TState>(
     ? combineFunctors<TActions, TState>(functor)
     : functor) as ReducerFunctorFn<TActions, TState>;
 
-  const reducerFactory = ((
-    config: ReducerConfig<TActions, TState>,
+  const reducerFactory: ReducerFactory<TActions, TState> = (
+    config,
     customHandlers = {}
   ) => {
     // patch initialState to config if not present
@@ -87,13 +87,13 @@ export const createReducer = <TActions, TState>(
         ? defaultInitialState
         : config.initialState;
 
-    const actionHandlers = merge(
+    const handlers = merge(
       finalFunctor({ ...config, initialState }),
       customHandlers
     );
 
-    return handleActions<TState>(actionHandlers, initialState);
-  }) as ReducerFactory<TActions, TState>;
+    return handleActions<TState>(handlers, initialState);
+  };
 
   reducerFactory.functor = finalFunctor;
 
