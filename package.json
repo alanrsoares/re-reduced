@@ -1,6 +1,6 @@
 {
   "name": "re-reduced",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A utility toolbelt that reduces boilerplate from your react/redux app",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -35,6 +35,7 @@
   "devDependencies": {
     "@types/jest": "^23.3.5",
     "@types/ramda": "^0.25.39",
+    "@types/react-redux": "^6.0.9",
     "jest": "^23.6.0",
     "prettier": "^1.14.3",
     "ts-jest": "^23.10.4",
@@ -44,6 +45,7 @@
   },
   "dependencies": {
     "ramda": "^0.25.0",
+    "react-redux": "^5.0.7",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.2"
   }
