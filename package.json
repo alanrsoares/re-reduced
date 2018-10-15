@@ -1,5 +1,5 @@
 {
-  "name": "re-reduce",
+  "name": "re-reduced",
   "version": "0.1.0",
   "description": "A utility toolbelt that reduces boilerplate from your react/redux app",
   "main": "lib/index.js",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alanrsoares/re-reduce.git"
+    "url": "git+https://github.com/alanrsoares/re-reduced.git"
   },
   "keywords": [
     "redux",
@@ -29,9 +29,9 @@
   "author": "Alan Soares <alanrsoars@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/alanrsoares/re-reduce/issues"
+    "url": "https://github.com/alanrsoares/re-reduced/issues"
   },
-  "homepage": "https://github.com/alanrsoares/re-reduce#readme",
+  "homepage": "https://github.com/alanrsoares/re-reduced#readme",
   "devDependencies": {
     "@types/jest": "^23.3.5",
     "@types/ramda": "^0.25.39",
