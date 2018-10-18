@@ -2,7 +2,7 @@ export interface Tree<Leaf> {
   [k: string]: Leaf | Tree<Leaf>;
 }
 
-interface TraverseQuery<V, R> {
+export interface TraverseQuery<V, R> {
   transformKey?: (key: string, value: V) => string;
   transformValue?: (value: V, key: string) => R;
 }
