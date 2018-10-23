@@ -1,3 +1,5 @@
+[![npm module](https://badge.fury.io/js/u-semver.svg)](https://www.npmjs.org/package/re-reduced)
+
 # Re-reduced
 
 A type-safe functional toolbelt for Redux applications
