@@ -49,7 +49,7 @@ export const reducerConfigWithState = <TActions, TState>(config: {
   idKey: ""
 });
 
-function handleActions<TState>(
+export function handleActions<TState>(
   handlers: ActionHandlerMap<TState> | Array<ActionHandlerMap<TState>>,
   initialState: TState
 ): Reducer<TState> {
