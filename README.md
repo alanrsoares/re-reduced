@@ -1,4 +1,5 @@
 [![npm module](https://badge.fury.io/js/re-reduced.svg)](https://www.npmjs.org/package/re-reduced)
+![travis](https://travis-ci.org/alanrsoares/re-reduced.svg?branch=master)
 
 # Re-reduced
 
