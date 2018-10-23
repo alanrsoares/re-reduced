@@ -49,18 +49,24 @@ export const reducerConfigWithState = <TActions, TState>(config: {
   idKey: ""
 });
 
-export const handleActions = <TState>(
-  handlers: ActionHandlerMap<TState>,
+function handleActions<TState>(
+  handlers: ActionHandlerMap<TState> | Array<ActionHandlerMap<TState>>,
   initialState: TState
-): Reducer<TState> => (state = initialState, action) => {
-  const actionHandler = handlers[action.type];
+): Reducer<TState> {
+  const $handlers = Array.isArray(handlers)
+    ? (mergeAll(handlers) as ActionHandlerMap<TState>)
+    : handlers;
 
-  if (typeof actionHandler === "function") {
-    return actionHandler(action.payload, state);
-  }
+  return (state = initialState, action) => {
+    const actionHandler = $handlers[action.type];
 
-  return state;
-};
+    if (typeof actionHandler === "function") {
+      return actionHandler(action.payload, state);
+    }
+
+    return state;
+  };
+}
 
 const combineFunctors = <TActions, TState>(
   functors: Array<ReducerFunctorFn<TActions, TState>>
