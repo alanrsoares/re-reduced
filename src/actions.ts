@@ -7,6 +7,11 @@ export function createAction<TPayload>(type: string): ActionCreator<TPayload> {
   })) as ActionCreator<TPayload>;
 
   actionCreator.type = type;
+  actionCreator.reduce = <TState>(
+    handler: (payload: TPayload, state: TState) => TState
+  ) => ({
+    [type]: handler
+  });
 
   return actionCreator;
 }
