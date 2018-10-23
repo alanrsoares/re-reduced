@@ -19,10 +19,15 @@ interface Action<T = void> {
 ### ActionCreator<T = void>
 
 ```js
-interface ActionCreator<T = void> {
+interface ActionCreator<TPayload = void> {
   (): Action;
-  (payload: T): Action<T>;
+  (payload: TPayload): Action<TPayload>;
   type: string;
+  reduce: <TState>(
+    handler: ActionHandler<TPayload, TState>
+  ) => {
+    [key: string]: ActionHandler<TPayload, TState>;
+  };
 }
 ```
 
