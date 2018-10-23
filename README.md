@@ -1,4 +1,4 @@
-[![npm module](https://badge.fury.io/js/u-semver.svg)](https://www.npmjs.org/package/re-reduced)
+[![npm module](https://badge.fury.io/js/re-reduced.svg)](https://www.npmjs.org/package/re-reduced)
 
 # Re-reduced
 
