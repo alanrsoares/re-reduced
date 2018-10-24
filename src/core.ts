@@ -10,7 +10,7 @@ export interface AsyncActions<TRun, TSuccess> extends ActionCreator<TRun> {
 }
 
 export interface ActionReducerMap<TState> {
-  [key: string]: ActionReducer<any, TState>;
+  [key: string]: ActionReducer<TState, any>;
 }
 
 export interface ActionCreator<TPayload = void> {
@@ -18,13 +18,13 @@ export interface ActionCreator<TPayload = void> {
   (payload: TPayload): Action<TPayload>;
   type: string;
   reduce: <TState>(
-    handler: ActionReducer<TPayload, TState>
+    reducer: ActionReducer<TState, TPayload>
   ) => {
-    [key: string]: ActionReducer<TPayload, TState>;
+    [key: string]: ActionReducer<TState, TPayload>;
   };
 }
 
-export type ActionReducer<TPayload, TState> = (
+export type ActionReducer<TState, TPayload> = (
   s: TState,
   p: TPayload
 ) => TState;

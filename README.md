@@ -41,7 +41,7 @@ interface AsyncActions<TRun, TSuccess> extends ActionCreator<TRun> {
 }
 ```
 
-### ActionReducer<TPayload, TState>
+### ActionReducer<TState, TPayload>
 
 ```js
 type ActionReducer<TPayload, TState> = (s: TState, p: TPayload) => TState;
@@ -51,7 +51,7 @@ type ActionReducer<TPayload, TState> = (s: TState, p: TPayload) => TState;
 
 ```js
 interface ActionReducerMap<TState> {
-  [key: string]: ActionReducer<any, TState>;
+  [key: string]: ActionReducer<TState, any>;
 }
 ```
 

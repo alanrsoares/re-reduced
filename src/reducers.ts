@@ -61,7 +61,7 @@ export function handleActions<TState>(
     const actionReducer = $handlers[action.type];
 
     if (typeof actionReducer === "function") {
-      return actionReducer(action.payload, state);
+      return actionReducer(state, action.payload);
     }
 
     return state;
