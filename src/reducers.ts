@@ -1,7 +1,7 @@
 import { applyTo, merge, mergeAll } from "ramda";
 import { Reducer } from "redux";
 
-import { ActionHandlerMap } from "./core";
+import { ActionReducerMap } from "./core";
 
 export interface ReducerConfig<TActions, TState> {
   actions: TActions;
@@ -11,7 +11,7 @@ export interface ReducerConfig<TActions, TState> {
 
 export type ReducerFunctorFn<TActions, TState> = (
   config: ReducerConfig<TActions, TState>
-) => ActionHandlerMap<TState>;
+) => ActionReducerMap<TState>;
 
 export type ReducerFunctor<TActions, TState> =
   | Array<ReducerFunctorFn<TActions, TState>>
@@ -20,7 +20,7 @@ export type ReducerFunctor<TActions, TState> =
 export interface ReducerFactory<TActions, TState> {
   (
     config: ReducerConfig<TActions, TState>,
-    customHandlers?: ActionHandlerMap<TState>
+    customHandlers?: ActionReducerMap<TState>
   ): Reducer<TState>;
   functor: ReducerFunctor<TActions, TState>;
 }
@@ -50,18 +50,18 @@ export const reducerConfigWithState = <TActions, TState>(config: {
 });
 
 export function handleActions<TState>(
-  handlers: ActionHandlerMap<TState> | Array<ActionHandlerMap<TState>>,
+  handlers: ActionReducerMap<TState> | Array<ActionReducerMap<TState>>,
   initialState: TState
 ): Reducer<TState> {
   const $handlers = Array.isArray(handlers)
-    ? (mergeAll(handlers) as ActionHandlerMap<TState>)
+    ? (mergeAll(handlers) as ActionReducerMap<TState>)
     : handlers;
 
   return (state = initialState, action) => {
-    const actionHandler = $handlers[action.type];
+    const actionReducer = $handlers[action.type];
 
-    if (typeof actionHandler === "function") {
-      return actionHandler(action.payload, state);
+    if (typeof actionReducer === "function") {
+      return actionReducer(action.payload, state);
     }
 
     return state;

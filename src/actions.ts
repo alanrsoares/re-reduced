@@ -8,7 +8,7 @@ export function createAction<TPayload>(type: string): ActionCreator<TPayload> {
 
   actionCreator.type = type;
   actionCreator.reduce = <TState>(
-    handler: (payload: TPayload, state: TState) => TState
+    handler: (state: TState, payload: TPayload) => TState
   ) => ({
     [type]: handler
   });

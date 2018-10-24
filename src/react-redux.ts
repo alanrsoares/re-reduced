@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { compose, Dispatch } from "redux";
 
-import { ActionCreator, ActionHandlerMap } from "./core";
+import { ActionCreator } from "./core";
 import { transformTree, Tree } from "./helpers/objects";
 
 export type Dispatcher<T = any> = (payload: T) => void;
