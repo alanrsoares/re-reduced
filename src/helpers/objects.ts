@@ -2,28 +2,36 @@ export interface Tree<Leaf> {
   [k: string]: Leaf | Tree<Leaf>;
 }
 
-export interface TraverseQuery<V, R> {
-  transformKey?: (key: string, value: V) => string;
-  transformValue?: (value: V, key: string) => R;
+export interface TraverseQuery<TLeft, TRight> {
+  transformKey?: (key: string, value: TLeft) => string;
+  transformValue?: (value: TLeft, key: string) => TRight;
 }
 
-export const mapObjectValues = <V, R>(
-  fn: (k: string, v: V) => { [k: string]: R }
-) => (obj: Tree<V>): Tree<R> =>
-  Object.keys(obj).reduce((acc, k) => ({ ...acc, ...fn(k, obj[k] as V) }), {});
+export const mapObjectValues = <TLeft, TRight>(
+  fn: (k: string, v: TLeft) => { [k: string]: TRight }
+) => (obj: Tree<TLeft>): Tree<TRight> =>
+  Object.keys(obj).reduce(
+    (acc, k) => ({ ...acc, ...fn(k, obj[k] as TLeft) }),
+    {}
+  );
 
-export const transformTree = <V, R>(query: TraverseQuery<V, R>) => {
-  const transformKey = query.transformKey || ((k: string, v: V) => k);
-  const transformValue = query.transformValue || ((v: V, k: string) => k);
+export const transformTree = <TLeft, TRight>(
+  query: TraverseQuery<TLeft, TRight>
+) => {
+  const transformKey = query.transformKey || ((k: string, _: TLeft) => k);
+  const transformValue = query.transformValue || ((v: TLeft, _: string) => v);
 
-  function mapper(k: string, v: V | Tree<V>): { [k: string]: R } {
-    if (typeof v === "object") {
-      // @ts-ignore
-      return { [k]: transformTree(query)(v as Tree<V>) };
+  function mapper(
+    key: string,
+    value: TLeft | Tree<TLeft>
+  ): { [k: string]: TRight | Tree<TRight> } {
+    if (typeof value === "object") {
+      return {
+        [key]: transformTree(query)(value as Tree<TLeft>) as Tree<TRight>
+      };
     }
 
-    // @ts-ignore
-    return { [transformKey(k, v)]: transformValue(v, k) };
+    return { [transformKey(key, value)]: transformValue(value, key) as TRight };
   }
 
   return mapObjectValues(mapper);
