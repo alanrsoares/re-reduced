@@ -14,15 +14,24 @@ const toDispatcher = (dispatch: Dispatch) => <T>(action: ActionCreator<T>) =>
 
 type StateToProps<TState, TProps> = (state: TState) => TProps;
 
+/**
+ * connectWithActions
+ *
+ * Wraps react-redux's connect binding dispatch to the action-creators
+ *
+ * @param actions - object of action-creators
+ * @param mapStateToProps - receives redux state and maps to component props
+ */
 export function connectWithActions<
   TProps extends { actions: TActions },
   TActions extends Tree<ActionCreator<any>> = {},
   TState = {}
 >(actions: TActions, mapStateToProps?: StateToProps<TState, TProps>) {
   const mapDisptachToProps = (dispatch: Dispatch) => ({
-    actions: transformTree<ActionCreator, Dispatcher>({
-      transformValue: toDispatcher(dispatch)
-    })(actions) as Tree<ActionCreator<any>>
+    actions: transformTree<ActionCreator, Dispatcher>(
+      toDispatcher(dispatch),
+      actions
+    ) as Tree<ActionCreator<any>>
   });
 
   return connect(
