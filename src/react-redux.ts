@@ -12,9 +12,13 @@ const toDispatcher = (dispatch: Dispatch) => <T>(action: ActionCreator<T>) =>
     action
   );
 
-export const connectWithActions = <T extends Tree<ActionCreator<any>>>(
-  actions: T
-) => <TState, TProps>(mapStateToProps: (state: TState) => TProps) => {
+type StateToProps<TState, TProps> = (state: TState) => TProps;
+
+export function connectWithActions<
+  TActions extends Tree<ActionCreator<any>>,
+  TState,
+  TProps
+>(actions: TActions, mapStateToProps: StateToProps<TState, TProps>) {
   const mapDisptachToProps = (dispatch: Dispatch) => ({
     actions: transformTree<ActionCreator, Dispatcher>({
       transformValue: toDispatcher(dispatch)
@@ -25,4 +29,4 @@ export const connectWithActions = <T extends Tree<ActionCreator<any>>>(
     mapStateToProps,
     mapDisptachToProps
   );
-};
+}
