@@ -16,8 +16,8 @@ type StateToProps<TState, TProps> = (state: TState) => TProps;
 
 export function connectWithActions<
   TActions extends Tree<ActionCreator<any>>,
-  TState,
-  TProps
+  TProps = { actions: TActions },
+  TState = {}
 >(actions: TActions, mapStateToProps?: StateToProps<TState, TProps>) {
   const mapDisptachToProps = (dispatch: Dispatch) => ({
     actions: transformTree<ActionCreator, Dispatcher>({
