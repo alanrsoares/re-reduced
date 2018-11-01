@@ -1,5 +1,4 @@
-import { number } from "prop-types";
-import { createAction, createAsyncActions } from "../actions";
+import { createAction } from "../actions";
 import { handleActions } from "../reducers";
 
 describe("Reducers", () => {
