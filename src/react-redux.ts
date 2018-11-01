@@ -6,13 +6,15 @@ import { transformTree, Tree } from "./helpers/objects";
 
 export type Dispatcher<T = any> = (payload: T) => void;
 
-const toDispatcher = (dispatch: Dispatch) => <T>(action: ActionCreator<T>) =>
-  compose<Dispatcher<T>>(
+export type StateToProps<TState, TProps> = (state: TState) => Partial<TProps>;
+
+const toDispatcher = (dispatch: Dispatch) => <TPayload>(
+  action: ActionCreator<TPayload>
+) =>
+  compose<Dispatcher<TPayload>>(
     dispatch,
     action
   );
-
-type StateToProps<TState, TProps> = (state: TState) => TProps;
 
 /**
  * connectWithActions
