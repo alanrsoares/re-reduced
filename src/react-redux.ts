@@ -25,10 +25,10 @@ const toDispatcher = (dispatch: Dispatch) => <TPayload>(
  * @param mapStateToProps - receives redux state and maps to component props
  */
 export function connectWithActions<
-  TProps extends { actions: TActions },
+  TProps,
   TActions extends Tree<ActionCreator<any>> = {},
   TState = {}
->(actions: TActions, mapStateToProps?: StateToProps<TState, TProps>) {
+>(actions: TActions, mapStateToProps?: StateToProps<TState, Partial<TProps>>) {
   const mapDisptachToProps = (dispatch: Dispatch) => ({
     actions: transformTree<ActionCreator, Dispatcher>(
       toDispatcher(dispatch),
