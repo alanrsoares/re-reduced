@@ -6,7 +6,7 @@ import { transformTree, Tree } from "./helpers/objects";
 
 export type Dispatcher<T = any> = (payload: T) => void;
 
-export type StateToProps<TState, TProps> = (state: TState) => Partial<TProps>;
+export type StateToProps<TState, TProps> = (state: TState) => TProps;
 
 const toDispatcher = (dispatch: Dispatch) => <TPayload>(
   action: ActionCreator<TPayload>
