@@ -1,4 +1,4 @@
-import { connect, MapStateToPropsFactory } from "react-redux";
+import { connect, MapStateToProps } from "react-redux";
 import { compose, Dispatch } from "redux";
 
 import { ActionCreator } from "./core";
@@ -24,12 +24,12 @@ const toDispatcher = (dispatch: Dispatch) => <TPayload>(
  */
 export function connectWithActions<
   TProps,
-  TActions extends Tree<ActionCreator<any>> = {},
   TState = {},
-  TOwnProps = {}
+  TOwnProps = {},
+  TActions extends Tree<ActionCreator<any>> = {}
 >(
   actions: TActions,
-  mapStateToProps?: MapStateToPropsFactory<TProps, TOwnProps, TState>
+  mapStateToProps?: MapStateToProps<TProps, TOwnProps, TState>
 ) {
   const mapDisptachToProps = (dispatch: Dispatch) => ({
     actions: transformTree<ActionCreator, Dispatcher>(
