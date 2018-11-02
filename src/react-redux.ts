@@ -10,6 +10,22 @@ import { transformTree, Tree } from "./helpers/objects";
 
 export type Dispatcher<T = any> = (payload: T) => void;
 
+export interface ConnectWithActions {
+  <TProps = {}, TOwnProps = {}, TActions extends Tree<ActionCreator<any>> = {}>(
+    actions: TActions
+  ): InferableComponentEnhancerWithProps<TProps, TOwnProps>;
+
+  <
+    TProps = {},
+    TOwnProps = {},
+    TState = {},
+    TActions extends Tree<ActionCreator<any>> = {}
+  >(
+    actions: TActions,
+    mapStateToProps: MapStateToProps<Partial<TProps>, TOwnProps, TState>
+  ): InferableComponentEnhancerWithProps<TProps, {}>;
+}
+
 const toDispatcher = (dispatch: Dispatch) => <TPayload>(
   action: ActionCreator<TPayload>
 ) =>
@@ -26,15 +42,15 @@ const toDispatcher = (dispatch: Dispatch) => <TPayload>(
  * @param actions - object of action-creators
  * @param mapStateToProps - receives redux state and maps to component props
  */
-export function connectWithActions<
-  TStateProps = {},
-  TState = {},
+export const connectWithActions: ConnectWithActions = <
+  TProps = {},
   TOwnProps = {},
+  TState = {},
   TActions extends Tree<ActionCreator<any>> = {}
 >(
   actions: TActions,
-  mapStateToProps?: MapStateToProps<TStateProps, TOwnProps, TState>
-) {
+  mapStateToProps?: MapStateToProps<Partial<TProps>, TOwnProps, TState>
+) => {
   const mapDisptachToProps = (dispatch: Dispatch) => ({
     actions: transformTree<ActionCreator, Dispatcher>(
       toDispatcher(dispatch),
@@ -46,4 +62,4 @@ export function connectWithActions<
     mapStateToProps,
     mapDisptachToProps
   );
-}
+};
