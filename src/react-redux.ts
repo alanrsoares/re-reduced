@@ -11,12 +11,16 @@ import { transformTree, Tree } from "./helpers/objects";
 export type Dispatcher<T = any> = (payload: T) => void;
 
 export interface ConnectWithActions {
-  <TProps = {}, TOwnProps = {}, TActions extends Tree<ActionCreator<any>> = {}>(
+  <
+    TProps extends { actions: TActions },
+    TOwnProps = {},
+    TActions extends Tree<ActionCreator<any>> = {}
+  >(
     actions: TActions
   ): InferableComponentEnhancerWithProps<TProps, TOwnProps>;
 
   <
-    TProps = {},
+    TProps extends { actions: TActions },
     TOwnProps = {},
     TState = {},
     TActions extends Tree<ActionCreator<any>> = {}
@@ -34,6 +38,15 @@ const toDispatcher = (dispatch: Dispatch) => <TPayload>(
     action
   );
 
+export const bindActionCreators = <TActions extends Tree<ActionCreator<any>>>(
+  actions: TActions
+) => (dispatch: Dispatch) => ({
+  actions: transformTree<ActionCreator, Dispatcher>(
+    toDispatcher(dispatch),
+    actions
+  ) as TActions
+});
+
 /**
  * connectWithActions
  *
@@ -43,7 +56,7 @@ const toDispatcher = (dispatch: Dispatch) => <TPayload>(
  * @param mapStateToProps - receives redux state and maps to component props
  */
 export const connectWithActions: ConnectWithActions = <
-  TProps = {},
+  TProps extends { actions: TActions },
   TOwnProps = {},
   TState = {},
   TActions extends Tree<ActionCreator<any>> = {}
@@ -51,15 +64,8 @@ export const connectWithActions: ConnectWithActions = <
   actions: TActions,
   mapStateToProps?: MapStateToProps<Partial<TProps>, TOwnProps, TState>
 ) => {
-  const mapDisptachToProps = (dispatch: Dispatch) => ({
-    actions: transformTree<ActionCreator, Dispatcher>(
-      toDispatcher(dispatch),
-      actions
-    ) as Tree<ActionCreator<any>>
-  });
-
   return connect(
     mapStateToProps,
-    mapDisptachToProps
+    bindActionCreators(actions)
   );
 };
