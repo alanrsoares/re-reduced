@@ -29,7 +29,7 @@ export function connectWithActions<
   TActions extends Tree<ActionCreator<any>> = {}
 >(
   actions: TActions,
-  mapStateToProps?: MapStateToProps<TProps, TOwnProps, TState>
+  mapStateToProps?: MapStateToProps<Partial<TProps>, TOwnProps, TState>
 ) {
   const mapDisptachToProps = (dispatch: Dispatch) => ({
     actions: transformTree<ActionCreator, Dispatcher>(
