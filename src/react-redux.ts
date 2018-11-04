@@ -38,6 +38,13 @@ const toDispatcher = (dispatch: Dispatch) => <TPayload>(
     action
   );
 
+/**
+ * bindActionCreators
+ *
+ * Monkeypatches dispatch to the actions making them self-dispachable
+ *
+ * @param actions
+ */
 export const bindActionCreators = <TActions extends Tree<ActionCreator<any>>>(
   actions: TActions
 ) => (dispatch: Dispatch) => ({
@@ -63,9 +70,8 @@ export const connectWithActions: ConnectWithActions = <
 >(
   actions: TActions,
   mapStateToProps?: MapStateToProps<Partial<TProps>, TOwnProps, TState>
-) => {
-  return connect(
+) =>
+  connect(
     mapStateToProps,
     bindActionCreators(actions)
   );
-};
