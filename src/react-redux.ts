@@ -12,7 +12,7 @@ import { transformTree, Tree } from "./helpers/objects";
 export type Dispatcher<T = any> = (payload: T) => void;
 
 export type SelectorSpec<TProps, TState, TOwnProps = {}> = {
-  [K in keyof TProps]: (state: TState, ownProps: TOwnProps) => TProps[K]
+  [K in keyof TProps]: (state: TState, ownProps?: TOwnProps) => TProps[K]
 };
 
 export interface ConnectWithActions {
@@ -26,14 +26,14 @@ export interface ConnectWithActions {
 
   <
     TProps extends { actions: TActions },
+    TState,
     TOwnProps = {},
-    TState = {},
     TActions extends Tree<ActionCreator<any>> = {}
   >(
     actions: TActions,
     mapStateToProps:
       | MapStateToProps<Partial<TProps>, TOwnProps, TState>
-      | SelectorSpec<TProps, TState, TOwnProps>
+      | SelectorSpec<Partial<TProps>, TState, TOwnProps>
   ): InferableComponentEnhancerWithProps<TProps, {}>;
 }
 
@@ -75,14 +75,14 @@ export const applySelectors = <TProps = {}, TState = {}, TOwnProps = {}>(
  */
 export const connectWithActions: ConnectWithActions = <
   TProps extends { actions: TActions },
+  TState extends {},
   TOwnProps = {},
-  TState = {},
   TActions extends Tree<ActionCreator<any>> = {}
 >(
   actions: TActions,
   mapStateToProps?:
     | MapStateToProps<Partial<TProps>, TOwnProps, TState>
-    | SelectorSpec<TProps, TState, TOwnProps>
+    | SelectorSpec<Partial<TProps>, TState, TOwnProps>
 ) => {
   const stateToProps =
     typeof mapStateToProps === "object"
