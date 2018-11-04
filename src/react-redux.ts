@@ -1,3 +1,4 @@
+import { applySpec } from "ramda";
 import {
   connect,
   InferableComponentEnhancerWithProps,
@@ -9,6 +10,10 @@ import { ActionCreator } from "./core";
 import { transformTree, Tree } from "./helpers/objects";
 
 export type Dispatcher<T = any> = (payload: T) => void;
+
+export type SelectorSpec<TProps, TState, TOwnProps = {}> = {
+  [K in keyof TProps]: (state: TState, ownProps: TOwnProps) => TProps[K]
+};
 
 export interface ConnectWithActions {
   <
@@ -26,7 +31,9 @@ export interface ConnectWithActions {
     TActions extends Tree<ActionCreator<any>> = {}
   >(
     actions: TActions,
-    mapStateToProps: MapStateToProps<Partial<TProps>, TOwnProps, TState>
+    mapStateToProps:
+      | MapStateToProps<Partial<TProps>, TOwnProps, TState>
+      | SelectorSpec<TProps, TState, TOwnProps>
   ): InferableComponentEnhancerWithProps<TProps, {}>;
 }
 
@@ -54,6 +61,10 @@ export const bindActionCreators = <TActions extends Tree<ActionCreator<any>>>(
   ) as TActions
 });
 
+export const applySelectors = <TProps = {}, TState = {}, TOwnProps = {}>(
+  spec: SelectorSpec<TProps, TState, TOwnProps>
+): MapStateToProps<Partial<TProps>, TOwnProps, TState> => applySpec(spec);
+
 /**
  * connectWithActions
  *
@@ -69,9 +80,17 @@ export const connectWithActions: ConnectWithActions = <
   TActions extends Tree<ActionCreator<any>> = {}
 >(
   actions: TActions,
-  mapStateToProps?: MapStateToProps<Partial<TProps>, TOwnProps, TState>
-) =>
-  connect(
-    mapStateToProps,
+  mapStateToProps?:
+    | MapStateToProps<Partial<TProps>, TOwnProps, TState>
+    | SelectorSpec<TProps, TState, TOwnProps>
+) => {
+  const stateToProps =
+    typeof mapStateToProps === "object"
+      ? applySelectors(mapStateToProps)
+      : mapStateToProps;
+
+  return connect(
+    stateToProps,
     bindActionCreators(actions)
   );
+};
