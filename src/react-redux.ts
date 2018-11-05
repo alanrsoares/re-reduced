@@ -68,10 +68,16 @@ export const applySelectors = <TProps = {}, TState = {}, TOwnProps = {}>(
 /**
  * connectWithActions
  *
- * Wraps react-redux's connect binding dispatch to the action-creators
+ * Wraps react-redux's "connect" helper, binding dispatch to the action-creators
  *
  * @param actions - object of action-creators
- * @param mapStateToProps - receives redux state and maps to component props
+ * @param mapStateToProps -
+ * It can either be a function that directly maps the app's State to a component's Props
+ * or an object whose keys represent properties in the target component and values are functions
+ * that take the application's State and optionally, the connected component's own Props.
+ * Those functions then return a derived value that matches the component's contract.
+ * Ideally should be used with redux selectors.
+ *
  */
 export const connectWithActions: ConnectWithActions = <
   TProps extends { actions: TActions },
