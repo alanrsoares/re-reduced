@@ -26,7 +26,7 @@ export interface ConnectWithActions {
 
   <
     TProps extends { actions: TActions },
-    TState,
+    TState extends {} = any,
     TOwnProps = {},
     TActions extends Tree<ActionCreator<any>> = {}
   >(
@@ -75,7 +75,7 @@ export const applySelectors = <TProps = {}, TState = {}, TOwnProps = {}>(
  */
 export const connectWithActions: ConnectWithActions = <
   TProps extends { actions: TActions },
-  TState extends {},
+  TState extends {} = any,
   TOwnProps = {},
   TActions extends Tree<ActionCreator<any>> = {}
 >(
