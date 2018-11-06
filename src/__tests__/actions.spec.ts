@@ -1,4 +1,4 @@
-import { createAction, createAsyncActions } from "../actions";
+import { createAction, createAsyncAction } from "../actions";
 
 describe("Actions", () => {
   describe("createAction", () => {
@@ -9,16 +9,28 @@ describe("Actions", () => {
 
       expect(action).toEqual({ type: "SAY_HELLO", payload: "World" });
     });
+
+    it("should create an actionCreator with meta", () => {
+      const actionCreator = createAction<string, boolean>("SAY_HELLO");
+
+      const action = actionCreator("World", false);
+
+      expect(action).toEqual({
+        meta: false,
+        payload: "World",
+        type: "SAY_HELLO"
+      });
+    });
   });
 
-  describe("createAsyncActions", () => {
+  describe("createAsyncAction", () => {
     it("should create a group of actions to handle async flows", () => {
       interface Movie {
         id: string;
         title: string;
       }
 
-      const fetchMovies = createAsyncActions<void, Movie[]>("FETCH", "MOVIES");
+      const fetchMovies = createAsyncAction<void, Movie[]>("FETCH", "MOVIES");
 
       expect(fetchMovies()).toEqual({ type: "MOVIES/FETCH" });
       expect(fetchMovies.request.type).toBe("MOVIES/FETCH_REQUEST");

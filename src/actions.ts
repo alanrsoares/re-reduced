@@ -1,7 +1,10 @@
-import { ActionCreator, AsyncActions } from "./core";
+import { ActionCreator, AsyncAction } from "./core";
 
-export function createAction<TPayload>(type: string): ActionCreator<TPayload> {
-  const actionCreator = ((payload: TPayload) => ({
+export function createAction<TPayload, TMeta = any>(
+  type: string
+): ActionCreator<TPayload, TMeta> {
+  const actionCreator = ((payload: TPayload, meta?: TMeta) => ({
+    meta,
     payload,
     type
   })) as ActionCreator<TPayload>;
@@ -16,11 +19,11 @@ export function createAction<TPayload>(type: string): ActionCreator<TPayload> {
   return actionCreator;
 }
 
-export function createAsyncActions<TRun, TSuccess>(
+export function createAsyncAction<TRun, TSuccess>(
   type: string,
   domain: string
 ) {
-  const fn = createAction<TRun>(`${domain}/${type}`) as AsyncActions<
+  const fn = createAction<TRun>(`${domain}/${type}`) as AsyncAction<
     TRun,
     TSuccess
   >;

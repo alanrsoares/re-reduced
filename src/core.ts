@@ -1,9 +1,10 @@
-export interface Action<T = void> {
+export interface Action<T = void, TMeta = any> {
   type: string;
   payload: T;
+  meta?: TMeta;
 }
 
-export interface AsyncActions<TRun, TSuccess, TError = Error>
+export interface AsyncAction<TRun, TSuccess, TError = Error>
   extends ActionCreator<TRun> {
   request: ActionCreator;
   success: ActionCreator<TSuccess>;
@@ -14,9 +15,9 @@ export interface ActionReducerMap<TState> {
   [key: string]: ActionReducer<TState, any>;
 }
 
-export interface ActionCreator<TPayload = void> {
+export interface ActionCreator<TPayload = void, TMeta = any> {
   (): Action;
-  (payload: TPayload): Action<TPayload>;
+  (payload: TPayload, meta?: TMeta): Action<TPayload, TMeta>;
   type: string;
   reduce: <TState>(
     reducer: ActionReducer<TState, TPayload>
