@@ -1,0 +1,71 @@
+---
+name: Type Reference
+route: /types
+---
+
+
+# Type Reference: Core
+
+## `Action`
+
+Represent a Flux Standard Action (FSA) where the generic type T represents the action's payload
+
+```ts
+interface Action<T = void> {
+  type: string;
+  payload: T;
+}
+```
+
+## `AsyncAction`
+
+AsyncAction is both an [ActionCreator\<TRun\>](#actioncreatortpayload--void) (of payload type TRun) and an object with nested action-creators. 
+
+Those nested action-creators handle failable async workflows with `request`, `success` and `failure`.
+
+AsyncAction is better used in conjuction with `Sagas`
+
+---
+
+`request(void)`: is dispatched imediately after a saga that handles an async action starts
+
+`success(payload: TSuccess)`: is dispatched on a successful response from an api, and takes a payload of type `TSuccess`
+
+`failure(payload: TError)`: is dispatched if an exception is throw, takes a payload of type `TError`
+
+```ts
+interface AsyncAction<TRun, TSuccess, TError = Error> extends ActionCreator<TRun> {
+  request: ActionCreator;
+  success: ActionCreator<TSuccess>;
+  failure: ActionCreator<Error>;
+}
+```
+
+## `ActionReducerMap`
+```ts
+interface ActionReducerMap<TState> {
+  [key: string]: ActionReducer<TState, any>;
+}
+```
+
+## `ActionReducer`
+```ts
+type ActionReducer<TState, TPayload> = (
+  state: TState,
+  payload: TPayload
+) => TState;
+```
+
+## `ActionCreator`
+```ts
+interface ActionCreator<TPayload = void> {
+  (): Action;
+  (payload: TPayload): Action<TPayload>;
+  type: string;
+  reduce: <TState>(
+    reducer: ActionReducer<TState, TPayload>
+  ) => {
+    [key: string]: ActionReducer<TState, TPayload>;
+  };
+}
+```

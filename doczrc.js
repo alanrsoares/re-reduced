@@ -1,4 +1,4 @@
 export default {
-  title: "re:duced",
+  title: "re-reduced",
   typescript: true
 };

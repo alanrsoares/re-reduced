@@ -3,10 +3,11 @@ export interface Action<T = void> {
   payload: T;
 }
 
-export interface AsyncActions<TRun, TSuccess> extends ActionCreator<TRun> {
+export interface AsyncActions<TRun, TSuccess, TError = Error>
+  extends ActionCreator<TRun> {
   request: ActionCreator;
   success: ActionCreator<TSuccess>;
-  failure: ActionCreator<Error>;
+  failure: ActionCreator<TError>;
 }
 
 export interface ActionReducerMap<TState> {
@@ -25,6 +26,6 @@ export interface ActionCreator<TPayload = void> {
 }
 
 export type ActionReducer<TState, TPayload> = (
-  s: TState,
-  p: TPayload
+  state: TState,
+  payload: TPayload
 ) => TState;
