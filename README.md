@@ -5,60 +5,22 @@
 
 A type-safe functional toolbelt for Redux applications
 
-## Type reference
+## Install
 
-### Action<T = void>
+npm
 
-```js
-interface Action<T = void> {
-  type: string;
-  payload: T;
-}
+```
+npm install --save re-reduced
 ```
 
-### ActionCreator<T = void>
+yarn
 
-```js
-interface ActionCreator<TPayload = void> {
-  (): Action;
-  (payload: TPayload): Action<TPayload>;
-  type: string;
-  reduce: <TState>(
-    handler: ActionReducer<TPayload, TState>
-  ) => {
-    [key: string]: ActionReducer<TPayload, TState>
-  };
-}
+```
+yarn add re-reduced
 ```
 
-### AsyncActions<TRun, TSuccess>
+### Check out the [Docs](https://re-reduced.netlify.com/)
 
-```js
-interface AsyncActions<TRun, TSuccess> extends ActionCreator<TRun> {
-  request: ActionCreator;
-  success: ActionCreator<TSuccess>;
-  failure: ActionCreator<Error>;
-}
-```
+#### LICENSE
 
-### ActionReducer<TState, TPayload>
-
-```js
-type ActionReducer<TPayload, TState> = (s: TState, p: TPayload) => TState;
-```
-
-### ActionReducerMap<TState>
-
-```js
-interface ActionReducerMap<TState> {
-  [key: string]: ActionReducer<TState, any>;
-}
-```
-
-## Api
-
-### createAction<TPayload>(type: string): Action<T>
-
-```js
-const action = createAction();
-```
+MIT
