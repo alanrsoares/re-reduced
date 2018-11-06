@@ -14,7 +14,7 @@ export function apiWorkerFactory<TPayload, TResult>(
       const result: TResult = yield call(asyncHandler, action.payload);
       yield put(asyncAction.success(result));
     } catch (e) {
-      yield put(asyncAction.failure(e));
+      yield put(asyncAction.failure(e, { error: true }));
     }
   };
 }

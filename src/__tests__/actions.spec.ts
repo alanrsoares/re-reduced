@@ -3,22 +3,35 @@ import { createAction, createAsyncAction } from "../actions";
 describe("Actions", () => {
   describe("createAction", () => {
     it("should create an actionCreator function", () => {
-      const actionCreator = createAction<string>("SAY_HELLO");
+      const sayHello = createAction<string>("SAY_HELLO");
 
-      const action = actionCreator("World");
+      const action = sayHello("World");
 
       expect(action).toEqual({ type: "SAY_HELLO", payload: "World" });
     });
 
     it("should create an actionCreator with meta", () => {
-      const actionCreator = createAction<string, boolean>("SAY_HELLO");
+      const sayHello = createAction<string, boolean>("SAY_HELLO");
 
-      const action = actionCreator("World", false);
+      const action = sayHello("World", { meta: false });
 
       expect(action).toEqual({
         meta: false,
         payload: "World",
         type: "SAY_HELLO"
+      });
+    });
+
+    it("should create an actionCreator with error flag", () => {
+      const mockError = new Error("Yo! Something went wrong!");
+      const handleError = createAction<Error>("HANDLE_ERROR");
+
+      const action = handleError(mockError, { error: true });
+
+      expect(action).toEqual({
+        error: true,
+        payload: mockError,
+        type: "HANDLE_ERROR"
       });
     });
   });

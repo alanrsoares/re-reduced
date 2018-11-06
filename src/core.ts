@@ -2,6 +2,7 @@ export interface Action<T = void, TMeta = any> {
   type: string;
   payload: T;
   meta?: TMeta;
+  error?: boolean;
 }
 
 export interface AsyncAction<TRun, TSuccess, TError = Error>
@@ -15,9 +16,18 @@ export interface ActionReducerMap<TState> {
   [key: string]: ActionReducer<TState, any>;
 }
 
+export interface ActionCreatorOptions<TMeta> {
+  meta?: TMeta;
+  error?: boolean;
+}
+
 export interface ActionCreator<TPayload = void, TMeta = any> {
   (): Action;
-  (payload: TPayload, meta?: TMeta): Action<TPayload, TMeta>;
+  (options?: ActionCreatorOptions<TMeta>): Action<any, TMeta>;
+  (payload: TPayload, options?: ActionCreatorOptions<TMeta>): Action<
+    TPayload,
+    TMeta
+  >;
   type: string;
   reduce: <TState>(
     reducer: ActionReducer<TState, TPayload>
