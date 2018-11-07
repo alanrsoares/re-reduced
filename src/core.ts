@@ -12,6 +12,11 @@ export interface AsyncAction<TRun, TSuccess, TError = Error>
   failure: ActionCreator<TError>;
 }
 
+export type ActionReducer<TState, TPayload> = (
+  state: TState,
+  payload: TPayload
+) => TState;
+
 export interface ActionReducerMap<TState> {
   [key: string]: ActionReducer<TState, any>;
 }
@@ -29,14 +34,9 @@ export interface ActionCreator<TPayload = void, TMeta = any> {
     TMeta
   >;
   type: string;
-  reduce: <TState>(
+  reduce<TState>(
     reducer: ActionReducer<TState, TPayload>
-  ) => {
+  ): {
     [key: string]: ActionReducer<TState, TPayload>;
   };
 }
-
-export type ActionReducer<TState, TPayload> = (
-  state: TState,
-  payload: TPayload
-) => TState;
