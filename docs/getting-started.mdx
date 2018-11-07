@@ -102,28 +102,22 @@ interface Props {
 
 const Counter = (props: Props) => (
   <div>
-    <div
+    <button onClick={() => props.actions.decrement()}>-1</button>
+    <button onClick={() => props.actions.adjust(-5)}>-5</button>
+    <button
+      disabled
       style={{
-        color: props.isPositive ? (props.isOdd ? "blue" : "green") : "red"
+        color: props.isPositive ? (props.isOdd ? "blue" : "green") : "red",
+        fontWeight: "bold",
+        paddingLeft: 5,
+        paddingRight: 5,
+        width: 50
       }}
     >
-      <button onClick={() => props.actions.decrement()}>-1</button>
-      <button onClick={() => props.actions.adjust(-5)}>-5</button>
-      <button
-        disabled
-        style={{
-          color: props.isPositive ? (props.isOdd ? "blue" : "green") : "red",
-          fontWeight: "bold",
-          paddingLeft: 5,
-          paddingRight: 5,
-          width: 50
-        }}
-      >
-        {props.count}
-      </button>
-      <button onClick={() => props.actions.adjust(5)}>+5</button>
-      <button onClick={() => props.actions.increment()}>+1</button>
-    </div>
+      {props.count}
+    </button>
+    <button onClick={() => props.actions.adjust(5)}>+5</button>
+    <button onClick={() => props.actions.increment()}>+1</button>
   </div>
 );
 
