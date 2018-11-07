@@ -9,40 +9,77 @@ This section will walk you through the main features of `re-reduced` with practi
 
 In the following examples we'll be building a simple counter app.
 
-## Creating Actions
+## Defining a type system
 
-`[root]/src/domain/counter/actions.ts`
+`[root]/examples/Counter/types.ts`
 
 ```ts
-import { createAction, createAsyncAction } from "re-reduced"
-
-export default {
-  increment: createAction("COUNTER:INCREMENT"),
-  decrement: createAction("COUNTER:DECREMENT"),
-  adjust: createAction<number>("COUNTER:ADJUST")
+export interface State {
+  counter: number;
 }
 ```
 
-## Creating Reducers from Actions
 
-`[root]/src/domain/counter/reducers.ts`
+## Creating Actions
+
+`[root]/examples/Counter/actions.ts`
 
 ```ts
-import { combineReducer } from "redux"
-import { handleActions } from "re-reduced"
+import { createAction } from "re-reduced";
 
-import actions from "./actions"
+export default {
+  adjust: createAction<number>("ADJUST"),
+  decrement: createAction("DECREMENT"),
+  increment: createAction("INCREMENT")
+};
+```
 
-const INITIAL_STATE: number = 0
+## Creating Reducers
 
-export default handleActions<number>(
+`[root]/examples/Counter/reducers.ts`
+
+```ts
+import { combineReducers } from "redux";
+import { handleActions } from "re-reduced";
+
+import actions from "./actions";
+import { State } from "./types";
+
+const INITIAL_STATE = 0;
+
+export const counter = handleActions<number>(
   [
-    actions.increment.reduce((state: number) => state + 1),
-    actions.decrement.reduce((state: number) => state - 1),
-    actions.adjust.reduce((state: number, payload: number) => state + payload),
+    actions.increment.reduce(state => state + 1),
+    actions.decrement.reduce(state => state - 1),
+    actions.adjust.reduce((state, payload) => state + payload)
   ],
   INITIAL_STATE
-)
+);
+
+export default combineReducers<State>({
+  counter
+});
+
+```
+
+## Creating selectors
+
+```ts
+import { createSelector } from "reselect";
+
+import { State } from "./types";
+
+export const getCounter = (state: State) => state.counter;
+
+export const getCounterIsOdd = createSelector(
+  getCounter,
+  counter => counter % 2 !== 0
+);
+
+export const getCounterIsPositive = createSelector(
+  getCounter,
+  counter => counter >= 0
+);
 ```
 
 ## Connecting a component

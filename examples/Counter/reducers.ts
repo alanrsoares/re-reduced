@@ -1,6 +1,6 @@
-import { handleActions } from "../../src";
-
 import { combineReducers } from "redux";
+
+import { handleActions } from "../../src";
 import actions from "./actions";
 import { State } from "./types";
 
