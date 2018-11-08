@@ -158,9 +158,8 @@ class App extends React.Component<Props, State> {
         {(this.props.isLoading || this.props.isAdding) && (
           <li>
             <div className="view">
-              <label>
+              <label className="loading">
                 {this.props.isLoading ? "Loading todos" : "Adding new todo"}
-                ...
               </label>
             </div>
           </li>
