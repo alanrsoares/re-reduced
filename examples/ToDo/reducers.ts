@@ -38,7 +38,8 @@ export const todos = handleActions<ToDosState>(
     actions.todos.add.success.reduce((state, todo) => ({
       ...state,
       byId: assoc(todo.id, todo, state.byId),
-      idList: state.idList.concat(todo.id)
+      idList: state.idList.concat(todo.id),
+      isAdding: false
     })),
     actions.todos.update.reduce((state, todo) => ({
       ...state,

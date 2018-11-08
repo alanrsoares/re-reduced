@@ -141,6 +141,7 @@ class App extends React.Component<Props, State> {
             className="toggle-all"
             type="checkbox"
             onChange={this.handleToggleAll}
+            defaultChecked={this.filteredItems.every(todo => todo.isCompleted)}
           />
           <label htmlFor="toggle-all">Mark all as complete</label>
           {this.renderList()}
@@ -151,12 +152,20 @@ class App extends React.Component<Props, State> {
   }
 
   public renderList() {
-    if (this.props.isLoading) {
-      return <div className="view">Loading todos...</div>;
-    }
-
     return (
-      <ul className="todo-list">{this.filteredItems.map(this.renderItem)}</ul>
+      <ul className="todo-list">
+        {this.filteredItems.map(this.renderItem)}
+        {(this.props.isLoading || this.props.isAdding) && (
+          <li>
+            <div className="view">
+              <label>
+                {this.props.isLoading ? "Loading todos" : "Adding new todo"}
+                ...
+              </label>
+            </div>
+          </li>
+        )}
+      </ul>
     );
   }
 
@@ -175,7 +184,7 @@ class App extends React.Component<Props, State> {
             id={`checkbox-${todo.id}`}
             className="toggle"
             type="checkbox"
-            checked={todo.isCompleted}
+            defaultChecked={todo.isCompleted}
           />
           <label
             htmlFor={`checkbox-${todo.id}`}

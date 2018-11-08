@@ -9,7 +9,7 @@ const paths = {
 };
 
 export const fetchToDos = async () => {
-  await delay(500);
+  await delay(1000);
   return JSON.parse(localStorage.getItem(paths.todos) || "[]") as ToDo[];
 };
 
