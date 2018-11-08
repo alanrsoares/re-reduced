@@ -1,3 +1,5 @@
+import { css } from "docz-plugin-css";
+
 export default {
   title: "re-reduced",
   typescript: true,
@@ -6,5 +8,11 @@ export default {
       primary: "teal"
     }
   },
-  menu: ["Home", "Getting Started", "Type Reference", "API Reference"]
+  menu: ["Home", "Getting Started", "Type Reference", "API Reference"],
+  plugins: [
+    css({
+      preprocessor: "postcss",
+      cssmodules: false
+    })
+  ]
 };
