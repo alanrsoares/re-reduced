@@ -3,6 +3,7 @@ import { css } from "docz-plugin-css";
 export default {
   title: "re-reduced",
   typescript: true,
+  hashRouter: true,
   themeConfig: {
     colors: {
       primary: "teal"
