@@ -1,23 +1,26 @@
 import { ActionCreator, ActionCreatorOptions, AsyncAction } from "./core";
 
 export function createAction<TPayload, TMeta = any>(
-  type: string
-): ActionCreator<TPayload, TMeta> {
+  type: string,
+  namespace?: string
+) {
+  const $type = namespace ? `${namespace}/${type}` : type;
+
   const actionCreator = ((
     payload: TPayload,
     options?: ActionCreatorOptions<TMeta>
   ) => ({
-    error: typeof options !== "undefined" ? options.error : undefined,
-    meta: typeof options !== "undefined" ? options.meta : undefined,
+    error: options ? options.error : undefined,
+    meta: options ? options.meta : undefined,
     payload,
-    type
+    type: $type
   })) as ActionCreator<TPayload, TMeta>;
 
-  actionCreator.type = type;
+  actionCreator.type = $type;
   actionCreator.reduce = <TState>(
     handler: (state: TState, payload: TPayload) => TState
   ) => ({
-    [type]: handler
+    [actionCreator.type]: handler
   });
 
   return actionCreator;
@@ -25,16 +28,17 @@ export function createAction<TPayload, TMeta = any>(
 
 export function createAsyncAction<TRun, TSuccess, TFailure = Error>(
   type: string,
-  domain: string
+  namespace?: string
 ) {
-  const asyncAction = createAction<TRun>(`${domain}/${type}`) as AsyncAction<
+  const asyncAction = createAction<TRun>(type, namespace) as AsyncAction<
     TRun,
     TSuccess,
     TFailure
   >;
-  asyncAction.request = createAction(`${domain}/${type}_REQUEST`);
-  asyncAction.success = createAction<TSuccess>(`${domain}/${type}_SUCCESS`);
-  asyncAction.failure = createAction<TFailure>(`${domain}/${type}_FAILURE`);
+
+  asyncAction.request = createAction(`${type}_REQUEST`, namespace);
+  asyncAction.success = createAction<TSuccess>(`${type}_SUCCESS`, namespace);
+  asyncAction.failure = createAction<TFailure>(`${type}_FAILURE`, namespace);
 
   return asyncAction;
 }
