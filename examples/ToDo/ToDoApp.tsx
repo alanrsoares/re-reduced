@@ -177,13 +177,14 @@ class App extends React.Component<Props, State> {
 
     return (
       <li key={todo.id} className={className}>
-        <div className="view" onClick={this.handleToggleToDo(todo)}>
+        <div className="view">
           <input
             readOnly
             id={`checkbox-${todo.id}`}
             className="toggle"
             type="checkbox"
-            defaultChecked={todo.isCompleted}
+            checked={todo.isCompleted}
+            onChange={this.handleToggleToDo(todo)}
           />
           <label
             htmlFor={`checkbox-${todo.id}`}
