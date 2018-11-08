@@ -5,6 +5,10 @@ export interface ToDo {
   tags: string[];
 }
 
+export interface ToDoMap {
+  [id: string]: ToDo;
+}
+
 export interface Tag {
   id: string;
   name: string;
@@ -21,9 +25,7 @@ export enum FILTERS {
 export type Filter = keyof typeof FILTERS;
 
 export interface ToDosState {
-  byId: {
-    [id: string]: ToDo;
-  };
+  byId: ToDoMap;
   idList: string[];
   isFetching: boolean;
   isAdding: boolean;

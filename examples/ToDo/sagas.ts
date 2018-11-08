@@ -21,6 +21,11 @@ export const updateToDo = apiWorkerFactory<ToDo, ToDo>(
   api.patchToDo
 );
 
+export const deleteToDo = apiWorkerFactory<string, string>(
+  actions.todos.delete,
+  api.deleteToDo
+);
+
 export const fetchTags = apiWorkerFactory<void, Tag[]>(
   actions.tags.fetch,
   api.fetchTags
@@ -31,6 +36,7 @@ export default function* sagaWatcher() {
     takeLatest(actions.todos.fetch.type, fetchToDos),
     takeLatest(actions.todos.add.type, addToDos),
     takeLatest(actions.todos.update.type, updateToDo),
+    takeLatest(actions.todos.delete.type, deleteToDo),
     takeLatest(actions.tags.fetch.type, fetchTags)
   ]);
 }

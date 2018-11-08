@@ -20,12 +20,14 @@ interface Props {
 interface State {
   filter: Filter;
   edditingId: string;
+  newToDoTitle: string;
 }
 
 class App extends React.Component<Props, State> {
   public state: State = {
     filter: "All",
-    edditingId: null
+    edditingId: undefined,
+    newToDoTitle: ""
   };
 
   constructor(props: Props) {
@@ -51,19 +53,30 @@ class App extends React.Component<Props, State> {
   };
 
   public handleSelectForEdit = (todo: ToDo) => e => {
-    e.preventDefault();
-    this.setState({ edditingId: todo.id });
+    e.stopPropagation();
+    if (!todo.isCompleted) {
+      this.setState({ edditingId: todo.id });
+    }
   };
 
-  public handleToDoKeyDown = e => {
+  public handleDelete = (todo: ToDo) => () => {
+    this.props.actions.todos.delete(todo.id);
+  };
+
+  public handleNewToDoChange = e => {
+    this.setState({ newToDoTitle: e.target.value });
+  };
+
+  public handleNewToDoKeyDown = e => {
     if (e.key === "Enter") {
       this.props.actions.todos.add({
         title: e.target.value
       });
+      this.setState({ newToDoTitle: "" });
     }
   };
 
-  public handleEditingItemKeyDown = (todo: ToDo) => e => {
+  public handleEditingToDoKeyDown = (todo: ToDo) => e => {
     if (e.key === "Enter") {
       e.preventDefault();
       this.props.actions.todos.update({
@@ -74,32 +87,52 @@ class App extends React.Component<Props, State> {
     }
   };
 
+  public handleEditingToDoBlur = () => {
+    this.setState({ edditingId: undefined });
+  };
+
   public handleToggleAll = () => {
-    return;
+    const everyCompleted = this.filteredItems.every(todo => todo.isCompleted);
+
+    this.filteredItems.forEach(todo =>
+      this.props.actions.todos.update({
+        ...todo,
+        isCompleted: !everyCompleted
+      })
+    );
   };
 
   public handleClearCompleted = () => {
-    return;
+    this.props.completedTodos.forEach(todo =>
+      this.props.actions.todos.delete(todo.id)
+    );
   };
 
   public handleToggleToDo = (todo: ToDo) => () => {
+    if (this.state.edditingId === todo.id) {
+      return;
+    }
+
     this.props.actions.todos.update({
       ...todo,
       isCompleted: !todo.isCompleted
     });
+
+    this.setState({ edditingId: undefined });
   };
 
   public render() {
     return (
       <section className="todoapp">
         <header className="header">
-          <h1>todos</h1>
-
+          <h1>my todos</h1>
           <input
             autoFocus
             className="new-todo"
             placeholder="What needs to be done?"
-            onKeyDown={this.handleToDoKeyDown}
+            value={this.state.newToDoTitle}
+            onChange={this.handleNewToDoChange}
+            onKeyDown={this.handleNewToDoKeyDown}
           />
         </header>
         <section className="main">
@@ -123,41 +156,44 @@ class App extends React.Component<Props, State> {
     }
 
     return (
-      <ul className="todo-list">
-        {this.filteredItems.map(todo => (
-          <li
-            key={todo.id}
-            className={
-              todo.isCompleted
-                ? "completed"
-                : this.state.edditingId === todo.id
-                  ? "editing"
-                  : undefined
-            }
-          >
-            <div className="view">
-              <input
-                readOnly
-                className="toggle"
-                type="checkbox"
-                checked={todo.isCompleted}
-                onChange={this.handleToggleToDo(todo)}
-              />
-              <label onDoubleClick={this.handleSelectForEdit(todo)}>
-                {todo.title}
-              </label>
-              <button className="destroy" />
-            </div>
-            <input
-              className="edit"
-              defaultValue={todo.title}
-              onKeyDown={this.handleEditingItemKeyDown(todo)}
-            />
-          </li>
-        ))}
-      </ul>
+      <ul className="todo-list">{this.filteredItems.map(this.renderItem)}</ul>
     );
   }
+
+  public renderItem = (todo: ToDo) => {
+    const className = todo.isCompleted
+      ? "completed"
+      : this.state.edditingId === todo.id
+        ? "editing"
+        : undefined;
+
+    return (
+      <li key={todo.id} className={className}>
+        <div className="view" onClick={this.handleToggleToDo(todo)}>
+          <input
+            readOnly
+            id={`checkbox-${todo.id}`}
+            className="toggle"
+            type="checkbox"
+            checked={todo.isCompleted}
+          />
+          <label
+            htmlFor={`checkbox-${todo.id}`}
+            onDoubleClick={this.handleSelectForEdit(todo)}
+          >
+            {todo.title}
+          </label>
+          <button className="destroy" onClick={this.handleDelete(todo)} />
+        </div>
+        <input
+          className="edit"
+          defaultValue={todo.title}
+          onKeyDown={this.handleEditingToDoKeyDown(todo)}
+          onBlur={this.handleEditingToDoBlur}
+        />
+      </li>
+    );
+  };
 
   public renderFooter() {
     return (

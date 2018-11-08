@@ -7,7 +7,7 @@ export default {
     fetch: createAsyncAction<void, ToDo[]>("FETCH", "TODOS"),
     add: createAsyncAction<Partial<ToDo>, ToDo>("ADD", "TODOS"),
     update: createAsyncAction<ToDo, ToDo>("UPDATE", "TODOS"),
-    delete: createAsyncAction<string, ToDo>("DELETE", "TODOS")
+    delete: createAsyncAction<string, string>("DELETE", "TODOS")
   },
   tags: {
     fetch: createAsyncAction<void, Tag[]>("FETCH", "TAGS")

@@ -1,9 +1,10 @@
 import { combineReducers } from "redux";
+import { dissoc, without, assoc, indexBy } from "ramda";
 
 import { handleActions } from "../../src";
 
 import actions from "./actions";
-import { State, ToDosState } from "./types";
+import { State, ToDosState, ToDoMap } from "./types";
 
 const INITIAL_STATE: State = {
   todos: {
@@ -26,13 +27,7 @@ export const todos = handleActions<ToDosState>(
     })),
     actions.todos.fetch.success.reduce((state, payload) => ({
       ...state,
-      byId: payload.reduce(
-        (acc, todo) => ({
-          ...acc,
-          [todo.id]: todo
-        }),
-        {}
-      ),
+      byId: indexBy(todo => todo.id, payload),
       idList: payload.map(todo => todo.id),
       isFetching: false
     })),
@@ -42,19 +37,17 @@ export const todos = handleActions<ToDosState>(
     })),
     actions.todos.add.success.reduce((state, todo) => ({
       ...state,
-      byId: {
-        ...state.byId,
-        [todo.id]: todo
-      },
-      idList: state.idList.concat(todo.id),
-      isAdding: false
+      byId: assoc(todo.id, todo, state.byId),
+      idList: state.idList.concat(todo.id)
     })),
-    actions.todos.update.success.reduce((state, todo) => ({
+    actions.todos.update.reduce((state, todo) => ({
       ...state,
-      byId: {
-        ...state.byId,
-        [todo.id]: todo
-      }
+      byId: assoc(todo.id, todo, state.byId)
+    })),
+    actions.todos.delete.reduce((state, id) => ({
+      ...state,
+      byId: dissoc<ToDoMap>(id, state.byId),
+      idList: without([id], state.idList)
     }))
   ],
   INITIAL_STATE.todos
