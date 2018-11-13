@@ -19,14 +19,14 @@ interface Props {
 
 interface State {
   filter: Filter;
-  edditingId: string;
   newToDoTitle: string;
+  editingId: string | undefined;
 }
 
 class App extends React.Component<Props, State> {
   public state: State = {
     filter: "All",
-    edditingId: undefined,
+    editingId: undefined,
     newToDoTitle: ""
   };
 
@@ -55,7 +55,9 @@ class App extends React.Component<Props, State> {
   public handleSelectForEdit = (todo: ToDo) => e => {
     e.stopPropagation();
     if (!todo.isCompleted) {
-      this.setState({ edditingId: todo.id });
+      this.setState({ editingId: todo.id });
+    } else {
+      this.setState({ editingId: undefined });
     }
   };
 
@@ -83,17 +85,18 @@ class App extends React.Component<Props, State> {
         ...todo,
         title: e.target.value
       });
-      this.setState({ edditingId: undefined });
+      this.setState({ editingId: undefined });
     }
   };
 
   public handleEditingToDoBlur = () => {
-    this.setState({ edditingId: undefined });
+    this.setState({ editingId: undefined });
   };
 
   public handleToggleAll = () => {
     const everyCompleted = this.filteredItems.every(todo => todo.isCompleted);
 
+    this.setState({ editingId: undefined });
     this.filteredItems.forEach(todo =>
       this.props.actions.todos.update({
         ...todo,
@@ -109,7 +112,7 @@ class App extends React.Component<Props, State> {
   };
 
   public handleToggleToDo = (todo: ToDo) => () => {
-    if (this.state.edditingId === todo.id) {
+    if (this.state.editingId === todo.id) {
       return;
     }
 
@@ -118,7 +121,7 @@ class App extends React.Component<Props, State> {
       isCompleted: !todo.isCompleted
     });
 
-    this.setState({ edditingId: undefined });
+    this.setState({ editingId: undefined });
   };
 
   public render() {
@@ -171,7 +174,7 @@ class App extends React.Component<Props, State> {
   public renderItem = (todo: ToDo) => {
     const className = todo.isCompleted
       ? "completed"
-      : this.state.edditingId === todo.id
+      : this.state.editingId === todo.id
         ? "editing"
         : undefined;
 
