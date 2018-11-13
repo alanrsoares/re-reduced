@@ -20,7 +20,7 @@ yarn
 yarn add re-reduced
 ```
 
-### Check out the [Docs](https://re-reduced.netlify.com/)
+### Check out the [docs](https://re-reduced.netlify.com/)
 
 #### LICENSE
 
