@@ -1,5 +1,11 @@
 import { ActionCreator, ActionCreatorOptions, AsyncAction } from "./core";
 
+/**
+ * returns an action-creator function
+ *
+ * @param type - the action identifier, must be unique
+ * @param namespace - optional namespace string to be prepended to the type
+ */
 export function createAction<TPayload, TMeta = any>(
   type: string,
   namespace?: string
@@ -26,6 +32,12 @@ export function createAction<TPayload, TMeta = any>(
   return actionCreator;
 }
 
+/**
+ * return a composite action-creator with nested action-creators for request, success and failure
+ *
+ * @param type - the action identifier, must be unique
+ * @param namespace - optional namespace string to be prepended to the type
+ */
 export function createAsyncAction<TRun, TSuccess, TFailure = Error>(
   type: string,
   namespace?: string
