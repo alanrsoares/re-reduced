@@ -1,7 +1,7 @@
 import { applyTo, merge, mergeAll } from "ramda";
 import { Reducer } from "redux";
 
-import { ActionReducerMap } from "./core";
+import { ActionReducerMap, ActionCreator, ActionReducer } from "./core";
 
 export interface ReducerConfig<TActions, TState> {
   actions: TActions;
@@ -66,6 +66,13 @@ export function handleActions<TState>(
 
     return state;
   };
+}
+
+export function match<TPayload, TState>(
+  action: ActionCreator<TPayload>,
+  reducer: ActionReducer<TState, TPayload>
+) {
+  return action.reduce(reducer);
 }
 
 const combineFunctors = <TActions, TState>(
