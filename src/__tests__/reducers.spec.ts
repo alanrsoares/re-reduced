@@ -1,9 +1,13 @@
 import { createAction, createAsyncAction } from "../actions";
-import { handleActions, createReducer, reducerConfig } from "../reducers";
+import {
+  createReducer,
+  createReducerFactory,
+  reducerConfig
+} from "../reducers";
 import { AsyncAction } from "../core";
 
 describe("Reducers", () => {
-  describe("handleActions", () => {
+  describe("createReducer", () => {
     it("should create a reducer that's able to reduce the actions assigned to it", () => {
       const actions = {
         adjust: createAction<number>("ADJUST"),
@@ -11,7 +15,7 @@ describe("Reducers", () => {
         increment: createAction("INCREMENT")
       };
 
-      const reducer = handleActions<number>(
+      const reducer = createReducer<number>(
         [
           actions.increment.reduce(state => state + 1),
           actions.decrement.reduce(state => state - 1),
@@ -27,13 +31,13 @@ describe("Reducers", () => {
     });
   });
 
-  describe("createReducer", () => {
+  describe("createReducerFactory", () => {
     it("should create a reducer factory from a specification", () => {
       const myActions = {
         fetch: createAsyncAction<void, any[]>("FETCH_SOME_DATA_ASYNC")
       };
 
-      const asyncActionMonitorReducerFactory = createReducer<
+      const asyncActionMonitorReducerFactory = createReducerFactory<
         AsyncAction<any, any>,
         boolean
       >(

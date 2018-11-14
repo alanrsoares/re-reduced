@@ -19,7 +19,6 @@ export interface State {
 }
 ```
 
-
 ## Creating Actions
 
 `[root]/examples/Counter/actions.ts`
@@ -40,14 +39,14 @@ export default {
 
 ```ts
 import { combineReducers } from "redux";
-import { handleActions } from "re-reduced";
+import { createReducer } from "re-reduced";
 
 import actions from "./actions";
 import { State } from "./types";
 
 const INITIAL_STATE = 0;
 
-export const counter = handleActions<number>(
+export const counter = createReducer<number>(
   [
     actions.increment.reduce(state => state + 1),
     actions.decrement.reduce(state => state - 1),
@@ -59,7 +58,6 @@ export const counter = handleActions<number>(
 export default combineReducers<State>({
   counter
 });
-
 ```
 
 ## Creating selectors
@@ -132,9 +130,9 @@ export default enhance(Counter);
 
 ## Demo
 
-import { Playground } from "docz"
+import { Playground } from "docz";
 
-import Counter from "../examples/Counter"
+import Counter from "../examples/Counter";
 
 <Playground>
   <Counter />

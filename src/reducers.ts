@@ -49,7 +49,7 @@ export const reducerConfigWithState = <TActions, TState>(config: {
   idKey: ""
 });
 
-export function handleActions<TState>(
+export function createReducer<TState>(
   handlers: ActionReducerMap<TState> | Array<ActionReducerMap<TState>>,
   initialState: TState
 ): Reducer<TState> {
@@ -68,6 +68,15 @@ export function handleActions<TState>(
   };
 }
 
+// temporary alias for createReducer
+export const handleActions = createReducer;
+
+/**
+ * registers a reducer handler for a given action
+ *
+ * @param action
+ * @param reducer
+ */
 export function match<TPayload, TState>(
   action: ActionCreator<TPayload>,
   reducer: ActionReducer<TState, TPayload>
@@ -82,7 +91,7 @@ const combineFunctors = <TActions, TState>(
   return merge(handlers, customHandlers) as ReducerFunctorFn<TActions, TState>;
 };
 
-export const createReducer = <TActions, TState>(
+export const createReducerFactory = <TActions, TState>(
   functor: ReducerFunctor<TActions, TState>,
   defaultInitialState: TState
 ) => {
@@ -105,7 +114,7 @@ export const createReducer = <TActions, TState>(
       customHandlers
     );
 
-    return handleActions<TState>(handlers, initialState);
+    return createReducer<TState>(handlers, initialState);
   };
 
   reducerFactory.functor = finalFunctor;

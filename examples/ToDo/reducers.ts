@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { dissoc, without, assoc, indexBy } from "ramda";
 
-import { handleActions, match } from "../../src";
+import { createReducer, match } from "../../src";
 
 import actions from "./actions";
 import { State, ToDosState, ToDoMap } from "./types";
@@ -19,9 +19,9 @@ const INITIAL_STATE: State = {
   }
 };
 
-export const todos = handleActions<ToDosState>(
+export const todos = createReducer<ToDosState>(
   [
-    // fetch handlers
+    // [fetch] handlers
     match(actions.todos.fetch.request, state => ({
       ...state,
       isFetching: true
@@ -32,24 +32,24 @@ export const todos = handleActions<ToDosState>(
       idList: payload.map(todo => todo.id),
       isFetching: false
     })),
-    // add handlers
-    actions.todos.add.request.reduce(state => ({
+    // [add] handlers
+    match(actions.todos.add.request, state => ({
       ...state,
       isAdding: true
     })),
-    actions.todos.add.success.reduce((state, todo) => ({
+    match(actions.todos.add.success, (state, todo) => ({
       ...state,
       byId: assoc(todo.id, todo, state.byId),
       idList: state.idList.concat(todo.id),
       isAdding: false
     })),
-    // update handlers
-    actions.todos.update.reduce((state, todo) => ({
+    // [update] handlers
+    match(actions.todos.update, (state, todo) => ({
       ...state,
       byId: assoc(todo.id, todo, state.byId)
     })),
-    // delete handlers
-    actions.todos.delete.reduce((state, id) => ({
+    // [delete] handlers
+    match(actions.todos.delete, (state, id) => ({
       ...state,
       byId: dissoc<ToDoMap>(id, state.byId),
       idList: without([id], state.idList)
@@ -58,7 +58,7 @@ export const todos = handleActions<ToDosState>(
   INITIAL_STATE.todos
 );
 
-export const tags = handleActions([], INITIAL_STATE.tags);
+export const tags = createReducer([], INITIAL_STATE.tags);
 
 export default combineReducers<State>({
   todos,

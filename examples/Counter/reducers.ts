@@ -1,12 +1,13 @@
 import { combineReducers } from "redux";
 
-import { handleActions } from "../../src";
+import { createReducer } from "../../src";
+
 import actions from "./actions";
 import { State } from "./types";
 
 const INITIAL_STATE = 0;
 
-export const counter = handleActions<number>(
+export const counter = createReducer<number>(
   [
     actions.increment.reduce(state => state + 1),
     actions.decrement.reduce(state => state - 1),
