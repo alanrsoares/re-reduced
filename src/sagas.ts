@@ -19,14 +19,19 @@ export interface APIWorkerHooks<TResult, TFailure> {
   onFailure(error: TFailure): APIWorkerHookEffect<TFailure>;
 }
 
-export function apiWorkerFactory<TPayload, TResult, TFailure = Error>(
+export function apiWorkerFactory<
+  TPayload,
+  TResult,
+  TFailure extends Error = Error
+>(
   asyncAction: AsyncAction<TPayload, TResult>,
   asyncHandler: (payload: TPayload) => Promise<TResult>,
   hooks?: Partial<APIWorkerHooks<TResult, TFailure>>
 ) {
   const $hooks = {
     onSuccess: (result: TResult) => put(asyncAction.success(result)),
-    onFailure: (error: TFailure) => put(asyncAction.failure(error)),
+    onFailure: (error: TFailure) =>
+      put(asyncAction.failure(error, { error: true })),
     ...(hooks || {})
   };
 
