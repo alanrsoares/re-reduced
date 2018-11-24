@@ -7,6 +7,8 @@ route: /api
 
 ## createAction
 
+returns an action-creator
+
 `<TPayload, TMeta = any>(type: string, domain?: string) => ActionCreator<TPayload, TMeta>`
 
 ### Params:
@@ -15,6 +17,8 @@ route: /api
 - domain (optional):
 
 ## createAsyncAction
+
+returns a composite action-creator with nested action-creators for request, success and failure
 
 ## createReducer
 
