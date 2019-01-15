@@ -11,6 +11,14 @@ const themeConfig = {
     src:
       "https://raw.githubusercontent.com/alanrsoares/re-reduced/master/docs/assets/logo.png",
     width: 200
+  },
+  styles: {
+    body: {
+      fontFamily: "Roboto, 'Source Sans Pro', Helvetica, sans-serif"
+    },
+    h1: {
+      fontFamily: "Roboto, 'Source Sans Pro', Helvetica, sans-serif"
+    }
   }
 };
 

@@ -4,6 +4,8 @@
 
 # Re-reduced
 
+![re-reduced](/docs/assets/logo-positive.png)
+
 A type-safe functional toolbelt for Redux applications
 
 ## Install
