@@ -1,8 +1,15 @@
 import * as React from "react";
+import styled from "@emotion/styled";
+
 import { connectWithActions } from "../../src";
 
 import actions from "./actions";
 import * as selectors from "./selectors";
+
+const Button = styled.button`
+  padding: 5px 10px;
+  font-size: 24px;
+`;
 
 interface Props {
   count: number;
@@ -13,9 +20,9 @@ interface Props {
 
 const Counter = (props: Props) => (
   <div>
-    <button onClick={() => props.actions.decrement()}>-1</button>
-    <button onClick={() => props.actions.adjust(-5)}>-5</button>
-    <button
+    <Button onClick={() => props.actions.decrement()}>-1</Button>
+    <Button onClick={() => props.actions.adjust(-5)}>-5</Button>
+    <Button
       disabled
       style={{
         color: props.isPositive ? (props.isOdd ? "blue" : "green") : "red",
@@ -26,9 +33,9 @@ const Counter = (props: Props) => (
       }}
     >
       {props.count}
-    </button>
-    <button onClick={() => props.actions.adjust(5)}>+5</button>
-    <button onClick={() => props.actions.increment()}>+1</button>
+    </Button>
+    <Button onClick={() => props.actions.adjust(5)}>+5</Button>
+    <Button onClick={() => props.actions.increment()}>+1</Button>
   </div>
 );
 

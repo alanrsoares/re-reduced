@@ -2,6 +2,10 @@
   Styles addapted from https://github.com/tastejs/todomvc-app-css/blob/master/index.css
 */
 
+.react-live-preview {
+  background-color: #2e3440;
+}
+
 .hidden {
   display: none;
 }
@@ -64,7 +68,7 @@
   font-size: 100px;
   font-weight: 300;
   text-align: center;
-  color: #f5f5f5;
+  color: rgba(175, 47, 47, 0.15);
   -webkit-text-rendering: optimizeLegibility;
   -moz-text-rendering: optimizeLegibility;
   text-rendering: optimizeLegibility;
