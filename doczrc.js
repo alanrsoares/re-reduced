@@ -4,7 +4,13 @@ const themeConfig = {
   mode: "dark",
   colors: {
     primary: "#FF5447",
-    sidebarBg: "#311E84"
+    sidebarBg: "#311E84",
+    background: "#041A28"
+  },
+  logo: {
+    src:
+      "https://raw.githubusercontent.com/alanrsoares/re-reduced/master/docs/assets/logo.png",
+    width: 200
   }
 };
 
