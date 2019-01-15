@@ -1,13 +1,10 @@
 import { css } from "docz-plugin-css";
 
 const themeConfig = {
+  mode: "dark",
   colors: {
-    primary: "#311E84",
-    secondary: "#FF5447"
-  },
-  logo: {
-    src: "assets/logo-positive.svg",
-    width: 150
+    primary: "#FF5447",
+    sidebarBg: "#311E84"
   }
 };
 
