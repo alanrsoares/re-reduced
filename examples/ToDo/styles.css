@@ -68,10 +68,11 @@
   font-size: 100px;
   font-weight: 300;
   text-align: center;
-  color: rgba(175, 47, 47, 0.15);
+  color: #ff5447;
   -webkit-text-rendering: optimizeLegibility;
   -moz-text-rendering: optimizeLegibility;
   text-rendering: optimizeLegibility;
+  font-size: 6rem;
 }
 
 .new-todo,

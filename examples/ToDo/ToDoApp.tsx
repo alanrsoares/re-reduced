@@ -128,7 +128,7 @@ class App extends React.Component<Props, State> {
     return (
       <section className="todoapp">
         <header className="header">
-          <h1>my todos</h1>
+          <h1>todos</h1>
           <input
             autoFocus
             className="new-todo"
@@ -162,7 +162,7 @@ class App extends React.Component<Props, State> {
           <li>
             <div className="view">
               <label className="loading">
-                {this.props.isLoading ? "Loading todos" : "Adding new todo"}
+                {this.props.isLoading ? "Loading todos" : "Adding todo"}
               </label>
             </div>
           </li>
