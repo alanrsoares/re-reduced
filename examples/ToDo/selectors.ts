@@ -1,4 +1,4 @@
-import { createSelector } from "reselect";
+import { createSelector } from "../../src";
 
 import { State } from "./types";
 
