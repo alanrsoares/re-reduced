@@ -1,6 +1,5 @@
-import { createAction, createAsyncAction } from "../../src";
+import { createAsyncAction } from "../../src";
 import { ToDo, Tag } from "./types";
-import { string } from "prop-types";
 
 export default {
   todos: {

@@ -1,7 +1,6 @@
-import { combineReducers } from "redux";
 import { dissoc, without, assoc, indexBy } from "ramda";
 
-import { createReducer, match } from "../../src";
+import { createReducer, combineReducers, match } from "../../src";
 
 import actions from "./actions";
 import { State, ToDosState, ToDoMap } from "./types";

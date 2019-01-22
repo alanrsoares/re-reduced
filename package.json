@@ -48,13 +48,13 @@
     "reselect": "^4.0.0",
     "ts-jest": "^23.10.4",
     "tslint": "^5.11.0",
-    "tslint-config-prettier": "^1.15.0",
-    "typescript": "^3.1.2"
+    "tslint-config-prettier": "^1.17.0",
+    "typescript": "^3.2.4"
   },
   "dependencies": {
-    "ramda": "^0.25.0",
+    "ramda": "^0.26.1",
     "react-redux": "^6.0.0",
-    "redux": "^4.0.0",
-    "redux-saga": "^0.16.2"
+    "redux": "^4.0.1",
+    "redux-saga": "^1.0.0"
   }
 }

@@ -1,7 +1,11 @@
 import React from "react";
-import createSagaMiddleware from "redux-saga";
 
-import { Provider, createStore, applyMiddleware } from "../../src";
+import {
+  Provider,
+  createStore,
+  applyMiddleware,
+  createSagaMiddleware
+} from "../../src";
 
 import reducer from "./reducers";
 import rootSaga from "./sagas";
