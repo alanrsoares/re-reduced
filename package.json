@@ -38,7 +38,7 @@
   "devDependencies": {
     "@types/jest": "^23.3.5",
     "@types/ramda": "^0.25.39",
-    "@types/react-redux": "^6.0.9",
+    "@types/react-redux": "^7.0.0",
     "@types/reselect": "^2.2.0",
     "docz": "^0.13.7",
     "docz-plugin-css": "^0.11.0",
@@ -53,7 +53,7 @@
   },
   "dependencies": {
     "ramda": "^0.25.0",
-    "react-redux": "^5.0.7",
+    "react-redux": "^6.0.0",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.2"
   }

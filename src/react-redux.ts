@@ -9,6 +9,9 @@ import { compose, Dispatch } from "redux";
 import { ActionCreator } from "./core";
 import { transformTree, Tree } from "./helpers/objects";
 
+export * from "react-redux";
+export { createStore, applyMiddleware } from "redux";
+
 export type Dispatcher<T = any> = (payload: T) => void;
 
 export type SelectorSpec<TProps, TState, TOwnProps = {}> = {
