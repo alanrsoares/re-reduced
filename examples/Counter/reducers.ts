@@ -1,6 +1,4 @@
-import { combineReducers } from "redux";
-
-import { createReducer } from "../../src";
+import { createReducer, combineReducers } from "../../src";
 
 import actions from "./actions";
 import { State } from "./types";

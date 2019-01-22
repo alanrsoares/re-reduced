@@ -38,8 +38,7 @@ export default {
 `[root]/examples/Counter/reducers.ts`
 
 ```ts
-import { combineReducers } from "redux";
-import { createReducer } from "re-reduced";
+import { createReducer, combineReducers } from "re-reduced";
 
 import actions from "./actions";
 import { State } from "./types";
@@ -63,7 +62,7 @@ export default combineReducers<State>({
 ## Creating selectors
 
 ```ts
-import { createSelector } from "reselect";
+import { createSelector } from "re-reduced";
 
 import { State } from "./types";
 
