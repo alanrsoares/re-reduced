@@ -11,7 +11,7 @@ import { Action, AsyncAction } from "./core";
 
 export type APIWorkerHookEffect<TPayload> =
   | PutEffect<Action<TPayload>>
-  | AllEffect
+  | AllEffect<any>
   | ForkEffect;
 
 export interface APIWorkerHooks<TResult, TFailure> {
