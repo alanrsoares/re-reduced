@@ -43,9 +43,8 @@
   },
   "devDependencies": {
     "@types/jest": "^23.3.5",
-    "@types/ramda": "^0.25.39",
+    "@types/ramda": "^0.25.47",
     "@types/react-redux": "^6.0.9",
-    "@types/reselect": "^2.2.0",
     "buble": "0.19.4",
     "docz": "^0.12.5",
     "docz-plugin-css": "^0.11.0",
@@ -61,6 +60,6 @@
     "typescript": "^3.1.2"
   },
   "dependencies": {
-    "ramda": "^0.25.0"
+    "ramda": "^0.26.1"
   }
 }
