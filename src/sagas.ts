@@ -9,9 +9,9 @@ import {
 
 import { Action, AsyncAction } from "./core";
 
-export type APIWorkerHookEffect<TPayload> =
+export type APIWorkerHookEffect<TPayload, TCombiner = any> =
   | PutEffect<Action<TPayload>>
-  | AllEffect<any>
+  | AllEffect<TCombiner>
   | ForkEffect;
 
 export interface APIWorkerHooks<TResult, TFailure> {
