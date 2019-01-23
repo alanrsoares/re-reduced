@@ -19,7 +19,7 @@ export interface Tree<TLeaf> {
  * @param tree - a tree-like object with deeply nested props
  */
 export const transformTree = <TLeft, TRight>(
-  transform: ((value: TLeft, key: string) => TRight),
+  transform: (value: TLeft, key: string) => TRight,
   tree: Tree<TLeft>
 ): Tree<TRight> =>
   mapObjIndexed((value: Node<TLeft>, key: string): Node<TRight> => {
