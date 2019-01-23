@@ -1,8 +1,14 @@
 tsconfig.json
 tslint.json
+
 .prettierrc
+.editorconfig
+.travis.yml
 
 .docz/
 docs/
+doczrc.js
+
 examples/
 src/
+coverage/
