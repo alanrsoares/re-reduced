@@ -217,7 +217,6 @@ class App extends React.Component<Props, State> {
           </strong>{" "}
           item left
         </span>
-
         <ul className="filters">
           {Object.keys(FILTERS).map((filter: Filter) => (
             <li key={filter}>
