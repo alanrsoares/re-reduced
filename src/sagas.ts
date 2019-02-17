@@ -21,7 +21,7 @@ export interface APIWorkerHooks<TResult, TFailure> {
 
 export function apiWorkerFactory<TPayload, TResult, TFailure = Error>(
   asyncAction: AsyncAction<TPayload, TResult>,
-  asyncHandler: (payload: TPayload) => Promise<TResult>,
+  asyncHandler: (payload?: TPayload) => Promise<TResult>,
   hooks?: Partial<APIWorkerHooks<TResult, TFailure>>
 ) {
   const $hooks = {
@@ -33,7 +33,9 @@ export function apiWorkerFactory<TPayload, TResult, TFailure = Error>(
   return function* sagaWorker(action: Action<TPayload>): SagaIterator {
     try {
       yield put(asyncAction.request());
-      const result: TResult = yield call(asyncHandler, action.payload);
+      const result: TResult = action.payload
+        ? yield call(asyncHandler, action.payload)
+        : yield call(asyncHandler);
       yield $hooks.onSuccess(result);
     } catch (error) {
       yield $hooks.onFailure(error);
