@@ -14,6 +14,7 @@ interface Props {
   completedTodos: ToDo[];
   isLoading: boolean;
   isAdding: boolean;
+  title: string;
   actions: typeof actions;
 }
 
@@ -128,7 +129,7 @@ class App extends React.Component<Props, State> {
     return (
       <section className="todoapp">
         <header className="header">
-          <h1>my todos</h1>
+          <h1>{this.props.title}</h1>
           <input
             autoFocus
             className="new-todo"
@@ -240,7 +241,11 @@ class App extends React.Component<Props, State> {
   }
 }
 
-const enhance = connectWithActions<Props>(actions, {
+interface OwnProps {
+  title: string;
+}
+
+const enhance = connectWithActions<Props, OwnProps>(actions, {
   todos: selectors.getToDos,
   activeTodos: selectors.getActiveToDos,
   completedTodos: selectors.getCompletedToDos,

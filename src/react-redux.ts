@@ -34,7 +34,7 @@ export interface ConnectWithActions {
     mapStateToProps:
       | MapStateToProps<Partial<TProps>, TOwnProps, TState>
       | SelectorSpec<Partial<TProps>, TState, TOwnProps>
-  ): InferableComponentEnhancerWithProps<TProps, {}>;
+  ): InferableComponentEnhancerWithProps<TProps, TOwnProps>;
 }
 
 const toDispatcher = (dispatch: Dispatch) => <TPayload>(
