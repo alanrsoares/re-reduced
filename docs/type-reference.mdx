@@ -28,15 +28,15 @@ AsyncAction is better used in conjuction with `Sagas`
 
 `request(void)`: is dispatched imediately after a saga that handles an async action starts
 
-`success(payload: TSuccess)`: is dispatched on a successful response from an api, and takes a payload of type `TSuccess`
+`success(payload: TResult)`: is dispatched on a successful response from an api, and takes a payload of type `TResult`
 
 `failure(payload: TError)`: is dispatched if an exception is throw, takes a payload of type `TError`
 
 ```ts
-interface AsyncAction<TSuccess, TPayload = void, TError = Error>
+interface AsyncAction<TResult, TPayload = void, TError = Error>
   extends ActionCreator<TPayload> {
   request: ActionCreator;
-  success: ActionCreator<TSuccess>;
+  success: ActionCreator<TResult>;
   failure: ActionCreator<Error>;
 }
 ```
