@@ -38,18 +38,18 @@ export function createAction<TPayload, TMeta = any>(
  * @param type - the action identifier, must be unique
  * @param namespace - optional namespace string to be prepended to the type
  */
-export function createAsyncAction<TRun, TSuccess, TFailure = Error>(
+export function createAsyncAction<TResult, TPayload = void, TFailure = Error>(
   type: string,
   namespace?: string
 ) {
-  const asyncAction = createAction<TRun>(type, namespace) as AsyncAction<
-    TRun,
-    TSuccess,
+  const asyncAction = createAction<TPayload>(type, namespace) as AsyncAction<
+    TPayload,
+    TResult,
     TFailure
   >;
 
   asyncAction.request = createAction(`${type}_REQUEST`, namespace);
-  asyncAction.success = createAction<TSuccess>(`${type}_SUCCESS`, namespace);
+  asyncAction.success = createAction<TResult>(`${type}_SUCCESS`, namespace);
   asyncAction.failure = createAction<TFailure>(`${type}_FAILURE`, namespace);
 
   return asyncAction;

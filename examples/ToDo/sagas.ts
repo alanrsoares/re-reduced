@@ -6,12 +6,12 @@ import * as api from "./api";
 import { apiWorkerFactory } from "../../src";
 import { ToDo, Tag } from "./types";
 
-export const fetchToDos = apiWorkerFactory<void, ToDo[]>(
+export const fetchToDos = apiWorkerFactory<ToDo[]>(
   actions.todos.fetch,
   api.fetchToDos
 );
 
-export const addToDos = apiWorkerFactory<Partial<ToDo>, ToDo>(
+export const addToDos = apiWorkerFactory<ToDo, Partial<ToDo>>(
   actions.todos.add,
   api.addToDo
 );
@@ -26,7 +26,7 @@ export const deleteToDo = apiWorkerFactory<string, string>(
   api.deleteToDo
 );
 
-export const fetchTags = apiWorkerFactory<void, Tag[]>(
+export const fetchTags = apiWorkerFactory<Tag[]>(
   actions.tags.fetch,
   api.fetchTags
 );

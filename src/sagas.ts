@@ -19,7 +19,7 @@ export interface APIWorkerHooks<TResult, TFailure> {
   onFailure(error: TFailure): APIWorkerHookEffect<TFailure>;
 }
 
-export function apiWorkerFactory<TPayload, TResult, TFailure = Error>(
+export function apiWorkerFactory<TResult, TPayload = void, TFailure = Error>(
   asyncAction: AsyncAction<TPayload, TResult>,
   asyncHandler: (payload?: TPayload) => Promise<TResult>,
   hooks?: Partial<APIWorkerHooks<TResult, TFailure>>
@@ -33,9 +33,12 @@ export function apiWorkerFactory<TPayload, TResult, TFailure = Error>(
   return function* sagaWorker(action: Action<TPayload>): SagaIterator {
     try {
       yield put(asyncAction.request());
-      const result: TResult = action.payload
-        ? yield call(asyncHandler, action.payload)
-        : yield call(asyncHandler);
+
+      const result: TResult =
+        typeof action.payload === "undefined"
+          ? yield call(asyncHandler)
+          : yield call(asyncHandler, action.payload);
+
       yield $hooks.onSuccess(result);
     } catch (error) {
       yield $hooks.onFailure(error);
