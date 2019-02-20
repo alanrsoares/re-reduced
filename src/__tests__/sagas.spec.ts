@@ -51,11 +51,11 @@ describe("Sagas", () => {
           mockApiCall
         );
 
-        testSaga(saga, triggerAction())
+        testSaga(saga, triggerAction("foo"))
           .next()
           .put(triggerAction.request())
           .next()
-          .call(mockApiCall)
+          .call(mockApiCall, "foo")
           .next(mockApiResponse)
           .put(triggerAction.success(mockApiResponse))
           .next()

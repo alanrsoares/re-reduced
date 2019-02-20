@@ -6,7 +6,7 @@ import { ActionCreator, ActionCreatorOptions, AsyncAction } from "./core";
  * @param type - the action identifier, must be unique
  * @param namespace - optional namespace string to be prepended to the type
  */
-export function createAction<TPayload, TMeta = any>(
+export function createAction<TPayload = void, TMeta = any>(
   type: string,
   namespace?: string
 ) {
@@ -38,7 +38,7 @@ export function createAction<TPayload, TMeta = any>(
  * @param type - the action identifier, must be unique
  * @param namespace - optional namespace string to be prepended to the type
  */
-export function createAsyncAction<TResult, TRun = undefined, TFailure = Error>(
+export function createAsyncAction<TResult, TRun = void, TFailure = Error>(
   type: string,
   namespace?: string
 ) {

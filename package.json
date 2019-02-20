@@ -44,13 +44,13 @@
   "devDependencies": {
     "@emotion/core": "^10.0.6",
     "@emotion/styled": "^10.0.6",
-    "@types/jest": "^23.3.5",
+    "@types/jest": "^24.0.0",
     "@types/ramda": "^0.25.47",
     "@types/react-redux": "^6.0.9",
     "docz": "0.13.5",
     "docz-plugin-css": "^0.11.0",
     "docz-theme-default": "^0.13.7",
-    "jest": "^23.6.0",
+    "jest": "^24.0.0",
     "prettier": "^1.14.3",
     "prop-types": "^15.7.2",
     "react": "^16.8.2",
@@ -59,10 +59,10 @@
     "redux-saga": "^1.0.1",
     "redux-saga-test-plan": "^4.0.0-beta.2",
     "reselect": "^4.0.0",
-    "ts-jest": "^23.10.4",
+    "ts-jest": "^24.0.0",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
-    "typescript": "^3.1.2"
+    "typescript": "^3.3.3"
   },
   "dependencies": {
     "ramda": "^0.26.1"

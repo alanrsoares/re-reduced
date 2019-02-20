@@ -11,8 +11,8 @@ describe("Reducers", () => {
     it("should create a reducer that's able to reduce the actions assigned to it", () => {
       const actions = {
         adjust: createAction<number>("ADJUST"),
-        decrement: createAction("DECREMENT"),
-        increment: createAction("INCREMENT")
+        decrement: createAction<void>("DECREMENT"),
+        increment: createAction<void>("INCREMENT")
       };
 
       const reducer = createReducer<number>(
@@ -53,8 +53,8 @@ describe("Reducers", () => {
       const reducer = asyncActionMonitorReducerFactory(config);
 
       expect(reducer(false, myActions.fetch.request())).toBe(true);
-      expect(reducer(true, myActions.fetch.success())).toBe(false);
-      expect(reducer(true, myActions.fetch.failure())).toBe(false);
+      expect(reducer(true, myActions.fetch.success([]))).toBe(false);
+      expect(reducer(true, myActions.fetch.failure(new Error()))).toBe(false);
     });
   });
 });

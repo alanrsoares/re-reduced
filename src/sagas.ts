@@ -19,9 +19,15 @@ export interface APIWorkerHooks<TResult, TFailure> {
   onFailure(error: TFailure): APIWorkerHookEffect<TFailure>;
 }
 
-export function apiWorkerFactory<TResult, TPayload = void, TFailure = Error>(
+export function apiWorkerFactory<
+  TResult,
+  TPayload = void,
+  TFailure extends Error = Error
+>(
   asyncAction: AsyncAction<TResult, TPayload>,
-  asyncHandler: (payload?: TPayload) => Promise<TResult>,
+  asyncHandler: TPayload extends void
+    ? (...args: any[]) => Promise<TResult>
+    : (payload: TPayload) => Promise<TResult>,
   hooks?: Partial<APIWorkerHooks<TResult, TFailure>>
 ) {
   const $hooks = {
@@ -36,8 +42,8 @@ export function apiWorkerFactory<TResult, TPayload = void, TFailure = Error>(
 
       const result: TResult =
         typeof action.payload === "undefined"
-          ? yield call(asyncHandler)
-          : yield call(asyncHandler, action.payload);
+          ? yield call<(...args: any[]) => any>(asyncHandler)
+          : yield call<(...args: any[]) => any>(asyncHandler, action.payload);
 
       yield $hooks.onSuccess(result);
     } catch (error) {

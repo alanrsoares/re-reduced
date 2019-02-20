@@ -43,7 +43,7 @@ describe("Actions", () => {
         title: string;
       }
 
-      const fetchMovies = createAsyncAction<void, Movie[]>("FETCH", "MOVIES");
+      const fetchMovies = createAsyncAction<Movie[]>("FETCH", "MOVIES");
 
       expect(fetchMovies()).toEqual({ type: "MOVIES/FETCH" });
       expect(fetchMovies.request.type).toBe("MOVIES/FETCH_REQUEST");
