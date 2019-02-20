@@ -34,7 +34,7 @@ describe("Reducers", () => {
   describe("createReducerFactory", () => {
     it("should create a reducer factory from a specification", () => {
       const myActions = {
-        fetch: createAsyncAction<void, any[]>("FETCH_SOME_DATA_ASYNC")
+        fetch: createAsyncAction<any[]>("FETCH_SOME_DATA_ASYNC")
       };
 
       const asyncActionMonitorReducerFactory = createReducerFactory<

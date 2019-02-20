@@ -38,13 +38,13 @@ export function createAction<TPayload, TMeta = any>(
  * @param type - the action identifier, must be unique
  * @param namespace - optional namespace string to be prepended to the type
  */
-export function createAsyncAction<TResult, TPayload = void, TFailure = Error>(
+export function createAsyncAction<TResult, TRun = undefined, TFailure = Error>(
   type: string,
   namespace?: string
 ) {
-  const asyncAction = createAction<TPayload>(type, namespace) as AsyncAction<
-    TPayload,
+  const asyncAction = createAction<TRun>(type, namespace) as AsyncAction<
     TResult,
+    TRun,
     TFailure
   >;
 

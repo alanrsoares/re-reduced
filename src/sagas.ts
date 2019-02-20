@@ -20,7 +20,7 @@ export interface APIWorkerHooks<TResult, TFailure> {
 }
 
 export function apiWorkerFactory<TResult, TPayload = void, TFailure = Error>(
-  asyncAction: AsyncAction<TPayload, TResult>,
+  asyncAction: AsyncAction<TResult, TPayload>,
   asyncHandler: (payload?: TPayload) => Promise<TResult>,
   hooks?: Partial<APIWorkerHooks<TResult, TFailure>>
 ) {
