@@ -11,10 +11,10 @@ export interface Action<T = void, TMeta = any> {
 /**
  * A composite Action to handle async workflows with nested actions for request, success and failure
  */
-export interface AsyncAction<TSuccess, TPayload = void, TError = Error>
+export interface AsyncAction<TResult, TPayload = void, TError = Error>
   extends ActionCreator<TPayload> {
   request: ActionCreator;
-  success: ActionCreator<TSuccess>;
+  success: ActionCreator<TResult>;
   failure: ActionCreator<TError>;
 }
 
