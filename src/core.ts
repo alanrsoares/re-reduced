@@ -13,7 +13,7 @@ export interface Action<T = void, TMeta = any> {
  */
 export interface AsyncAction<TResult, TPayload = void, TError = Error>
   extends ActionCreator<TPayload> {
-  request: ActionCreator;
+  request: ActionCreator<void>;
   success: ActionCreator<TResult>;
   failure: ActionCreator<TError>;
 }
@@ -45,8 +45,6 @@ export interface ActionCreatorOptions<TMeta> {
  * An action-creator is a function capable of creating a type-safe a Flux Standard Action (FSA)
  */
 export interface ActionCreator<TPayload = void, TMeta = any> {
-  (): Action;
-  (options?: ActionCreatorOptions<TMeta>): Action<any, TMeta>;
   (payload: TPayload, options?: ActionCreatorOptions<TMeta>): Action<
     TPayload,
     TMeta

@@ -54,3 +54,46 @@ export function createAsyncAction<TResult, TRun = undefined, TFailure = Error>(
 
   return asyncAction;
 }
+
+export type ActionCreatorFactory = (
+  t: string,
+  ns?: string
+) => ActionCreator<any> | AsyncAction<any>;
+
+type ActionCreatorMap<T extends { [k: string]: ActionCreatorFactory }> = {} & {
+  [P in keyof T]: ReturnType<T[P]>
+};
+
+const createActionsAPI = {
+  action: <TPayload>() => (type: string, namespace?: string) =>
+    createAction<TPayload>(type, namespace),
+  asyncAction: <TResult, TPayload = void, TError = Error>() => (
+    type: string,
+    namespace?: string
+  ) => createAsyncAction<TResult, TPayload, TError>(type, namespace)
+};
+
+export function createActions<T extends { [k: string]: ActionCreatorFactory }>(
+  ns: string,
+  defsFn: (api: typeof createActionsAPI) => T
+): ActionCreatorMap<T> {
+  const api = {
+    action<TPayload>() {
+      return (type: string) => createAction<TPayload>(type, ns);
+    },
+    asyncAction<TResult, TPayload = void, TError = Error>() {
+      return (type: string) =>
+        createAsyncAction<TResult, TPayload, TError>(type, ns);
+    }
+  };
+
+  const defs = defsFn(api);
+
+  return Object.keys(defs).reduce(
+    (acc: any /* hacky hack */, key) => {
+      const f = defs[key];
+      return { ...acc, [key]: f(key, ns) };
+    },
+    {} as ActionCreatorMap<T>
+  );
+}
