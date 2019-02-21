@@ -2,11 +2,11 @@ import { createSelector } from "reselect";
 
 import { State } from "./types";
 
-export const getToDosById = (state: State) => state.todos.byId;
+export const getToDosById = (state: State) => state.byId;
 
-export const getToDosIdList = (state: State) => state.todos.idList;
-export const getToDosIsFetching = (state: State) => state.todos.isFetching;
-export const getToDosIsAdding = (state: State) => state.todos.isAdding;
+export const getToDosIdList = (state: State) => state.idList;
+export const getToDosIsFetching = (state: State) => state.isFetching;
+export const getToDosIsAdding = (state: State) => state.isAdding;
 
 export const getToDos = createSelector(
   getToDosById,

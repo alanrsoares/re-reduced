@@ -34,7 +34,7 @@ class App extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    props.actions.todos.fetch();
+    props.actions.fetch();
   }
 
   get filteredItems() {
@@ -63,7 +63,7 @@ class App extends React.Component<Props, State> {
   };
 
   public handleDelete = (todo: ToDo) => () => {
-    this.props.actions.todos.delete(todo.id);
+    this.props.actions.delete(todo.id);
   };
 
   public handleNewToDoChange = e => {
@@ -72,7 +72,7 @@ class App extends React.Component<Props, State> {
 
   public handleNewToDoKeyDown = e => {
     if (e.key === "Enter") {
-      this.props.actions.todos.add({
+      this.props.actions.add({
         title: e.target.value
       });
       this.setState({ newToDoTitle: "" });
@@ -82,7 +82,7 @@ class App extends React.Component<Props, State> {
   public handleEditingToDoKeyDown = (todo: ToDo) => e => {
     if (e.key === "Enter") {
       e.preventDefault();
-      this.props.actions.todos.update({
+      this.props.actions.update({
         ...todo,
         title: e.target.value
       });
@@ -99,7 +99,7 @@ class App extends React.Component<Props, State> {
 
     this.setState({ editingId: undefined });
     this.filteredItems.forEach(todo =>
-      this.props.actions.todos.update({
+      this.props.actions.update({
         ...todo,
         isCompleted: !everyCompleted
       })
@@ -108,7 +108,7 @@ class App extends React.Component<Props, State> {
 
   public handleClearCompleted = () => {
     this.props.completedTodos.forEach(todo =>
-      this.props.actions.todos.delete(todo.id)
+      this.props.actions.delete(todo.id)
     );
   };
 
@@ -117,7 +117,7 @@ class App extends React.Component<Props, State> {
       return;
     }
 
-    this.props.actions.todos.update({
+    this.props.actions.update({
       ...todo,
       isCompleted: !todo.isCompleted
     });
