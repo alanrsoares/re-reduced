@@ -1,7 +1,7 @@
 import { applyTo, merge, mergeAll } from "ramda";
 import { Reducer } from "redux";
 
-import { ActionReducerMap, ActionCreator, ActionReducer } from "./core";
+import { ActionReducerMap, ActionCreator, ActionReducer, Action } from "./core";
 
 export interface ReducerConfig<TActions, TState> {
   actions: TActions;
@@ -76,35 +76,29 @@ export type InferPayload<T> = T extends Array<ActionCreator<infer U>>
   : T extends ActionCreator<infer P> ? P : never;
 
 /**
- * registers a reducer handler for a given action
+ * registers a reducer handler for one or many actions
  *
  * @param action
  * @param reducer
  */
-export function match<TPayload, TState>(
-  action: ActionCreator<TPayload>,
-  reducer: ActionReducer<TState, TPayload>
-): ActionReducerMap<TState> {
-  return action.reduce(reducer);
-}
-
-/**
- * registers a reducer handler for a collection of actions
- *
- * @param action
- * @param reducer
- */
-export function matchN<TState, TActions extends Array<ActionCreator<any>>>(
-  actions: Array<ActionCreator<InferPayload<TActions>>>,
+export function match<
+  TState,
+  TActions extends ActionCreator<any> | Array<ActionCreator<any>>
+>(
+  actions: TActions,
   reducer: ActionReducer<TState, InferPayload<TActions>>
 ): ActionReducerMap<TState> {
-  return actions.reduce(
-    (acc, action) => ({
-      ...acc,
-      ...action.reduce(reducer)
-    }),
-    {}
-  );
+  if (Array.isArray(actions)) {
+    return actions.reduce(
+      (acc, action) => ({
+        ...acc,
+        ...action.reduce(reducer)
+      }),
+      {}
+    );
+  } else {
+    return (actions as ActionCreator<InferPayload<TActions>>).reduce(reducer);
+  }
 }
 
 const combineFunctors = <TActions, TState>(
