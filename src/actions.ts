@@ -1,4 +1,5 @@
 import { ActionCreator, ActionCreatorOptions, AsyncAction } from "./core";
+import { toSnakeCase } from "./helpers/strings";
 
 /**
  * returns an action-creator function
@@ -10,7 +11,7 @@ export function createAction<TPayload = void, TMeta = any>(
   type: string,
   namespace?: string
 ) {
-  const $type = namespace ? `${namespace}/${type}` : type;
+  const $type = toSnakeCase(namespace ? `${namespace}/${type}` : type);
 
   const actionCreator = ((
     payload: TPayload,
@@ -38,13 +39,13 @@ export function createAction<TPayload = void, TMeta = any>(
  * @param type - the action identifier, must be unique
  * @param namespace - optional namespace string to be prepended to the type
  */
-export function createAsyncAction<TResult, TRun = void, TFailure = Error>(
+export function createAsyncAction<TResult, TPayload = void, TFailure = Error>(
   type: string,
   namespace?: string
 ) {
-  const asyncAction = createAction<TRun>(type, namespace) as AsyncAction<
+  const asyncAction = createAction<TPayload>(type, namespace) as AsyncAction<
     TResult,
-    TRun,
+    TPayload,
     TFailure
   >;
 
@@ -55,45 +56,46 @@ export function createAsyncAction<TResult, TRun = void, TFailure = Error>(
   return asyncAction;
 }
 
-export type ActionCreatorFactory = (
-  t: string,
-  ns?: string
-) => ActionCreator<any> | AsyncAction<any>;
+type ActionCreatorFactory = <TPayload = void, TMeta = void>(
+  type: string,
+  namespace?: string
+) => ActionCreator<TPayload, TMeta> | AsyncAction<TPayload, TMeta>;
 
-type ActionCreatorMap<T extends { [k: string]: ActionCreatorFactory }> = {} & {
-  [P in keyof T]: ReturnType<T[P]>
-};
+type ActionCreatorMap<
+  T extends {
+    [k: string]: (type: string, namespace?: string | undefined) => any;
+  }
+> = { [P in keyof T]: ReturnType<T[P]> };
 
-const createActionsAPI = {
-  action: <TPayload>() => (type: string, namespace?: string) =>
-    createAction<TPayload>(type, namespace),
-  asyncAction: <TResult, TPayload = void, TError = Error>() => (
+export class CreateActionsAPI {
+  public static action = <TPayload = void, TMeta = any>() => (
     type: string,
     namespace?: string
-  ) => createAsyncAction<TResult, TPayload, TError>(type, namespace)
-};
+  ) => createAction<TPayload, TMeta>(type, namespace);
 
-export function createActions<T extends { [k: string]: ActionCreatorFactory }>(
-  ns: string,
-  defsFn: (api: typeof createActionsAPI) => T
+  public static asyncAction = <TResult, TPayload = void, TError = Error>() => (
+    type: string,
+    namespace?: string
+  ) => createAsyncAction<TResult, TPayload, TError>(type, namespace);
+}
+
+/**
+ *
+ * @param namespace - string - a namespace to be prepended to the generated action types
+ * @param actionsContructor
+ */
+export function createActions<
+  T extends {
+    [k: string]: (type: string, namespace?: string | undefined) => any;
+  }
+>(
+  namespace: string,
+  actionsContructor: (api: typeof CreateActionsAPI) => T
 ): ActionCreatorMap<T> {
-  const api = {
-    action<TPayload>() {
-      return (type: string) => createAction<TPayload>(type, ns);
-    },
-    asyncAction<TResult, TPayload = void, TError = Error>() {
-      return (type: string) =>
-        createAsyncAction<TResult, TPayload, TError>(type, ns);
-    }
-  };
+  const defs = actionsContructor(CreateActionsAPI);
 
-  const defs = defsFn(api);
-
-  return Object.keys(defs).reduce(
-    (acc: any /* hacky hack */, key) => {
-      const f = defs[key];
-      return { ...acc, [key]: f(key, ns) };
-    },
-    {} as ActionCreatorMap<T>
-  );
+  return Object.keys(defs).reduce((acc: any /* hacky hack */, key) => {
+    const f = defs[key];
+    return { ...acc, [key]: f(key, namespace) };
+  }, {});
 }

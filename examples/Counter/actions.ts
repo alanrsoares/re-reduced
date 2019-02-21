@@ -1,7 +1,7 @@
-import { createAction } from "../../src";
+import { createActions } from "../../src";
 
-export default {
-  adjust: createAction<number>("ADJUST"),
-  decrement: createAction("DECREMENT"),
-  increment: createAction("INCREMENT")
-};
+export default createActions("COUNTER", create => ({
+  adjust: create.action<number>(),
+  decrement: create.action(),
+  increment: create.action()
+}));
