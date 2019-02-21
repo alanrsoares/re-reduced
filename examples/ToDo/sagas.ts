@@ -4,39 +4,33 @@ import actions from "./actions";
 import * as api from "./api";
 
 import { apiWorkerFactory } from "../../src";
-import { ToDo, Tag } from "./types";
+import { ToDo } from "./types";
 
 export const fetchToDos = apiWorkerFactory<ToDo[]>(
-  actions.todos.fetch,
+  actions.fetch,
   api.fetchToDos
 );
 
 export const addToDos = apiWorkerFactory<ToDo, Partial<ToDo>>(
-  actions.todos.add,
+  actions.add,
   api.addToDo
 );
 
 export const updateToDo = apiWorkerFactory<ToDo, ToDo>(
-  actions.todos.update,
+  actions.update,
   api.patchToDo
 );
 
 export const deleteToDo = apiWorkerFactory<string, string>(
-  actions.todos.delete,
+  actions.delete,
   api.deleteToDo
-);
-
-export const fetchTags = apiWorkerFactory<Tag[]>(
-  actions.tags.fetch,
-  api.fetchTags
 );
 
 export default function* sagaWatcher() {
   yield all([
-    takeLatest(actions.todos.fetch.type, fetchToDos),
-    takeLatest(actions.todos.add.type, addToDos),
-    takeLatest(actions.todos.update.type, updateToDo),
-    takeLatest(actions.todos.delete.type, deleteToDo),
-    takeLatest(actions.tags.fetch.type, fetchTags)
+    takeLatest(actions.fetch.type, fetchToDos),
+    takeLatest(actions.add.type, addToDos),
+    takeLatest(actions.update.type, updateToDo),
+    takeLatest(actions.delete.type, deleteToDo)
   ]);
 }

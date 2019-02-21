@@ -1,14 +1,9 @@
 import { createActions } from "../../src";
-import { ToDo, Tag } from "./types";
+import { ToDo } from "./types";
 
-export default {
-  todos: createActions("TODOS", create => ({
-    fetch: create.asyncAction<ToDo[]>(),
-    add: create.asyncAction<ToDo, Partial<ToDo>>(),
-    update: create.asyncAction<ToDo, ToDo>(),
-    delete: create.asyncAction<string, string>()
-  })),
-  tags: createActions("TAGS", create => ({
-    fetch: create.asyncAction<Tag[]>()
-  }))
-};
+export default createActions("TODOS", create => ({
+  fetch: create.asyncAction<ToDo[]>(),
+  add: create.asyncAction<ToDo, Partial<ToDo>>(),
+  update: create.asyncAction<ToDo, ToDo>(),
+  delete: create.asyncAction<string, string>()
+}));

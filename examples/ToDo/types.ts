@@ -9,13 +9,6 @@ export interface ToDoMap {
   [id: string]: ToDo;
 }
 
-export interface Tag {
-  id: string;
-  name: string;
-  color: string;
-  description?: string;
-}
-
 export enum FILTERS {
   All = "All",
   Active = "Active",
@@ -24,21 +17,9 @@ export enum FILTERS {
 
 export type Filter = keyof typeof FILTERS;
 
-export interface ToDosState {
+export interface State {
   byId: ToDoMap;
   idList: string[];
   isFetching: boolean;
   isAdding: boolean;
-}
-
-export interface TagsState {
-  byId: {
-    [id: string]: Tag;
-  };
-  idList: string[];
-}
-
-export interface State {
-  todos: ToDosState;
-  tags: TagsState;
 }

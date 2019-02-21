@@ -1,66 +1,96 @@
 import { combineReducers } from "redux";
 import { dissoc, without, assoc, indexBy } from "ramda";
 
-import { createReducer, match } from "../../src";
+import { createReducer, match, matchN } from "../../src";
 
 import actions from "./actions";
-import { State, ToDosState, ToDoMap } from "./types";
+import { State, ToDoMap } from "./types";
 
 const INITIAL_STATE: State = {
-  todos: {
-    byId: {},
-    idList: [],
-    isFetching: false,
-    isAdding: false
-  },
-  tags: {
-    byId: {},
-    idList: []
-  }
+  byId: {},
+  idList: [],
+  isFetching: false,
+  isAdding: false
 };
 
-export const todos = createReducer<ToDosState>(
+const byId = createReducer<ToDoMap>(
+  [
+    match(actions.fetch.success, (_, payload) =>
+      indexBy(todo => todo.id, payload)
+    ),
+    matchN([actions.add.success, actions.update.success], (state, todo) =>
+      assoc(todo.id, todo, state)
+    )
+  ],
+  INITIAL_STATE.byId
+);
+
+const idList = createReducer<string[]>(
+  [
+    match(actions.fetch.success, (_, payload) => payload.map(todo => todo.id)),
+    match(actions.add.success, (state, todo) => state.concat(todo.id))
+  ],
+  INITIAL_STATE.idList
+);
+
+const isFetching = createReducer<boolean>(
+  [
+    match(actions.fetch.request, () => true),
+    matchN([actions.fetch.success, actions.fetch.failure], () => false)
+  ],
+  INITIAL_STATE.isFetching
+);
+
+const isAdding = createReducer<boolean>(
+  [
+    match(actions.add.request, () => true),
+    matchN([actions.add.success, actions.add.failure], () => false)
+  ],
+  INITIAL_STATE.isFetching
+);
+
+export const todos = createReducer<State>(
   [
     // [fetch] handlers
-    match(actions.todos.fetch.request, state => ({
+    match(actions.fetch.request, state => ({
       ...state,
       isFetching: true
     })),
-    match(actions.todos.fetch.success, (state, payload) => ({
+    match(actions.fetch.success, (state, payload) => ({
       ...state,
       byId: indexBy(todo => todo.id, payload),
       idList: payload.map(todo => todo.id),
       isFetching: false
     })),
     // [add] handlers
-    match(actions.todos.add.request, state => ({
+    match(actions.add.request, state => ({
       ...state,
       isAdding: true
     })),
-    match(actions.todos.add.success, (state, todo) => ({
+    match(actions.add.success, (state, todo) => ({
       ...state,
       byId: assoc(todo.id, todo, state.byId),
       idList: state.idList.concat(todo.id),
       isAdding: false
     })),
     // [update] handlers
-    match(actions.todos.update, (state, todo) => ({
+    match(actions.update, (state, todo) => ({
       ...state,
       byId: assoc(todo.id, todo, state.byId)
     })),
     // [delete] handlers
-    match(actions.todos.delete, (state, id) => ({
+    match(actions.delete, (state, id) => ({
       ...state,
       byId: dissoc<ToDoMap>(id, state.byId),
       idList: without([id], state.idList)
     }))
   ],
-  INITIAL_STATE.todos
+  INITIAL_STATE
 );
 
-export const tags = createReducer([], INITIAL_STATE.tags);
-
 export default combineReducers<State>({
-  todos,
-  tags
+  byId,
+  idList,
+  isAdding,
+  isFetching
 });

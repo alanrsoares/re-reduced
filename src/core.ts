@@ -42,7 +42,7 @@ export interface ActionCreatorOptions<TMeta> {
 }
 
 /**
- * An action-creator is a function capable of creating a type-safe a Flux Standard Action (FSA)
+ * An action-creator is a function capable of creating a type-safe Flux Standard Action (FSA)
  */
 export interface ActionCreator<TPayload = void, TMeta = any> {
   (payload: TPayload, options?: ActionCreatorOptions<TMeta>): Action<

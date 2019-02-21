@@ -71,6 +71,21 @@ export function createReducer<TState>(
 // temporary alias for createReducer
 export const handleActions = createReducer;
 
+type InferPayload<T> = T extends Array<ActionCreator<infer U>>
+  ? U
+  : T extends ActionCreator<infer P> ? P : never;
+
+export interface Matcher<TPayload, TState> {
+  (
+    action: ActionCreator<TPayload>,
+    reducer: ActionReducer<TState, TPayload>
+  ): ActionReducerMap<TState>;
+  <TActions extends Array<ActionCreator<any>>>(
+    actions: Array<ActionCreator<InferPayload<TActions>>>,
+    reducer: ActionReducer<TState, InferPayload<TActions>>
+  ): ActionReducerMap<TState>;
+}
+
 /**
  * registers a reducer handler for a given action
  *
@@ -80,8 +95,27 @@ export const handleActions = createReducer;
 export function match<TPayload, TState>(
   action: ActionCreator<TPayload>,
   reducer: ActionReducer<TState, TPayload>
-) {
+): ActionReducerMap<TState> {
   return action.reduce(reducer);
+}
+
+/**
+ * registers a reducer handler for a collection of actions
+ *
+ * @param action
+ * @param reducer
+ */
+export function matchN<TState, TActions extends Array<ActionCreator<any>>>(
+  actions: Array<ActionCreator<InferPayload<TActions>>>,
+  reducer: ActionReducer<TState, InferPayload<TActions>>
+): ActionReducerMap<TState> {
+  return actions.reduce(
+    (acc, action) => ({
+      ...acc,
+      ...action.reduce(reducer)
+    }),
+    {}
+  );
 }
 
 const combineFunctors = <TActions, TState>(

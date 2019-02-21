@@ -56,14 +56,9 @@ export function createAsyncAction<TResult, TPayload = void, TFailure = Error>(
   return asyncAction;
 }
 
-type ActionCreatorFactory = <TPayload = void, TMeta = void>(
-  type: string,
-  namespace?: string
-) => ActionCreator<TPayload, TMeta> | AsyncAction<TPayload, TMeta>;
-
 type ActionCreatorMap<
   T extends {
-    [k: string]: (type: string, namespace?: string | undefined) => any;
+    [k: string]: (type: string, namespace?: string) => any;
   }
 > = { [P in keyof T]: ReturnType<T[P]> };
 
@@ -80,13 +75,14 @@ export class CreateActionsAPI {
 }
 
 /**
+ * Creates an object with namespaced action-creators
  *
  * @param namespace - string - a namespace to be prepended to the generated action types
  * @param actionsContructor
  */
 export function createActions<
   T extends {
-    [k: string]: (type: string, namespace?: string | undefined) => any;
+    [k: string]: (type: string, namespace?: string) => any;
   }
 >(
   namespace: string,
@@ -94,8 +90,11 @@ export function createActions<
 ): ActionCreatorMap<T> {
   const defs = actionsContructor(CreateActionsAPI);
 
-  return Object.keys(defs).reduce((acc: any /* hacky hack */, key) => {
-    const f = defs[key];
-    return { ...acc, [key]: f(key, namespace) };
-  }, {});
+  return Object.keys(defs).reduce(
+    (acc: any /* hacky hack */, key) => ({
+      ...acc,
+      [key]: defs[key](key, namespace)
+    }),
+    {}
+  );
 }
