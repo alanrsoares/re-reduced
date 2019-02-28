@@ -1,10 +1,5 @@
-import { createAction, createAsyncAction, createActions } from "../lib/actions";
-import {
-  createReducer,
-  createReducerFactory,
-  reducerConfig
-} from "../lib/reducers";
-import { AsyncAction } from "../lib/core";
+import { createAsyncAction, createActions } from "../lib/actions";
+import { createReducer, match } from "../lib/reducers";
 
 describe("Reducers", () => {
   describe("createReducer", () => {
@@ -30,33 +25,48 @@ describe("Reducers", () => {
       expect(reducer(0, actions.decrement())).toBe(-1);
       expect(reducer(10, actions.adjust(-5))).toBe(5);
       expect(reducer(10, actions.adjust(5))).toBe(15);
+      expect(reducer(10, { type: "INVALID_ACTION" })).toBe(10);
+    });
+
+    it("should create a reducer that's able to reduce the actions assigned to it (using match)", () => {
+      const actions = createActions("COUNTER", create => ({
+        adjust: create.action<number>(),
+        decrement: create.action(),
+        increment: create.action()
+      }));
+
+      const INITIAL_STATE = 0;
+
+      const reducer = createReducer<number>(
+        [
+          match(actions.increment, state => state + 1),
+          match(actions.decrement, state => state - 1),
+          match(actions.adjust, (state, payload) => state + payload)
+        ],
+        INITIAL_STATE
+      );
+
+      expect(reducer(0, actions.increment())).toBe(1);
+      expect(reducer(0, actions.decrement())).toBe(-1);
+      expect(reducer(10, actions.adjust(-5))).toBe(5);
+      expect(reducer(10, actions.adjust(5))).toBe(15);
     });
   });
 
-  describe("createReducerFactory", () => {
-    it("should create a reducer factory from a specification", () => {
-      const myActions = {
-        fetch: createAsyncAction<any[]>("FETCH_SOME_DATA_ASYNC")
-      };
-
-      const asyncActionMonitorReducerFactory = createReducerFactory<
-        AsyncAction<any, any>,
-        boolean
-      >(
-        ({ actions }) => ({
-          [actions.request.type]: () => true,
-          [actions.success.type]: () => false,
-          [actions.failure.type]: () => false
-        }),
+  describe("match", () => {
+    it("creates a reducer with matchers that can handle multiple actions combined", () => {
+      const action = createAsyncAction("FETCH_SOMETHING");
+      const reducer = createReducer(
+        [
+          match(action.request, () => true),
+          match([action.success, action.failure], () => false)
+        ],
         false
       );
 
-      const config = reducerConfig({ actions: myActions.fetch });
-      const reducer = asyncActionMonitorReducerFactory(config);
-
-      expect(reducer(false, myActions.fetch.request())).toBe(true);
-      expect(reducer(true, myActions.fetch.success([]))).toBe(false);
-      expect(reducer(true, myActions.fetch.failure(new Error()))).toBe(false);
+      expect(reducer(false, action.request())).toBe(true);
+      expect(reducer(true, action.success({}))).toBe(false);
+      expect(reducer(true, action.failure(new Error("foo")))).toBe(false);
     });
   });
 });

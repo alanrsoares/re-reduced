@@ -1,4 +1,8 @@
-import { createAction, createAsyncAction } from "../lib/actions";
+import {
+  createAction,
+  createAsyncAction,
+  CreateActionsAPI
+} from "../lib/actions";
 
 describe("Actions", () => {
   describe("createAction", () => {
@@ -44,6 +48,20 @@ describe("Actions", () => {
       }
 
       const fetchMovies = createAsyncAction<Movie[]>("FETCH", "MOVIES");
+
+      expect(fetchMovies()).toEqual({ type: "MOVIES/FETCH" });
+      expect(fetchMovies.request.type).toBe("MOVIES/FETCH_REQUEST");
+      expect(fetchMovies.success.type).toBe("MOVIES/FETCH_SUCCESS");
+      expect(fetchMovies.failure.type).toBe("MOVIES/FETCH_FAILURE");
+    });
+
+    it("should create a group of actions to handle async flows (CreateActionsAPI)", () => {
+      interface Movie {
+        id: string;
+        title: string;
+      }
+
+      const fetchMovies = CreateActionsAPI.asyncAction()("FETCH", "MOVIES");
 
       expect(fetchMovies()).toEqual({ type: "MOVIES/FETCH" });
       expect(fetchMovies.request.type).toBe("MOVIES/FETCH_REQUEST");
