@@ -1,4 +1,4 @@
-import { createAction, createAsyncAction } from "../lib/actions";
+import { createAction, createAsyncAction, createActions } from "../lib/actions";
 import {
   createReducer,
   createReducerFactory,
@@ -9,11 +9,13 @@ import { AsyncAction } from "../lib/core";
 describe("Reducers", () => {
   describe("createReducer", () => {
     it("should create a reducer that's able to reduce the actions assigned to it", () => {
-      const actions = {
-        adjust: createAction<number>("ADJUST"),
-        decrement: createAction<void>("DECREMENT"),
-        increment: createAction<void>("INCREMENT")
-      };
+      const actions = createActions("COUNTER", create => ({
+        adjust: create.action<number>(),
+        decrement: create.action(),
+        increment: create.action()
+      }));
+
+      const INITIAL_STATE = 0;
 
       const reducer = createReducer<number>(
         [
@@ -21,7 +23,7 @@ describe("Reducers", () => {
           actions.decrement.reduce(state => state - 1),
           actions.adjust.reduce((state, payload) => state + payload)
         ],
-        0
+        INITIAL_STATE
       );
 
       expect(reducer(0, actions.increment())).toBe(1);
