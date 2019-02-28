@@ -16,7 +16,8 @@
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags",
     "docz:dev": "docz dev",
-    "docz:build": "docz build"
+    "docz:build": "docz build",
+    "typedoc": "typedoc --out api-reference src/lib"
   },
   "repository": {
     "type": "git",
@@ -62,6 +63,7 @@
     "ts-jest": "^24.0.0",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
+    "typedoc": "^0.14.2",
     "typescript": "^3.3.3"
   },
   "dependencies": {

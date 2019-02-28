@@ -1,5 +1,5 @@
 import { delay } from "./helpers";
-import { ToDo, Tag } from "./types";
+import { ToDo } from "./types";
 
 const LS_KEY = "re-reduced:todo_app";
 
@@ -11,11 +11,6 @@ const paths = {
 export const fetchToDos = async () => {
   await delay(1000);
   return JSON.parse(localStorage.getItem(paths.todos) || "[]") as ToDo[];
-};
-
-export const fetchTags = async () => {
-  await delay(500);
-  return JSON.parse(localStorage.getItem(paths.tags) || "[]") as Tag[];
 };
 
 export const addToDo = async (todo: Partial<ToDo>) => {
