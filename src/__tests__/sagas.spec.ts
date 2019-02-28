@@ -1,6 +1,6 @@
 import { testSaga } from "redux-saga-test-plan";
-import { createAsyncAction } from "../actions";
-import { apiWorkerFactory } from "../sagas";
+import { createAsyncAction } from "../lib/actions";
+import { apiWorkerFactory } from "../lib/sagas";
 
 describe("Sagas", () => {
   describe("apiWorkerFactory", () => {

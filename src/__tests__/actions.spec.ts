@@ -1,4 +1,4 @@
-import { createAction, createAsyncAction } from "../actions";
+import { createAction, createAsyncAction } from "../lib/actions";
 
 describe("Actions", () => {
   describe("createAction", () => {

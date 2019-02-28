@@ -1,10 +1,10 @@
-import { createAction, createAsyncAction } from "../actions";
+import { createAction, createAsyncAction } from "../lib/actions";
 import {
   createReducer,
   createReducerFactory,
   reducerConfig
-} from "../reducers";
-import { AsyncAction } from "../core";
+} from "../lib/reducers";
+import { AsyncAction } from "../lib/core";
 
 describe("Reducers", () => {
   describe("createReducer", () => {
