@@ -1,4 +1,4 @@
-import { createAsyncAction, createActions } from "../lib/actions";
+import { createAsyncAction, createActions, createAction } from "../lib/actions";
 import { createReducer, match } from "../lib/reducers";
 
 describe("Reducers", () => {
@@ -46,10 +46,24 @@ describe("Reducers", () => {
         INITIAL_STATE
       );
 
+      expect(reducer(undefined, actions.increment())).toBe(1);
       expect(reducer(0, actions.increment())).toBe(1);
       expect(reducer(0, actions.decrement())).toBe(-1);
       expect(reducer(10, actions.adjust(-5))).toBe(5);
       expect(reducer(10, actions.adjust(5))).toBe(15);
+    });
+
+    it("should create a reducer that handles a single action", () => {
+      const action = createAction("FOO");
+
+      const INITIAL_STATE = "FOO";
+
+      const reducer = createReducer<string>(
+        match(action, () => "BAR"),
+        INITIAL_STATE
+      );
+
+      expect(reducer(undefined, action)).toBe("BAR");
     });
   });
 
