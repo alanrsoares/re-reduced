@@ -22,7 +22,9 @@ export function createReducer<TState>(
   };
 }
 
-// temporary alias for createReducer
+/**
+ *  @deprecated temporary alias for createReducer
+ */
 export const handleActions = createReducer;
 
 export type InferPayload<T> = T extends Array<ActionCreator<infer U>>
