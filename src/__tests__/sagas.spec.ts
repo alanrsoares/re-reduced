@@ -1,4 +1,6 @@
 import { testSaga } from "redux-saga-test-plan";
+import { put } from "redux-saga/effects";
+
 import { createAsyncAction } from "../lib/actions";
 import { apiWorkerFactory } from "../lib/sagas";
 
@@ -58,6 +60,55 @@ describe("Sagas", () => {
           .call(mockApiCall, "foo")
           .next(mockApiResponse)
           .put(triggerAction.success(mockApiResponse))
+          .next()
+          .isDone();
+      });
+
+      it("should handle a saga with onSuccess hook", () => {
+        const triggerAction = createAsyncAction<string[]>("FETCH_FOOS");
+        const mockApiResponse = ["foo", "bar", "baz"];
+
+        function* onSuccess(result: string[]) {
+          yield put(triggerAction.success(result));
+        }
+
+        const mockApiCall = () => Promise.resolve(mockApiResponse);
+
+        const saga = apiWorkerFactory(triggerAction, mockApiCall, {
+          onSuccess
+        });
+
+        testSaga(saga, triggerAction())
+          .next()
+          .put(triggerAction.request())
+          .next()
+          .call(mockApiCall)
+          .next(mockApiResponse)
+          .fork(onSuccess, mockApiResponse)
+          .next()
+          .isDone();
+      });
+
+      it("should handle a saga with onSuccess hook", () => {
+        const triggerAction = createAsyncAction<string[]>("FETCH_FOOS");
+        const mockError = new Error("something went wrong");
+        const mockApiCall = () => Promise.reject(mockError);
+
+        function* onFailure(error: Error) {
+          yield put(triggerAction.failure(error));
+        }
+
+        const saga = apiWorkerFactory(triggerAction, mockApiCall, {
+          onFailure
+        });
+
+        testSaga(saga, triggerAction())
+          .next()
+          .put(triggerAction.request())
+          .next()
+          .call(mockApiCall)
+          .throw(mockError)
+          .fork(onFailure, mockError)
           .next()
           .isDone();
       });
