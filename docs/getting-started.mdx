@@ -33,13 +33,27 @@ export default {
 };
 ```
 
+alternatively, actions can be created in bulk using `createActions`
+
+> Note that, when using createActions, the action type is infered from the action name and namespace
+
+```ts
+import { createActions } from "re-reduced";
+
+export default createActions("COUNTER", create => ({
+  adjust: create.action<number>(),
+  decrement: create.action(),
+  increment: create.action()
+}));
+```
+
 ## Creating Reducers
 
 `[root]/examples/Counter/reducers.ts`
 
 ```ts
 import { combineReducers } from "redux";
-import { createReducer } from "re-reduced";
+import { createReducer, match } from "re-reduced";
 
 import actions from "./actions";
 import { State } from "./types";
@@ -55,12 +69,27 @@ export const counter = createReducer<number>(
   INITIAL_STATE
 );
 
+// which can also be written like:
+
+export const counter = createReducer<number>(
+  [
+    match(actions.increment, state => state + 1),
+    match(actions.decrement, state => state - 1),
+    match(actions.adjust, (state, payload) => state + payload)
+  ],
+  INITIAL_STATE
+);
+
 export default combineReducers<State>({
   counter
 });
 ```
 
 ## Creating selectors
+
+`Selectors` in redux are functions defined in terms of the application state and perform `derivation` and `aggregation`.
+
+> [`reselect`](https://github.com/reduxjs/reselect) is the recommended library for selector composition.
 
 ```ts
 import { createSelector } from "reselect";
@@ -82,6 +111,8 @@ export const getCounterIsPositive = createSelector(
 
 ## Connecting a component
 
+Re-reduced provides the `connectWithActions` helper function for easily connecting state and actions to a component.
+
 `[root]/src/ui/containers/Counter.tsx`
 
 ```ts
@@ -99,7 +130,7 @@ interface Props {
 }
 
 const Counter = (props: Props) => (
-  <div>
+  <section>
     <button onClick={() => props.actions.decrement()}>-1</button>
     <button onClick={() => props.actions.adjust(-5)}>-5</button>
     <button
@@ -116,7 +147,7 @@ const Counter = (props: Props) => (
     </button>
     <button onClick={() => props.actions.adjust(5)}>+5</button>
     <button onClick={() => props.actions.increment()}>+1</button>
-  </div>
+  </section>
 );
 
 const enhance = connectWithActions<Props>(actions, {
@@ -126,6 +157,27 @@ const enhance = connectWithActions<Props>(actions, {
 });
 
 export default enhance(Counter);
+```
+
+> Note that `connectWithActions` does not provide 100% feature parity with [react-redux's](https://github.com/reduxjs/react-redux) [connect](https://react-redux.js.org/introduction/quick-start#connect).
+
+The above `enhance` example can be easily rewritten without `connectWithActions`, using `connect`, `applySpec` and `bindActionCreators`.
+
+```ts
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { applySpec } from "ramda";
+
+const enhance = connect(
+  applySpec({
+    count: selectors.getCounter,
+    isOdd: selectors.getCounterIsOdd,
+    isPositive: selectors.getCounterIsPositive
+  }),
+  dispatch => ({
+    actions: bindActionCreators(actions, dispatch)
+  })
+);
 ```
 
 ## Demo
