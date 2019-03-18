@@ -84,10 +84,18 @@ export function createActions<
   T extends {
     [k: string]: (type: string, namespace?: string) => any;
   }
+>(actionsContructor: (api: typeof CreateActionsAPI) => T): ActionCreatorMap<T>;
+export function createActions<
+  T extends {
+    [k: string]: (type: string, namespace?: string) => any;
+  }
 >(
   namespace: string,
   actionsContructor: (api: typeof CreateActionsAPI) => T
-): ActionCreatorMap<T> {
+): ActionCreatorMap<T>;
+export function createActions(...args: any) {
+  const namespace = args.length === 1 ? undefined : args[0];
+  const actionsContructor = args.length === 1 ? args[0] : args[1];
   const defs = actionsContructor(CreateActionsAPI);
 
   return Object.keys(defs).reduce(

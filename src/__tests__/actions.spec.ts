@@ -1,5 +1,6 @@
 import {
   createAction,
+  createActions,
   createAsyncAction,
   CreateActionsAPI
 } from "../lib/actions";
@@ -67,6 +68,37 @@ describe("Actions", () => {
       expect(fetchMovies.request.type).toBe("MOVIES/FETCH_REQUEST");
       expect(fetchMovies.success.type).toBe("MOVIES/FETCH_SUCCESS");
       expect(fetchMovies.failure.type).toBe("MOVIES/FETCH_FAILURE");
+    });
+  });
+
+  describe("createActions", () => {
+    describe("with no namespace", () => {
+      const actions = createActions(create => ({
+        doSomething: create.action(),
+        doSomethingElse: create.action(),
+        doSomethingAsync: create.asyncAction()
+      }));
+
+      expect(typeof actions.doSomething).toBe("function");
+      expect(actions.doSomething.type).toBe("DO_SOMETHING");
+      expect(actions.doSomethingElse.type).toBe("DO_SOMETHING_ELSE");
+      expect(actions.doSomethingAsync.type).toBe("DO_SOMETHING_ASYNC");
+    });
+
+    describe("with namespace", () => {
+      const actions = createActions("FOOS", create => ({
+        doSomething: create.action(),
+        doSomethingElse: create.action(),
+        doSomethingAsync: create.asyncAction()
+      }));
+
+      expect(typeof actions.doSomething).toBe("function");
+      expect(actions.doSomething.type).toBe("FOOS/DO_SOMETHING");
+      expect(actions.doSomethingElse.type).toBe("FOOS/DO_SOMETHING_ELSE");
+      expect(actions.doSomethingAsync.type).toBe("FOOS/DO_SOMETHING_ASYNC");
+      expect(actions.doSomethingAsync.request.type).toBe(
+        "FOOS/DO_SOMETHING_ASYNC_REQUEST"
+      );
     });
   });
 });
