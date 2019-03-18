@@ -15,7 +15,7 @@
     "preversion": "npm run lint",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags",
-    "docz:dev": "docz dev",
+    "docz": "docz dev",
     "docz:build": "docz build",
     "typedoc": "typedoc --out api-reference src/lib"
   },

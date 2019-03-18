@@ -7,15 +7,79 @@ route: /api
 
 ## createAction
 
-`<TPayload, TMeta = any>(type: string, domain?: string) => ActionCreator<TPayload, TMeta>`
+Returns a Flux Standard ActionCreator
 
 ### Params:
 
 - type: string
-- domain (optional): string
+- namespace (optional): string
+
+### Usage
+
+```ts
+import { createAction } from "re-reduced";
+
+const action1 = createAction("DO_SOMETHING");
+
+console.log(action1.type); // => "DO_SOMETHING"
+
+const action2 = createAction("NAMESPACE", "DO_SOMETHING");
+
+console.log(action2.type); // => "NAMESPACE/DO_SOMETHING"
+```
 
 ## createAsyncAction
 
+Returns a composite action-creator with nested action-creators for request, success and failure
+
+## createActions
+
+A helper function to create bundled actions
+
+### Params
+
+- namespace (optional): string
+- actionsContructor: api: CreateActionsAPI => ActionCreatorMap
+
+### Examples
+
+with namespace
+
+```ts
+import { createActions } from "re-reduced";
+
+const counterActions = createActions("COUNTER", create => ({
+  inc: create.action(),
+  dec: create.action(),
+  adjust: create.action<number>()
+}));
+
+console.log(counterActions.inc.type); // => "COUNTER/INC"
+console.log(counterActions.dec.type); // => "COUNTER/INC"
+console.log(counterActions.adjust.type); // => "COUNTER/ADJUST"
+```
+
+with no namespace
+
+```ts
+import { createActions } from "re-reduced";
+
+const myActions = createActions(create => ({
+  doSomething: create.action(),
+  doSomethingAsync: create.asyncAction()
+}));
+
+console.log(myActions.doSomething.type); // => "DO_SOMETHING"
+console.log(myActions.doSomethingAsync.type); // => "DO_SOMETHING_ASYNC"
+console.log(myActions.doSomethingAsync.request.type); // => "DO_SOMETHING_ASYNC_REQUEST"
+console.log(myActions.doSomethingAsync.success.type); // => "DO_SOMETHING_ASYNC_SUCCESS"
+console.log(myActions.doSomethingAsync.failure.type); // => "DO_SOMETHING_ASYNC_FAILURE"
+```
+
 ## createReducer
 
+A utility function that returns a typesafe reducer
+
 ## connectWithActions
+
+A utility wrapper on top of react-redux's connect that automatically adds actions to the component's props as a map of self-dispatchable action-creators
