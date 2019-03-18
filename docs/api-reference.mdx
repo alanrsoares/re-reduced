@@ -43,7 +43,7 @@ A helper function to create bundled actions
 
 ### Examples
 
-with namespace
+With namespace
 
 ```ts
 import { createActions } from "re-reduced";
@@ -59,7 +59,7 @@ console.log(counterActions.dec.type); // => "COUNTER/INC"
 console.log(counterActions.adjust.type); // => "COUNTER/ADJUST"
 ```
 
-with no namespace
+Alternatively, `createActions` can be used with no namespace:
 
 ```ts
 import { createActions } from "re-reduced";
