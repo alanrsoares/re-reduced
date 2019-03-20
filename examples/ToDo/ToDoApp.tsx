@@ -139,18 +139,24 @@ class App extends React.Component<Props, State> {
             onKeyDown={this.handleNewToDoKeyDown}
           />
         </header>
-        <section className="main">
-          <input
-            id="toggle-all"
-            className="toggle-all"
-            type="checkbox"
-            onChange={this.handleToggleAll}
-            defaultChecked={this.filteredItems.every(todo => todo.isCompleted)}
-          />
-          <label htmlFor="toggle-all">Mark all as complete</label>
-          {this.renderList()}
-        </section>
+        {this.renderBody()}
         {this.renderFooter()}
+      </section>
+    );
+  }
+
+  public renderBody() {
+    return (
+      <section className="main">
+        <input
+          id="toggle-all"
+          className="toggle-all"
+          type="checkbox"
+          onChange={this.handleToggleAll}
+          defaultChecked={this.filteredItems.every(todo => todo.isCompleted)}
+        />
+        <label htmlFor="toggle-all">Mark all as complete</label>
+        {this.renderList()}
       </section>
     );
   }
@@ -176,8 +182,8 @@ class App extends React.Component<Props, State> {
     const className = todo.isCompleted
       ? "completed"
       : this.state.editingId === todo.id
-        ? "editing"
-        : undefined;
+      ? "editing"
+      : undefined;
 
     return (
       <li key={todo.id} className={className}>
@@ -218,24 +224,26 @@ class App extends React.Component<Props, State> {
           item left
         </span>
         <ul className="filters">
-          {Object.keys(FILTERS).map((filter: Filter) => (
-            <li key={filter}>
-              <a
-                className={
-                  this.state.filter === filter ? "selected" : undefined
-                }
-                href="#"
-                onClick={this.handleSelectFilter(filter)}
-              >
-                {filter}
-              </a>
-            </li>
-          ))}
+          {Object.keys(FILTERS).map(this.renderFilter)}
         </ul>
         <button className="clear-completed" onClick={this.handleClearCompleted}>
           Clear completed
         </button>
       </footer>
+    );
+  }
+
+  public renderFilter(filter: Filter) {
+    return (
+      <li key={filter}>
+        <a
+          className={this.state.filter === filter ? "selected" : undefined}
+          href="#"
+          onClick={this.handleSelectFilter(filter)}
+        >
+          {filter}
+        </a>
+      </li>
     );
   }
 }
