@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { Component } from "react";
 
 import { connectWithActions } from "../../src";
 
@@ -24,7 +24,7 @@ interface State {
   editingId: string | undefined;
 }
 
-class App extends React.Component<Props, State> {
+class App extends Component<Props, State> {
   public state: State = {
     filter: "All",
     editingId: undefined,
@@ -233,7 +233,7 @@ class App extends React.Component<Props, State> {
     );
   }
 
-  public renderFilter(filter: Filter) {
+  public renderFilter = (filter: Filter) => {
     return (
       <li key={filter}>
         <a
@@ -245,7 +245,7 @@ class App extends React.Component<Props, State> {
         </a>
       </li>
     );
-  }
+  };
 }
 
 interface OwnProps {
