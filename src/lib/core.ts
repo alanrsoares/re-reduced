@@ -1,3 +1,5 @@
+import curry from "ramda/es/curry";
+
 /**
  * A Flux-Standard-Action (FSA)
  */
@@ -51,7 +53,13 @@ export interface ActionCreator<TPayload = void, TMeta = any> {
   >;
   type: string;
   reduce<TState>(
-    reducer: ActionReducer<TState, TPayload>
+    fn: ActionReducer<TState, TPayload>
+  ): {
+    [key: string]: ActionReducer<TState, TPayload>;
+  };
+
+  fold<TState>(
+    fn: (payload: TPayload, state: TState) => TState
   ): {
     [key: string]: ActionReducer<TState, TPayload>;
   };

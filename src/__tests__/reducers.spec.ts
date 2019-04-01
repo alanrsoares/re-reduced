@@ -12,11 +12,13 @@ describe("Reducers", () => {
 
       const INITIAL_STATE = 0;
 
+      const add = (a: number, b: number) => a + b;
+
       const reducer = createReducer<number>(
         [
           actions.increment.reduce(state => state + 1),
           actions.decrement.reduce(state => state - 1),
-          actions.adjust.reduce((state, payload) => state + payload)
+          actions.adjust.fold(add)
         ],
         INITIAL_STATE
       );

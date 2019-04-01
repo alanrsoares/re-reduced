@@ -1,3 +1,4 @@
+import { flip } from "ramda";
 import { ActionCreator, ActionCreatorOptions, AsyncAction } from "./core";
 import { toSnakeCase } from "../helpers/strings";
 
@@ -24,10 +25,17 @@ export function createAction<TPayload = void, TMeta = any>(
   })) as ActionCreator<TPayload, TMeta>;
 
   actionCreator.type = $type;
+
   actionCreator.reduce = <TState>(
     handler: (state: TState, payload: TPayload) => TState
   ) => ({
     [actionCreator.type]: handler
+  });
+
+  actionCreator.fold = <TState>(
+    handler: (payload: TPayload, state: TState) => TState
+  ) => ({
+    [actionCreator.type]: flip(handler)
   });
 
   return actionCreator;
