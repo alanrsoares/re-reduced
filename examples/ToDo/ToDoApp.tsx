@@ -233,7 +233,7 @@ class App extends React.Component<Props, State> {
     );
   }
 
-  public renderFilter(filter: Filter) {
+  public renderFilter = (filter: Filter) => {
     return (
       <li key={filter}>
         <a
@@ -245,7 +245,7 @@ class App extends React.Component<Props, State> {
         </a>
       </li>
     );
-  }
+  };
 }
 
 interface OwnProps {
