@@ -25,7 +25,7 @@
   },
   "keywords": [
     "redux",
-    "higer-order-reducer",
+    "higher-order-reducer",
     "react",
     "immutable",
     "functional programming"
