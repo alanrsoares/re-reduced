@@ -11,14 +11,14 @@ import { transformTree, Tree } from "../helpers/objects";
 
 export type Dispatcher<T = any> = (payload: T) => void;
 
-export type SelectorSpec<TProps, TState, TOwnProps = {}> = {
+export type SelectorSpec<TProps, TState, TOwnProps extends {} = any> = {
   [K in keyof TProps]: (state: TState, ownProps?: TOwnProps) => TProps[K]
 };
 
 export interface ConnectWithActions {
   <
     TProps extends { actions: TActions },
-    TOwnProps = {},
+    TOwnProps extends {} = any,
     TActions extends Tree<ActionCreator<any>> = {}
   >(
     actions: TActions
@@ -26,7 +26,7 @@ export interface ConnectWithActions {
 
   <
     TProps extends { actions: TActions },
-    TOwnProps = {},
+    TOwnProps extends {} = any,
     TState extends {} = any,
     TActions extends Tree<ActionCreator<any>> = {}
   >(
@@ -81,7 +81,7 @@ export const applySelectors = <TProps = {}, TState = {}, TOwnProps = {}>(
  */
 export const connectWithActions: ConnectWithActions = <
   TProps extends { actions: TActions },
-  TOwnProps = {},
+  TOwnProps extends {} = any,
   TState extends {} = any,
   TActions extends Tree<ActionCreator<any>> = {}
 >(
