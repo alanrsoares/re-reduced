@@ -29,7 +29,9 @@ export const handleActions = createReducer;
 
 export type InferPayload<T> = T extends Array<ActionCreator<infer U>>
   ? U
-  : T extends ActionCreator<infer P> ? P : never;
+  : T extends ActionCreator<infer P>
+  ? P
+  : never;
 
 /**
  * registers a reducer handler for one or many actions
