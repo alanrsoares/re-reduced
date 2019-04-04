@@ -1,8 +1,9 @@
 import { useDispatch, useMappedState } from "redux-react-hook";
-import { ActionCreator, bindActionCreators, SelectorSpec } from "../";
-import { Tree } from "../helpers/objects";
 import { applySpec } from "ramda";
 import { StoreContext } from "redux-react-hook";
+
+import { ActionCreator, bindActionCreators, SelectorSpec } from "../";
+import { Tree } from "../helpers/objects";
 
 export const StoreProvider = StoreContext.Provider;
 
@@ -14,7 +15,8 @@ export const StoreProvider = StoreContext.Provider;
 export function useActions<TActions extends Tree<ActionCreator<any>> = {}>(
   actions: TActions
 ): TActions {
-  return bindActionCreators(actions)(useDispatch()).actions;
+  const dispatch = useDispatch();
+  return bindActionCreators(actions)(dispatch).actions;
 }
 
 export type SimpleMapStateToProps<TResult, TState> = (state: TState) => TResult;

@@ -11,11 +11,13 @@ const store = createStore(reducer);
 
 export default () => (
   <Fragment>
+    <span>Using connectWithActions HOC:</span>
     {/* use redux connect HOC */}
     <Provider store={store}>
       <App />
     </Provider>
 
+    <span>Using hooks:</span>
     {/* use redux-react-hook */}
     <StoreProvider value={store}>
       <AppWithHook />

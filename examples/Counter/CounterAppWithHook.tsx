@@ -17,7 +17,7 @@ const selectState = {
   isPositive: selectors.getCounterIsPositive
 };
 
-const Counter = () => {
+export default function Counter() {
   const actions = useActions(appActions);
   const state = useReduxState(selectState);
 
@@ -55,6 +55,4 @@ const Counter = () => {
       </Button>
     </div>
   );
-};
-
-export default Counter;
+}
