@@ -17,7 +17,7 @@ export function useActions<TActions extends Tree<ActionCreator<any>> = {}>(
   return bindActionCreators(actions)(useDispatch()).actions;
 }
 
-export type SimpleMapStateToProps<TResult> = (state: any) => TResult;
+export type SimpleMapStateToProps<TResult, TState> = (state: TState) => TResult;
 
 /**
  * Return mappedState.
@@ -27,7 +27,7 @@ export type SimpleMapStateToProps<TResult> = (state: any) => TResult;
 export function useReduxState<TResult, TState = any>(
   selectorOrMapState:
     | SelectorSpec<TResult, TState>
-    | SimpleMapStateToProps<TResult>
+    | SimpleMapStateToProps<TResult, TState>
 ): TResult {
   const stateToProps =
     typeof selectorOrMapState === "object"
