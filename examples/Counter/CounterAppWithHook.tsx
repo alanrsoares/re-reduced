@@ -1,15 +1,11 @@
 import * as React from "react";
-import styled from "@emotion/styled";
+
+import { useActions, useReduxState } from "../../src";
 
 import appActions from "./actions";
 import * as selectors from "./selectors";
-import { useActions, useReduxState } from "../../src";
-
-const Button = styled.button`
-  padding: 5px 10px;
-  font-size: 24px;
-  transition: color 0.3s ease-in-out;
-`;
+import Button from "./Button";
+import { colors } from "./constants";
 
 const selectState = {
   count: selectors.getCounter,
@@ -21,6 +17,18 @@ export default function Counter() {
   const actions = useActions(appActions);
   const state = useReduxState(selectState);
 
+  const counterStyle: React.CSSProperties = {
+    color: state.isPositive
+      ? state.isOdd
+        ? colors.odd
+        : colors.even
+      : colors.negative,
+    fontWeight: "bold",
+    paddingLeft: 5,
+    paddingRight: 5,
+    width: 50
+  };
+
   return (
     <div>
       <Button
@@ -30,20 +38,7 @@ export default function Counter() {
         -1
       </Button>
       <Button onClick={() => actions.adjust(-5)}>-5</Button>
-      <Button
-        disabled
-        style={{
-          color: state.isPositive
-            ? state.isOdd
-              ? "#311E84"
-              : "#FF5447"
-            : "red",
-          fontWeight: "bold",
-          paddingLeft: 5,
-          paddingRight: 5,
-          width: 50
-        }}
-      >
+      <Button disabled style={counterStyle}>
         {state.count}
       </Button>
       <Button onClick={() => actions.adjust(5)}>+5</Button>
