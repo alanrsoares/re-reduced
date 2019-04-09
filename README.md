@@ -25,7 +25,7 @@ With Yarn: `yarn add re-reduced`
 
 ## Guides
 
-- [Simple Counter](/getting-started) - end to end integration for a simple counter app
+- [building a Counter app](/getting-started) - end to end integration for a simple counter app
 
 ## Examples
 
