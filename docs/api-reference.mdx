@@ -23,7 +23,7 @@ const action1 = createAction("DO_SOMETHING");
 
 console.log(action1.type); // => "DO_SOMETHING"
 
-const action2 = createAction("NAMESPACE", "DO_SOMETHING");
+const action2 = createAction("DO_SOMETHING", "NAMESPACE");
 
 console.log(action2.type); // => "NAMESPACE/DO_SOMETHING"
 ```
@@ -31,6 +31,19 @@ console.log(action2.type); // => "NAMESPACE/DO_SOMETHING"
 ## createAsyncAction
 
 Returns a composite action-creator with nested action-creators for request, success and failure
+
+### Usage
+
+```ts
+import { createAsyncAction } from "re-reduced";
+
+const doSomethingAsync = createAsyncAction("DO_SOMETHING_ASYNC");
+
+console.log(myActions.doSomethingAsync.type); // => "DO_SOMETHING_ASYNC"
+console.log(myActions.doSomethingAsync.request.type); // => "DO_SOMETHING_ASYNC_REQUEST"
+console.log(myActions.doSomethingAsync.success.type); // => "DO_SOMETHING_ASYNC_SUCCESS"
+console.log(myActions.doSomethingAsync.failure.type); // => "DO_SOMETHING_ASYNC_FAILURE"
+```
 
 ## createActions
 
