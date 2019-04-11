@@ -51,7 +51,7 @@
     "@types/react-redux": "^7.0.6",
     "docz": "1.0.0-rc.7",
     "docz-plugin-css": "^0.11.0",
-    "docz-theme-default": "1.0.0-rc.7",
+    "docz-theme-default": "1.0.0",
     "hoist-non-react-statics": "^3.3.0",
     "jest": "^24.7.1",
     "prettier": "^1.16.4",
