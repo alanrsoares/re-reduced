@@ -1,5 +1,3 @@
-import curry from "ramda/es/curry";
-
 /**
  * A Flux-Standard-Action (FSA)
  */
