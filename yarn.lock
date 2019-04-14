@@ -5090,26 +5090,6 @@ docz-utils@^1.0.0:
     unist-util-is "^2.1.2"
     unist-util-visit "^1.4.0"
 
-docz@1.0.0-rc.7:
-  version "1.0.0-rc.7"
-  resolved "https://registry.yarnpkg.com/docz/-/docz-1.0.0-rc.7.tgz#e53bd5257819904d8ad73f7a5d2439f6869440b5"
-  integrity sha512-K1JBPFnJB8i+omce+FV7fmDc9lEWBjRiMBLGxMRMTXqUpuHy6yOVc+FNJ/NVsHSNC9+IfXT/dPBzCCyUhijAGA==
-  dependencies:
-    "@loadable/component" "^5.7.0"
-    "@mdx-js/tag" "^0.20.3"
-    "@reach/router" "^1.2.1"
-    array-sort "^1.0.0"
-    capitalize "^2.0.0"
-    docz-core "1.0.0-rc.7"
-    fast-deep-equal "^2.0.1"
-    lodash "^4.17.11"
-    match-sorter "^2.3.0"
-    prop-types "^15.7.2"
-    react "^16.8.6"
-    react-dom "^16.8.6"
-    ulid "^2.3.0"
-    yargs "^13.2.2"
-
 docz@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/docz/-/docz-1.0.0.tgz#5b3c124d384e153cc5c7d3966763dd5cd51e4c3f"
