@@ -4044,10 +4044,10 @@ copy-descriptor@^0.1.0:
   resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
   integrity sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=
 
-copy-text-to-clipboard@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/copy-text-to-clipboard/-/copy-text-to-clipboard-2.0.0.tgz#4c37fbdb9caa1783c530cd2a180fa8386ae2f1ed"
-  integrity sha512-j42oPYmrNnXhX3kO7znpvfbTgITpnEYS6gWZ0QIRSgp323jbcbryabQYREfIDLi7fOBkRUgIDl6XcSyTvLLbiQ==
+copy-text-to-clipboard@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/copy-text-to-clipboard/-/copy-text-to-clipboard-2.1.0.tgz#e222433ba3ec4b1ac5610725f94149160f4723e7"
+  integrity sha512-rxjlVPoTzuKQXem9rdIHSc6xo8TcvqmVZoItxvhMaI1/9MOSNEaee86CpMgv+QVul2Q5v/DkXfOOVwDJxF7KsA==
 
 core-js-compat@^3.0.0:
   version "3.0.0"
@@ -5007,16 +5007,17 @@ docz-plugin-css@^0.11.0:
     webpack "^4.17.1"
     webpack-chain "^4.9.0"
 
-docz-theme-default@1.0.0-rc.7:
-  version "1.0.0-rc.7"
-  resolved "https://registry.yarnpkg.com/docz-theme-default/-/docz-theme-default-1.0.0-rc.7.tgz#b801793466ec87eb20a6efee252229b400151d67"
-  integrity sha512-XFN944Cz51rHGfBNIA1Zce9MSxwo7SsGEi0TT06sPPyhP4X7PCoNCZ0tf2++uzotsEVuwOiIgx9vXmoL36h2rw==
+docz-theme-default@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/docz-theme-default/-/docz-theme-default-1.0.0.tgz#ae0ca182c280bec2ce384aefa575ffda59f63f73"
+  integrity sha512-HwdyA3BhlY9NP2f1hosz8Nab0WY0nZHcTlUWYkKBcC1XuZX8Htn3chsKfODRwLmO3u5ny0vm/v6fE6RQAn0VKA==
   dependencies:
+    "@loadable/component" "^5.7.0"
     "@reach/router" "^1.2.1"
     "@tippy.js/react" "^2.1.2"
     codemirror "^5.45.0"
-    copy-text-to-clipboard "^2.0.0"
-    docz "1.0.0-rc.7"
+    copy-text-to-clipboard "^2.1.0"
+    docz "^1.0.0"
     facepaint "^1.2.1"
     hotkeys-js "^3.6.2"
     lodash "^4.17.11"
@@ -5027,8 +5028,8 @@ docz-theme-default@1.0.0-rc.7:
     react-codemirror2 "^5.1.0"
     react-dom "^16.8.6"
     react-feather "^1.1.6"
-    react-live "^2.0.0"
-    react-perfect-scrollbar "^1.4.4"
+    react-live "2.0.1"
+    react-perfect-scrollbar "^1.5.0"
     styled-components "^4.2.0"
 
 docz-utils@1.0.0-rc.7:
@@ -5089,7 +5090,7 @@ docz-utils@^1.0.0:
     unist-util-is "^2.1.2"
     unist-util-visit "^1.4.0"
 
-docz@1.0.0:
+docz@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/docz/-/docz-1.0.0.tgz#5b3c124d384e153cc5c7d3966763dd5cd51e4c3f"
   integrity sha512-KiniXDHRbgH1RqYYOvbdFgUyuHCWzUM1B/siDJWdtJDCC8cJPUF85EKNZ2vI6U3L1VznyEm20L0dNSoBGdpu/w==
@@ -5100,26 +5101,6 @@ docz@1.0.0:
     array-sort "^1.0.0"
     capitalize "^2.0.0"
     docz-core "^1.0.0"
-    fast-deep-equal "^2.0.1"
-    lodash "^4.17.11"
-    match-sorter "^2.3.0"
-    prop-types "^15.7.2"
-    react "^16.8.6"
-    react-dom "^16.8.6"
-    ulid "^2.3.0"
-    yargs "^13.2.2"
-
-docz@1.0.0-rc.7:
-  version "1.0.0-rc.7"
-  resolved "https://registry.yarnpkg.com/docz/-/docz-1.0.0-rc.7.tgz#e53bd5257819904d8ad73f7a5d2439f6869440b5"
-  integrity sha512-K1JBPFnJB8i+omce+FV7fmDc9lEWBjRiMBLGxMRMTXqUpuHy6yOVc+FNJ/NVsHSNC9+IfXT/dPBzCCyUhijAGA==
-  dependencies:
-    "@loadable/component" "^5.7.0"
-    "@mdx-js/tag" "^0.20.3"
-    "@reach/router" "^1.2.1"
-    array-sort "^1.0.0"
-    capitalize "^2.0.0"
-    docz-core "1.0.0-rc.7"
     fast-deep-equal "^2.0.1"
     lodash "^4.17.11"
     match-sorter "^2.3.0"
@@ -10793,10 +10774,10 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-live@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/react-live/-/react-live-2.0.0.tgz#37230dfe64dd32494c2700189f74a7ed3b606031"
-  integrity sha512-lo0HBSFJvwIK/Nv4pcMNhTRbQIZkNAwic8fNfYlnTT5rbciaSWDFvRbhvLDBRFNJYq4ZnpPFkgpnufzCq8C96g==
+react-live@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-live/-/react-live-2.0.1.tgz#cf1c1e75523073b2fba14384a465bf968c6dedc1"
+  integrity sha512-43srRqV+3yeHEZQOETWPiZkaLnx0/ldRtR/+F9/vFBYa/N8OMVVjPT4yl0qQCP6suIZ6cB/8eWw6vWgOTH0XOQ==
   dependencies:
     buble "0.19.6"
     core-js "^2.4.1"
@@ -10807,10 +10788,10 @@ react-live@^2.0.0:
     react-simple-code-editor "^0.9.0"
     unescape "^0.2.0"
 
-react-perfect-scrollbar@^1.4.4:
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/react-perfect-scrollbar/-/react-perfect-scrollbar-1.4.4.tgz#5567453775579f66a4ef5fa9787914729741347b"
-  integrity sha512-Ivu3I8LiwJs4ZSxl0dS39uhtzElBQo1wTW2d+9CkR08UBGp9zWXWDVlG4AYGP3jGJrQZQIsBCznRROR0j6l3HQ==
+react-perfect-scrollbar@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/react-perfect-scrollbar/-/react-perfect-scrollbar-1.5.0.tgz#bac28b9f566879b7c546a63f3935a04ea0f1ae19"
+  integrity sha512-WIZ5RdwwA/npJWjPesPeIS5s/S7h5GsPT4apDOQgiTba7CUIFKqpL77z23MoniQws8Wx9JfMm3CF1170Hehz7Q==
   dependencies:
     perfect-scrollbar "^1.4.0"
     prop-types "^15.6.1"
