@@ -1,5 +1,8 @@
 import { combineReducers } from "redux";
-import { dissoc, without, assoc, indexBy } from "ramda";
+
+import dissoc from "ramda/es/dissoc";
+import assoc from "ramda/es/assoc";
+import indexBy from "ramda/es/indexBy";
 
 import { createReducer, match } from "../../src";
 

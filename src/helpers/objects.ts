@@ -1,4 +1,4 @@
-import { mapObjIndexed } from "ramda";
+import mapObjIndexed from "ramda/es/mapObjIndexed";
 
 /**
  * Represents a node in a Tree, a node can be either a Leaf or a Branch (wich is also a Tree)

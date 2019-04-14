@@ -1,4 +1,5 @@
-import { flip } from "ramda";
+import flip from "ramda/es/flip";
+
 import { ActionCreator, ActionCreatorOptions, AsyncAction } from "./core";
 import { toSnakeCase } from "../helpers/strings";
 

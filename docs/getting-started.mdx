@@ -166,7 +166,7 @@ The above `enhance` example can be easily rewritten without `connectWithActions`
 ```ts
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { applySpec } from "ramda";
+import applySpec from "ramda/es/applySpec";
 
 const enhance = connect(
   applySpec({

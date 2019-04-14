@@ -1,4 +1,4 @@
-import { mergeAll } from "ramda";
+import mergeAll from "ramda/es/mergeAll";
 import { Reducer } from "redux";
 
 import { ActionReducerMap, ActionCreator, ActionReducer } from "./core";
@@ -29,9 +29,7 @@ export const handleActions = createReducer;
 
 export type InferPayload<T> = T extends Array<ActionCreator<infer U>>
   ? U
-  : T extends ActionCreator<infer P>
-  ? P
-  : never;
+  : T extends ActionCreator<infer P> ? P : never;
 
 /**
  * registers a reducer handler for one or many actions

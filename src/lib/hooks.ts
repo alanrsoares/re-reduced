@@ -1,5 +1,5 @@
 import { useDispatch, useMappedState } from "redux-react-hook";
-import { applySpec } from "ramda";
+import applySpec from "ramda/es/applySpec";
 import { StoreContext } from "redux-react-hook";
 
 import { ActionCreator, bindActionCreators, SelectorSpec } from "../";
