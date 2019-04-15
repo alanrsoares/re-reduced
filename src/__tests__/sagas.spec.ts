@@ -65,9 +65,9 @@ describe("Sagas", () => {
       });
 
       it("should handle a saga with onSuccess hook", () => {
-        const triggerAction = createAsyncAction<string[], string>("FETCH_FOOS");
+        const triggerAction = createAsyncAction<string[]>("FETCH_FOOS");
+        const action = triggerAction();
         const mockApiResponse = ["foo", "bar", "baz"];
-        const actionPayload = "actionPaylaod";
 
         function* onSuccess(result: string[]) {
           yield put(triggerAction.success(result));
@@ -79,21 +79,21 @@ describe("Sagas", () => {
           onSuccess
         });
 
-        testSaga(saga, triggerAction(actionPayload))
+        testSaga(saga, action)
           .next()
           .put(triggerAction.request())
           .next()
-          .call(mockApiCall, actionPayload)
+          .call(mockApiCall)
           .next(mockApiResponse)
-          .fork(onSuccess, mockApiResponse, actionPayload)
+          .fork(onSuccess, mockApiResponse, action)
           .next()
           .isDone();
       });
 
       it("should handle a saga with onFailure hook", () => {
-        const triggerAction = createAsyncAction<string[], string>("FETCH_FOOS");
+        const triggerAction = createAsyncAction<string[]>("FETCH_FOOS");
+        const action = triggerAction();
         const mockError = new Error("something went wrong");
-        const actionPayload = "actionPaylaod";
 
         function* onFailure(error: Error) {
           yield put(triggerAction.failure(error));
@@ -105,13 +105,13 @@ describe("Sagas", () => {
           onFailure
         });
 
-        testSaga(saga, triggerAction(actionPayload))
+        testSaga(saga, action)
           .next()
           .put(triggerAction.request())
           .next()
-          .call(mockApiCall, actionPayload)
+          .call(mockApiCall)
           .throw(mockError)
-          .fork(onFailure, mockError, actionPayload)
+          .fork(onFailure, mockError, action)
           .next()
           .isDone();
       });

@@ -15,14 +15,14 @@ export type APIWorkerHookEffect<TPayload, TCombiner = any> =
   | AllEffect<TCombiner>
   | ForkEffect;
 
-export interface APIWorkerHooks<TResult, TFailure, TPayload> {
+export interface APIWorkerHooks<TResult, TFailure, TAction> {
   onSuccess(
     result: TResult,
-    payload: TPayload
+    action: TAction
   ): IterableIterator<APIWorkerHookEffect<TResult>>;
   onFailure(
     error: TFailure,
-    paylod: TPayload
+    action: TAction
   ): IterableIterator<APIWorkerHookEffect<TFailure>>;
 }
 
@@ -35,16 +35,14 @@ export function apiWorkerFactory<
   asyncHandler: TPayload extends void | undefined
     ? () => Promise<TResult>
     : (payload: TPayload) => Promise<TResult>,
-  hooks?: Partial<APIWorkerHooks<TResult, TFailure, TPayload>>
+  hooks?: Partial<APIWorkerHooks<TResult, TFailure, Action<TPayload>>>
 ) {
   return function* sagaWorker(action: Action<TPayload>): SagaIterator {
-    const { payload } = action;
-
     try {
       yield put(asyncAction.request());
 
       const result: TResult =
-        typeof payload === "undefined"
+        typeof action.payload === "undefined"
           ? yield call<(payload?: any) => Promise<TResult>>(asyncHandler)
           : yield call<(payload: TPayload) => Promise<TResult>>(
               asyncHandler,
@@ -52,13 +50,13 @@ export function apiWorkerFactory<
             );
 
       if (hooks && hooks.onSuccess) {
-        yield fork(hooks.onSuccess, result, payload);
+        yield fork(hooks.onSuccess, result, action);
       } else {
         yield put(asyncAction.success(result));
       }
     } catch (error) {
       if (hooks && hooks.onFailure) {
-        yield fork(hooks.onFailure, error, payload);
+        yield fork(hooks.onFailure, error, action);
       } else {
         yield put(asyncAction.failure(error));
       }
