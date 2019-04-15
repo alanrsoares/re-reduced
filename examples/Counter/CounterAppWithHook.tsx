@@ -1,55 +1,45 @@
 import * as React from "react";
-import styled from "@emotion/styled";
 
-import appActions from "./actions";
-import * as selectors from "./selectors";
 import { useActions, useReduxState } from "../../src";
 
-const Button = styled.button`
-  padding: 5px 10px;
-  font-size: 24px;
-  transition: color 0.3s ease-in-out;
-`;
+import actions from "./actions";
+import * as selectors from "./selectors";
+import { colors } from "./constants";
 
-const selectState = {
-  count: selectors.getCounter,
-  isOdd: selectors.getCounterIsOdd,
-  isPositive: selectors.getCounterIsPositive
-};
+import Button from "./Button";
 
 export default function Counter() {
-  const actions = useActions(appActions);
-  const state = useReduxState(selectState);
+  const { decrement, increment, adjust } = useActions(actions);
+  const { count, isOdd, isPositive } = useReduxState({
+    count: selectors.getCounter,
+    isOdd: selectors.getCounterIsOdd,
+    isPositive: selectors.getCounterIsPositive
+  });
+
+  const counterStyle: React.CSSProperties = {
+    color: isPositive ? (isOdd ? colors.odd : colors.even) : colors.negative,
+    fontWeight: "bold",
+    paddingLeft: 5,
+    paddingRight: 5,
+    width: 50
+  };
 
   return (
     <div>
       <Button
         style={{ borderTopLeftRadius: 4, borderBottomLeftRadius: 4 }}
-        onClick={() => actions.decrement()}
+        onClick={() => decrement()}
       >
         -1
       </Button>
-      <Button onClick={() => actions.adjust(-5)}>-5</Button>
-      <Button
-        disabled
-        style={{
-          color: state.isPositive
-            ? state.isOdd
-              ? "#311E84"
-              : "#FF5447"
-            : "red",
-          fontWeight: "bold",
-          paddingLeft: 5,
-          paddingRight: 5,
-          width: 50
-        }}
-      >
-        {state.count}
+      <Button onClick={() => adjust(-5)}>-5</Button>
+      <Button disabled style={counterStyle}>
+        {count}
       </Button>
-      <Button onClick={() => actions.adjust(5)}>+5</Button>
+      <Button onClick={() => adjust(5)}>+5</Button>
       <Button
         style={{ borderTopRightRadius: 4, borderBottomRightRadius: 4 }}
-        onClick={() => actions.increment()}
+        onClick={() => increment()}
       >
         +1
       </Button>

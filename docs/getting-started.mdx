@@ -180,6 +180,26 @@ const enhance = connect(
 );
 ```
 
+Alternatively, from version `1.5.0`, re-reduced supports hooks, using the following syntax:
+
+```tsx
+import { useActions, useReduxState } from "re-reduced";
+
+import actions from "./actions";
+import * as selectors from "./selectors";
+
+function Counter() {
+  const { decrement, increment, adjust } = useActions(actions);
+  const { count, isOdd, isPositive } = useReduxState({
+    count: selectors.getCounter,
+    isOdd: selectors.getCounterIsOdd,
+    isPositive: selectors.getCounterIsPositive
+  });
+
+  return <div>{/* app render logic... */}</div>;
+}
+```
+
 ## Demo
 
 import { Playground } from "docz";
