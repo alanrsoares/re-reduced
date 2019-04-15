@@ -1,6 +1,6 @@
 {
   "name": "re-reduced",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "A utility toolbelt that reduces boilerplate from your react/redux app",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
