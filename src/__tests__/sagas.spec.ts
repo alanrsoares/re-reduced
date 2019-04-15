@@ -66,6 +66,7 @@ describe("Sagas", () => {
 
       it("should handle a saga with onSuccess hook", () => {
         const triggerAction = createAsyncAction<string[]>("FETCH_FOOS");
+        const action = triggerAction();
         const mockApiResponse = ["foo", "bar", "baz"];
 
         function* onSuccess(result: string[]) {
@@ -78,37 +79,39 @@ describe("Sagas", () => {
           onSuccess
         });
 
-        testSaga(saga, triggerAction())
+        testSaga(saga, action)
           .next()
           .put(triggerAction.request())
           .next()
           .call(mockApiCall)
           .next(mockApiResponse)
-          .fork(onSuccess, mockApiResponse)
+          .fork(onSuccess, mockApiResponse, action)
           .next()
           .isDone();
       });
 
-      it("should handle a saga with onSuccess hook", () => {
+      it("should handle a saga with onFailure hook", () => {
         const triggerAction = createAsyncAction<string[]>("FETCH_FOOS");
+        const action = triggerAction();
         const mockError = new Error("something went wrong");
-        const mockApiCall = () => Promise.reject(mockError);
 
         function* onFailure(error: Error) {
           yield put(triggerAction.failure(error));
         }
 
+        const mockApiCall = () => Promise.reject(mockError);
+
         const saga = apiWorkerFactory(triggerAction, mockApiCall, {
           onFailure
         });
 
-        testSaga(saga, triggerAction())
+        testSaga(saga, action)
           .next()
           .put(triggerAction.request())
           .next()
           .call(mockApiCall)
           .throw(mockError)
-          .fork(onFailure, mockError)
+          .fork(onFailure, mockError, action)
           .next()
           .isDone();
       });
