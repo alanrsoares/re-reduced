@@ -65,8 +65,9 @@ describe("Sagas", () => {
       });
 
       it("should handle a saga with onSuccess hook", () => {
-        const triggerAction = createAsyncAction<string[]>("FETCH_FOOS");
+        const triggerAction = createAsyncAction<string[], string>("FETCH_FOOS");
         const mockApiResponse = ["foo", "bar", "baz"];
+        const actionPayload = "actionPaylaod";
 
         function* onSuccess(result: string[]) {
           yield put(triggerAction.success(result));
@@ -78,37 +79,39 @@ describe("Sagas", () => {
           onSuccess
         });
 
-        testSaga(saga, triggerAction())
+        testSaga(saga, triggerAction(actionPayload))
           .next()
           .put(triggerAction.request())
           .next()
-          .call(mockApiCall)
+          .call(mockApiCall, actionPayload)
           .next(mockApiResponse)
-          .fork(onSuccess, mockApiResponse)
+          .fork(onSuccess, mockApiResponse, actionPayload)
           .next()
           .isDone();
       });
 
-      it("should handle a saga with onSuccess hook", () => {
-        const triggerAction = createAsyncAction<string[]>("FETCH_FOOS");
+      it("should handle a saga with onFailure hook", () => {
+        const triggerAction = createAsyncAction<string[], string>("FETCH_FOOS");
         const mockError = new Error("something went wrong");
-        const mockApiCall = () => Promise.reject(mockError);
+        const actionPayload = "actionPaylaod";
 
         function* onFailure(error: Error) {
           yield put(triggerAction.failure(error));
         }
 
+        const mockApiCall = () => Promise.reject(mockError);
+
         const saga = apiWorkerFactory(triggerAction, mockApiCall, {
           onFailure
         });
 
-        testSaga(saga, triggerAction())
+        testSaga(saga, triggerAction(actionPayload))
           .next()
           .put(triggerAction.request())
           .next()
-          .call(mockApiCall)
+          .call(mockApiCall, actionPayload)
           .throw(mockError)
-          .fork(onFailure, mockError)
+          .fork(onFailure, mockError, actionPayload)
           .next()
           .isDone();
       });
