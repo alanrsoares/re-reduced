@@ -1,6 +1,5 @@
-import { useDispatch, useMappedState } from "redux-react-hook";
 import { applySpec } from "ramda";
-import { StoreContext } from "redux-react-hook";
+import { useDispatch, useMappedState, StoreContext } from "redux-react-hook";
 
 import { ActionCreator, bindActionCreators, SelectorSpec } from "../";
 import { Tree } from "../helpers/objects";
