@@ -1,4 +1,4 @@
-import { applySpec } from "ramda";
+import applySpec from "ramda/src/applySpec";
 import {
   connect,
   InferableComponentEnhancerWithProps,

@@ -1,5 +1,5 @@
-import { mergeAll } from "ramda";
 import { Reducer } from "redux";
+import mergeAll from "ramda/src/mergeAll";
 
 import { ActionReducerMap, ActionCreator, ActionReducer } from "./core";
 
