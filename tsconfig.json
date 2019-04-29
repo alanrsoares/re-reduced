@@ -1,8 +1,11 @@
 {
   "compilerOptions": {
     "experimentalDecorators": true,
-    "target": "es2015",
-    "module": "es2015",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "declaration": true,
     "outDir": "./lib",
     "strict": true
