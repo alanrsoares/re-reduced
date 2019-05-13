@@ -50,7 +50,7 @@ export function match<
     return actions.reduce(
       (acc, action) => ({
         ...acc,
-        ...action.reduce(reducer)
+        ...action.reduce(reducer),
       }),
       {}
     );

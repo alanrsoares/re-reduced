@@ -2,7 +2,7 @@ import applySpec from "ramda/src/applySpec";
 import {
   connect,
   InferableComponentEnhancerWithProps,
-  MapStateToProps
+  MapStateToProps,
 } from "react-redux";
 import { compose, Dispatch } from "redux";
 
@@ -58,7 +58,7 @@ export const bindActionCreators = <TActions extends Tree<ActionCreator<any>>>(
   actions: transformTree<ActionCreator, Dispatcher>(
     toDispatcher(dispatch),
     actions
-  ) as TActions
+  ) as TActions,
 });
 
 export const applySelectors = <TProps = {}, TState = {}, TOwnProps = {}>(

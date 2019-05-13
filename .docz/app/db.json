@@ -1,0 +1,309 @@
+{
+  "config": {
+    "title": "re-reduced",
+    "description": "My awesome app using docz",
+    "menu": [
+      "Home",
+      "Getting Started",
+      "Type Reference",
+      "API Reference"
+    ],
+    "version": "1.6.4",
+    "repository": "https://github.com/alanrsoares/re-reduced",
+    "native": false,
+    "codeSandbox": true,
+    "themeConfig": {
+      "mode": "dark",
+      "colors": {
+        "primary": "#FF5447",
+        "sidebarBg": "#311E84",
+        "background": "#041A28"
+      },
+      "logo": {
+        "src": "https://raw.githubusercontent.com/alanrsoares/re-reduced/master/docs/assets/logo.png",
+        "width": 200
+      },
+      "styles": {
+        "body": {
+          "fontFamily": "Roboto, 'Source Sans Pro', Helvetica, sans-serif"
+        },
+        "h1": {
+          "fontFamily": "Roboto, 'Source Sans Pro', Helvetica, sans-serif"
+        }
+      }
+    },
+    "separator": "-",
+    "typescript": true,
+    "plugins": [
+      {}
+    ]
+  },
+  "props": [
+    {
+      "key": "examples/Counter/CounterApp.tsx",
+      "value": [
+        {
+          "description": "",
+          "displayName": "CounterApp",
+          "methods": [],
+          "props": {}
+        }
+      ]
+    },
+    {
+      "key": "examples/Counter/CounterAppWithHook.tsx",
+      "value": []
+    },
+    {
+      "key": "examples/ToDo/ToDoApp.tsx",
+      "value": [
+        {
+          "description": "",
+          "displayName": "ToDoApp",
+          "methods": [],
+          "props": {
+            "title": {
+              "defaultValue": null,
+              "description": "",
+              "name": "title",
+              "parent": {
+                "fileName": "examples/ToDo/ToDoApp.tsx",
+                "name": "OwnProps"
+              },
+              "required": true,
+              "type": {
+                "name": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "examples/Counter/Button.ts",
+      "value": []
+    }
+  ],
+  "entries": [
+    {
+      "key": "docs/api-reference.mdx",
+      "value": {
+        "name": "API Reference",
+        "route": "/api",
+        "id": "42f77f06980b7af8cfdc2f5fbab785a0",
+        "filepath": "docs/api-reference.mdx",
+        "link": "https://github.com/alanrsoares/re-reduced/edit/master/docs/api-reference.mdx",
+        "slug": "docs-api-reference",
+        "menu": "",
+        "headings": [
+          {
+            "slug": "api-reference",
+            "depth": 1,
+            "value": "API Reference"
+          },
+          {
+            "slug": "createaction",
+            "depth": 2,
+            "value": "createAction"
+          },
+          {
+            "slug": "params",
+            "depth": 3,
+            "value": "Params:"
+          },
+          {
+            "slug": "usage",
+            "depth": 3,
+            "value": "Usage"
+          },
+          {
+            "slug": "createasyncaction",
+            "depth": 2,
+            "value": "createAsyncAction"
+          },
+          {
+            "slug": "usage-1",
+            "depth": 3,
+            "value": "Usage"
+          },
+          {
+            "slug": "createactions",
+            "depth": 2,
+            "value": "createActions"
+          },
+          {
+            "slug": "params-1",
+            "depth": 3,
+            "value": "Params"
+          },
+          {
+            "slug": "examples",
+            "depth": 3,
+            "value": "Examples"
+          },
+          {
+            "slug": "createreducer",
+            "depth": 2,
+            "value": "createReducer"
+          },
+          {
+            "slug": "connectwithactions",
+            "depth": 2,
+            "value": "connectWithActions"
+          }
+        ]
+      }
+    },
+    {
+      "key": "docs/examples-todo.mdx",
+      "value": {
+        "menu": "Examples",
+        "route": "/examples/todo",
+        "name": "ToDoMVC",
+        "id": "d62749ab0155a6a4a639a69c498b75b7",
+        "filepath": "docs/examples-todo.mdx",
+        "link": "https://github.com/alanrsoares/re-reduced/edit/master/docs/examples-todo.mdx",
+        "slug": "docs-examples-todo",
+        "headings": [
+          {
+            "slug": "todo-app",
+            "depth": 1,
+            "value": "ToDo app"
+          }
+        ]
+      }
+    },
+    {
+      "key": "docs/index.mdx",
+      "value": {
+        "name": "Home",
+        "route": "/",
+        "id": "73498ad0e1e62a714b08085d318f9de1",
+        "filepath": "docs/index.mdx",
+        "link": "https://github.com/alanrsoares/re-reduced/edit/master/docs/index.mdx",
+        "slug": "docs-index",
+        "menu": "",
+        "headings": [
+          {
+            "slug": "re-reduced",
+            "depth": 1,
+            "value": "re-reduced"
+          },
+          {
+            "slug": "features",
+            "depth": 2,
+            "value": "Features"
+          },
+          {
+            "slug": "installation",
+            "depth": 2,
+            "value": "Installation"
+          },
+          {
+            "slug": "guides",
+            "depth": 2,
+            "value": "Guides"
+          },
+          {
+            "slug": "examples",
+            "depth": 2,
+            "value": "Examples"
+          }
+        ]
+      }
+    },
+    {
+      "key": "docs/getting-started.mdx",
+      "value": {
+        "name": "Getting Started",
+        "route": "/getting-started",
+        "id": "3d4ea0faef948dad97c46b8ab2e0b582",
+        "filepath": "docs/getting-started.mdx",
+        "link": "https://github.com/alanrsoares/re-reduced/edit/master/docs/getting-started.mdx",
+        "slug": "docs-getting-started",
+        "menu": "",
+        "headings": [
+          {
+            "slug": "getting-started",
+            "depth": 1,
+            "value": "Getting Started"
+          },
+          {
+            "slug": "defining-a-type-system",
+            "depth": 2,
+            "value": "Defining a type system"
+          },
+          {
+            "slug": "creating-actions",
+            "depth": 2,
+            "value": "Creating Actions"
+          },
+          {
+            "slug": "creating-reducers",
+            "depth": 2,
+            "value": "Creating Reducers"
+          },
+          {
+            "slug": "creating-selectors",
+            "depth": 2,
+            "value": "Creating selectors"
+          },
+          {
+            "slug": "connecting-a-component",
+            "depth": 2,
+            "value": "Connecting a component"
+          },
+          {
+            "slug": "demo",
+            "depth": 2,
+            "value": "Demo"
+          }
+        ]
+      }
+    },
+    {
+      "key": "docs/type-reference.mdx",
+      "value": {
+        "name": "Type Reference",
+        "route": "/types",
+        "id": "3fb922b02a67e67499034a64518ccbf3",
+        "filepath": "docs/type-reference.mdx",
+        "link": "https://github.com/alanrsoares/re-reduced/edit/master/docs/type-reference.mdx",
+        "slug": "docs-type-reference",
+        "menu": "",
+        "headings": [
+          {
+            "slug": "type-reference-core",
+            "depth": 1,
+            "value": "Type Reference: Core"
+          },
+          {
+            "slug": "action",
+            "depth": 2,
+            "value": "Action"
+          },
+          {
+            "slug": "asyncaction",
+            "depth": 2,
+            "value": "AsyncAction"
+          },
+          {
+            "slug": "actionreducermap",
+            "depth": 2,
+            "value": "ActionReducerMap"
+          },
+          {
+            "slug": "actionreducer",
+            "depth": 2,
+            "value": "ActionReducer"
+          },
+          {
+            "slug": "actioncreator",
+            "depth": 2,
+            "value": "ActionCreator"
+          }
+        ]
+      }
+    }
+  ]
+}

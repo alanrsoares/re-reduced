@@ -1,8 +1,9 @@
 import applySpec from "ramda/src/applySpec";
 import { useDispatch, useMappedState, StoreContext } from "redux-react-hook";
 
-import { ActionCreator, bindActionCreators, SelectorSpec } from "../";
 import { Tree } from "../helpers/objects";
+import { ActionCreator } from "./core";
+import { bindActionCreators, SelectorSpec } from "./react-redux";
 
 export const StoreProvider = StoreContext.Provider;
 

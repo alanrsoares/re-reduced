@@ -29,7 +29,7 @@ import { createAction } from "re-reduced";
 export default {
   adjust: createAction<number>("ADJUST"),
   decrement: createAction("DECREMENT"),
-  increment: createAction("INCREMENT")
+  increment: createAction("INCREMENT"),
 };
 ```
 
@@ -43,7 +43,7 @@ import { createActions } from "re-reduced";
 export default createActions("COUNTER", create => ({
   adjust: create.action<number>(),
   decrement: create.action(),
-  increment: create.action()
+  increment: create.action(),
 }));
 ```
 
@@ -64,7 +64,7 @@ export const counter = createReducer<number>(
   [
     actions.increment.reduce(state => state + 1),
     actions.decrement.reduce(state => state - 1),
-    actions.adjust.reduce((state, payload) => state + payload)
+    actions.adjust.reduce((state, payload) => state + payload),
   ],
   INITIAL_STATE
 );
@@ -75,13 +75,13 @@ export const counter = createReducer<number>(
   [
     match(actions.increment, state => state + 1),
     match(actions.decrement, state => state - 1),
-    match(actions.adjust, (state, payload) => state + payload)
+    match(actions.adjust, (state, payload) => state + payload),
   ],
   INITIAL_STATE
 );
 
 export default combineReducers<State>({
-  counter
+  counter,
 });
 ```
 
@@ -140,7 +140,7 @@ const Counter = (props: Props) => (
         fontWeight: "bold",
         paddingLeft: 5,
         paddingRight: 5,
-        width: 50
+        width: 50,
       }}
     >
       {props.count}
@@ -153,7 +153,7 @@ const Counter = (props: Props) => (
 const enhance = connectWithActions<Props>(actions, {
   count: selectors.getCounter,
   isOdd: selectors.getCounterIsOdd,
-  isPositive: selectors.getCounterIsPositive
+  isPositive: selectors.getCounterIsPositive,
 });
 
 export default enhance(Counter);
@@ -172,10 +172,10 @@ const enhance = connect(
   applySpec({
     count: selectors.getCounter,
     isOdd: selectors.getCounterIsOdd,
-    isPositive: selectors.getCounterIsPositive
+    isPositive: selectors.getCounterIsPositive,
   }),
   dispatch => ({
-    actions: bindActionCreators(actions, dispatch)
+    actions: bindActionCreators(actions, dispatch),
   })
 );
 ```
@@ -193,7 +193,7 @@ function Counter() {
   const { count, isOdd, isPositive } = useReduxState({
     count: selectors.getCounter,
     isOdd: selectors.getCounterIsOdd,
-    isPositive: selectors.getCounterIsPositive
+    isPositive: selectors.getCounterIsPositive,
   });
 
   return <div>{/* app render logic... */}</div>;

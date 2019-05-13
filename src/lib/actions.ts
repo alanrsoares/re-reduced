@@ -22,7 +22,7 @@ export function createAction<TPayload = void, TMeta = any>(
     error: options ? options.error : undefined,
     meta: options ? options.meta : undefined,
     payload,
-    type: $type
+    type: $type,
   })) as ActionCreator<TPayload, TMeta>;
 
   actionCreator.type = $type;
@@ -30,13 +30,13 @@ export function createAction<TPayload = void, TMeta = any>(
   actionCreator.reduce = <TState>(
     handler: (state: TState, payload: TPayload) => TState
   ) => ({
-    [actionCreator.type]: handler
+    [actionCreator.type]: handler,
   });
 
   actionCreator.fold = <TState>(
     handler: (payload: TPayload, state: TState) => TState
   ) => ({
-    [actionCreator.type]: flip(handler)
+    [actionCreator.type]: flip(handler),
   });
 
   return actionCreator;
@@ -52,20 +52,19 @@ export function createAsyncAction<TResult, TPayload = void, TFailure = Error>(
   type: string,
   namespace?: string
 ) {
-  const asyncAction = createAction<TPayload>(type, namespace) as AsyncAction<
-    TResult,
-    TPayload,
-    TFailure
-  >;
-
-  asyncAction.request = createAction(`${type}_REQUEST`, namespace);
-  asyncAction.success = createAction<TResult>(`${type}_SUCCESS`, namespace);
-  asyncAction.failure = createAction<TFailure>(`${type}_FAILURE`, namespace);
+  const asyncAction: AsyncAction<TResult, TPayload, TFailure> = Object.assign(
+    createAction<TPayload>(type, namespace),
+    {
+      request: createAction(`${type}_REQUEST`, namespace),
+      success: createAction<TResult>(`${type}_SUCCESS`, namespace),
+      failure: createAction<TFailure>(`${type}_FAILURE`, namespace),
+    }
+  );
 
   return asyncAction;
 }
 
-type ActionCreatorMap<
+export type ActionCreatorMap<
   T extends {
     [k: string]: (type: string, namespace?: string) => any;
   }
@@ -108,9 +107,10 @@ export function createActions(...args: any) {
   const defs = actionsContructor(CreateActionsAPI);
 
   return Object.keys(defs).reduce(
-    (acc: any /* hacky hack */, key) => ({
+    /* hacky hack, i'd deeply appreciate some help with this type annotation */
+    (acc: any, key) => ({
       ...acc,
-      [key]: defs[key](key, namespace)
+      [key]: defs[key](key, namespace),
     }),
     {}
   );

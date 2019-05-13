@@ -1,39 +1,27 @@
-![# Re-reduced](/docs/assets/logo-positive.png)
+# TSDX Bootstrap
 
-[![npm module](https://badge.fury.io/js/re-reduced.svg)](https://www.npmjs.org/package/re-reduced)
-[![travis](https://travis-ci.org/alanrsoares/re-reduced.svg?branch=master)](https://travis-ci.org/alanrsoares/re-reduced)
-[![docs](https://img.shields.io/badge/docs-powered%20by%20Docz-blue.svg)](https://re-reduced.netlify.com/)
-[![Greenkeeper badge](https://badges.greenkeeper.io/alanrsoares/re-reduced.svg)](https://greenkeeper.io/)
-[![Maintainability](https://api.codeclimate.com/v1/badges/9ca1f9c978d188a22e8e/maintainability)](https://codeclimate.com/github/alanrsoares/re-reduced/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/9ca1f9c978d188a22e8e/test_coverage)](https://codeclimate.com/github/alanrsoares/re-reduced/test_coverage)
+This project was bootstrapped with [TSDX](https://github.com/jaredpalmer/tsdx).
 
-A typesafe functional toolbelt for React and Redux apps
+## Local Development
 
-## Features
+Below is a list of commands you will probably find useful.
 
-- typesafe
-- focus on domain driven design
-- encourages fractal architecture
-- built with testability and scalability in mind
-- reduces boilerplate dramatically by reusing data structures
+### `npm start` or `yarn start`
 
-## Installation
+Runs the project in development/watch mode. Your project will be rebuilt upon changes. TSDX has a special logger for you convenience. Error messages are pretty printed and formatted for compatibility VS Code's Problems tab.
 
-With NPM: `npm i --save re-reduced`
+<img src="https://user-images.githubusercontent.com/4060187/52168303-574d3a00-26f6-11e9-9f3b-71dbec9ebfcb.gif" width="600" />
 
-With Yarn: `yarn add re-reduced`
+Your library will be rebuilt if you make edits.
 
-## Guides
+### `npm run build` or `yarn build`
 
-- [building a Counter app](/getting-started) - end to end integration for a simple counter app
+Bundles the package to the `dist` folder.
+The package is optimized and bundled with Rollup into multiple formats (CommonJS, UMD, and ES Module).
 
-## Examples
+<img src="https://user-images.githubusercontent.com/4060187/52168322-a98e5b00-26f6-11e9-8cf6-222d716b75ef.gif" width="600" />
 
-- [Counter](/examples/Counter) - Counter app using both `connectWithActions` and `react hooks`
-- [ToDo](/examples/ToDo) - ToDo app using `connectWithActions`, selectors and async integration
+### `npm test` or `yarn test`
 
-### Go check out the [docs](https://re-reduced.netlify.com/)!
-
-#### LICENSE
-
-MIT
+Runs the test watcher (Jest) in an interactive mode.
+By default, runs tests related to files changed since the last commit.

@@ -1,14 +1,18 @@
 {
   "name": "re-reduced",
   "version": "1.6.4",
-  "description": "A utility toolbelt that reduces boilerplate from your react/redux app",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/index.js",
+  "umd:main": "dist/re-reduced.umd.production.js",
+  "module": "dist/re-reduced.es.production.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "jest --config jestconfig.json",
-    "test:coverage": "jest --config jestconfig.json --coverage",
-    "build": "tsc",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test",
+    "test:coverage": "tsdx test --coverage",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
@@ -43,35 +47,43 @@
     "redux-saga": ">=1",
     "reselect": ">=4"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "trailingComma": "es5"
+  },
   "devDependencies": {
-    "@emotion/core": "^10.0.10",
-    "@emotion/styled": "^10.0.10",
-    "@types/jest": "^24.0.11",
+    "@types/jest": "^24.0.12",
     "@types/ramda": "^0.26.8",
+    "@types/react": "^16.8.16",
     "@types/react-redux": "^7.0.8",
-    "core-js": "^3.0.0",
-    "docz": "^1.0.4",
+    "@types/styled-components": "^4.1.14",
+    "docz": "^1.2.0",
     "docz-plugin-css": "^0.11.0",
-    "docz-theme-default": "^1.0.4",
-    "hoist-non-react-statics": "^3.3.0",
-    "jest": "^24.7.1",
-    "prettier": "^1.16.4",
-    "prop-types": "^15.7.2",
+    "docz-theme-default": "^1.2.0",
+    "husky": "^2.2.0",
+    "prettier": "^1.17.0",
+    "pretty-quick": "^1.10.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-hot-loader": "^4.8.4",
+    "react-redux": "^7.0.3",
     "redux": "^4.0.1",
-    "redux-react-hook": "^3.3.0",
     "redux-saga": "^1.0.2",
-    "redux-saga-test-plan": "^4.0.0-beta.2",
+    "redux-saga-test-plan": "^4.0.0-beta.3",
     "reselect": "^4.0.0",
-    "ts-jest": "^24.0.0",
-    "tslint": "^5.15.0",
-    "tslint-config-prettier": "^1.18.0",
-    "typedoc": "^0.14.2",
-    "typescript": "^3.4.2"
+    "styled-components": "^4.2.0",
+    "tsdx": "^0.5.9",
+    "tslint": "^5.16.0",
+    "typescript": "^3.4.5"
   },
   "dependencies": {
-    "ramda": "^0.26.1"
+    "ramda": "^0.26.1",
+    "redux-react-hook": "^3.3.2"
   }
 }

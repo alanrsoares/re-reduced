@@ -6,7 +6,7 @@ import {
   AllEffect,
   ForkEffect,
   PutEffect,
-  CallEffect
+  CallEffect,
 } from "redux-saga/effects";
 
 import { Action, AsyncAction } from "./core";
