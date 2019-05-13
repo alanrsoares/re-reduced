@@ -4,7 +4,7 @@ import { connectWithActions } from "../../src";
 
 import actions from "./actions";
 import * as selectors from "./selectors";
-import { ToDo, Filter, FILTERS } from "./types";
+import { ToDo, Filter, Filters } from "./types";
 
 import "./styles.css";
 
@@ -28,20 +28,18 @@ class App extends React.Component<Props, State> {
   public state: State = {
     filter: "All",
     editingId: undefined,
-    newToDoTitle: ""
+    newToDoTitle: "",
   };
 
-  constructor(props: Props) {
-    super(props);
-
-    props.actions.fetch();
+  componentDidMount() {
+    this.props.actions.fetch();
   }
 
   get filteredItems() {
     switch (this.state.filter) {
-      case FILTERS.Active:
+      case Filters.Active:
         return this.props.activeTodos;
-      case FILTERS.Completed:
+      case Filters.Completed:
         return this.props.completedTodos;
       default:
         return this.props.todos;
@@ -73,7 +71,7 @@ class App extends React.Component<Props, State> {
   public handleNewToDoKeyDown = e => {
     if (e.key === "Enter") {
       this.props.actions.add({
-        title: e.target.value
+        title: e.target.value,
       });
       this.setState({ newToDoTitle: "" });
     }
@@ -84,7 +82,7 @@ class App extends React.Component<Props, State> {
       e.preventDefault();
       this.props.actions.update({
         ...todo,
-        title: e.target.value
+        title: e.target.value,
       });
       this.setState({ editingId: undefined });
     }
@@ -101,7 +99,7 @@ class App extends React.Component<Props, State> {
     this.filteredItems.forEach(todo =>
       this.props.actions.update({
         ...todo,
-        isCompleted: !everyCompleted
+        isCompleted: !everyCompleted,
       })
     );
   };
@@ -119,7 +117,7 @@ class App extends React.Component<Props, State> {
 
     this.props.actions.update({
       ...todo,
-      isCompleted: !todo.isCompleted
+      isCompleted: !todo.isCompleted,
     });
 
     this.setState({ editingId: undefined });
@@ -224,7 +222,10 @@ class App extends React.Component<Props, State> {
           item left
         </span>
         <ul className="filters">
-          {Object.keys(FILTERS).map(this.renderFilter)}
+          {Object.keys(Filters)
+            // only needed to prevent a Docz related runtime issue
+            .filter(key => !key.startsWith("_"))
+            .map(this.renderFilter)}
         </ul>
         <button className="clear-completed" onClick={this.handleClearCompleted}>
           Clear completed
@@ -257,7 +258,7 @@ const enhance = connectWithActions<Props, OwnProps>(actions, {
   activeTodos: selectors.getActiveToDos,
   completedTodos: selectors.getCompletedToDos,
   isLoading: selectors.getToDosIsFetching,
-  isAdding: selectors.getToDosIsAdding
+  isAdding: selectors.getToDosIsAdding,
 });
 
 export default enhance(App);

@@ -40,6 +40,10 @@
   },
   "props": [
     {
+      "key": "examples/Counter/Button.ts",
+      "value": []
+    },
+    {
       "key": "examples/Counter/CounterApp.tsx",
       "value": [
         {
@@ -78,10 +82,6 @@
           }
         }
       ]
-    },
-    {
-      "key": "examples/Counter/Button.ts",
-      "value": []
     }
   ],
   "entries": [
@@ -174,45 +174,6 @@
       }
     },
     {
-      "key": "docs/index.mdx",
-      "value": {
-        "name": "Home",
-        "route": "/",
-        "id": "73498ad0e1e62a714b08085d318f9de1",
-        "filepath": "docs/index.mdx",
-        "link": "https://github.com/alanrsoares/re-reduced/edit/master/docs/index.mdx",
-        "slug": "docs-index",
-        "menu": "",
-        "headings": [
-          {
-            "slug": "re-reduced",
-            "depth": 1,
-            "value": "re-reduced"
-          },
-          {
-            "slug": "features",
-            "depth": 2,
-            "value": "Features"
-          },
-          {
-            "slug": "installation",
-            "depth": 2,
-            "value": "Installation"
-          },
-          {
-            "slug": "guides",
-            "depth": 2,
-            "value": "Guides"
-          },
-          {
-            "slug": "examples",
-            "depth": 2,
-            "value": "Examples"
-          }
-        ]
-      }
-    },
-    {
       "key": "docs/getting-started.mdx",
       "value": {
         "name": "Getting Started",
@@ -257,6 +218,45 @@
             "slug": "demo",
             "depth": 2,
             "value": "Demo"
+          }
+        ]
+      }
+    },
+    {
+      "key": "docs/index.mdx",
+      "value": {
+        "name": "Home",
+        "route": "/",
+        "id": "73498ad0e1e62a714b08085d318f9de1",
+        "filepath": "docs/index.mdx",
+        "link": "https://github.com/alanrsoares/re-reduced/edit/master/docs/index.mdx",
+        "slug": "docs-index",
+        "menu": "",
+        "headings": [
+          {
+            "slug": "re-reduced",
+            "depth": 1,
+            "value": "re-reduced"
+          },
+          {
+            "slug": "features",
+            "depth": 2,
+            "value": "Features"
+          },
+          {
+            "slug": "installation",
+            "depth": 2,
+            "value": "Installation"
+          },
+          {
+            "slug": "guides",
+            "depth": 2,
+            "value": "Guides"
+          },
+          {
+            "slug": "examples",
+            "depth": 2,
+            "value": "Examples"
           }
         ]
       }

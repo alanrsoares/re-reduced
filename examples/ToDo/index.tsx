@@ -9,11 +9,11 @@ import App from "./ToDoApp";
 
 function configureStore() {
   const sagaMiddleware = createSagaMiddleware();
-  const $store = createStore(reducer, applyMiddleware(sagaMiddleware));
+  const store = createStore(reducer, applyMiddleware(sagaMiddleware));
 
   sagaMiddleware.run(rootSaga);
 
-  return $store;
+  return store;
 }
 
 const store = configureStore();
