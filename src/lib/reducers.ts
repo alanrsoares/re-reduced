@@ -1,5 +1,6 @@
 import { Reducer } from "redux";
 import mergeAll from "ramda/src/mergeAll";
+import merge from "ramda/src/merge";
 
 import { ActionReducerMap, ActionCreator, ActionReducer } from "./core";
 
@@ -48,10 +49,7 @@ export function match<
 ): ActionReducerMap<TState> {
   if (Array.isArray(actions)) {
     return actions.reduce(
-      (acc, action) => ({
-        ...acc,
-        ...action.reduce(reducer),
-      }),
+      (acc, action) => merge(acc, action.reduce(reducer)),
       {}
     );
   } else {

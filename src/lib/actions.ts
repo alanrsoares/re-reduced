@@ -1,4 +1,5 @@
 import flip from "ramda/src/flip";
+import assoc from "ramda/src/assoc";
 
 import { ActionCreator, ActionCreatorOptions, AsyncAction } from "./core";
 import { toSnakeCase } from "../helpers/strings";
@@ -101,17 +102,16 @@ export function createActions<
   namespace: string,
   actionsContructor: (api: typeof CreateActionsAPI) => T
 ): ActionCreatorMap<T>;
-export function createActions(...args: any) {
-  const namespace = args.length === 1 ? undefined : args[0];
-  const actionsContructor = args.length === 1 ? args[0] : args[1];
+export function createActions() {
+  const namespace: string | undefined =
+    arguments.length === 1 ? undefined : arguments[0];
+
+  const actionsContructor =
+    arguments.length === 1 ? arguments[0] : arguments[1];
   const defs = actionsContructor(CreateActionsAPI);
 
   return Object.keys(defs).reduce(
-    /* hacky hack, i'd deeply appreciate some help with this type annotation */
-    (acc: any, key) => ({
-      ...acc,
-      [key]: defs[key](key, namespace),
-    }),
+    (acc, key) => assoc(key, defs[key](key, namespace), acc),
     {}
   );
 }
