@@ -75,7 +75,7 @@
     "redux-saga-test-plan": "^4.0.0-beta.3",
     "reselect": "^4.0.0",
     "styled-components": "^4.2.0",
-    "tsdx": "^0.5.9",
+    "tsdx": "^0.5.11",
     "tslint": "^5.16.0",
     "typescript": "^3.4.5"
   },
