@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import applySpec from "ramda/src/applySpec";
 import { useDispatch, useMappedState, StoreContext } from "redux-react-hook";
 
@@ -16,7 +17,11 @@ export function useActions<TActions extends Tree<ActionCreator<any>> = {}>(
   actions: TActions
 ): TActions {
   const dispatch = useDispatch();
-  return bindActionCreators(actions)(dispatch).actions;
+  const boundActions = useMemo(() => {
+    return bindActionCreators(actions)(dispatch).actions;
+  }, [dispatch, actions]);
+
+  return boundActions;
 }
 
 export type SimpleMapStateToProps<TResult, TState> = (state: TState) => TResult;
@@ -31,10 +36,14 @@ export function useReduxState<TResult, TState = any>(
     | SelectorSpec<TResult, TState>
     | SimpleMapStateToProps<TResult, TState>
 ): TResult {
-  const stateToProps =
-    typeof selectorOrMapState === "object"
-      ? applySpec<TResult>(selectorOrMapState)
-      : selectorOrMapState;
+  const stateToProps = useMemo(() => {
+    return typeof selectorOrMapState === "object"
+      ? // selector
+        applySpec<TResult>(selectorOrMapState)
+      : // mapStateFn
+        selectorOrMapState;
+  }, [selectorOrMapState]);
 
-  return useMappedState<TResult>(stateToProps);
+  const state = useMappedState<TResult>(stateToProps);
+  return state;
 }

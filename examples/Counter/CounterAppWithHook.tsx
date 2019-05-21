@@ -8,20 +8,22 @@ import { colors } from "./constants";
 
 import Button from "./Button";
 
+const stateSelector = {
+  count: selectors.getCounter,
+  isOdd: selectors.getCounterIsOdd,
+  isPositive: selectors.getCounterIsPositive,
+};
+
 export default function Counter() {
   const { decrement, increment, adjust } = useActions(actions);
-  const { count, isOdd, isPositive } = useReduxState({
-    count: selectors.getCounter,
-    isOdd: selectors.getCounterIsOdd,
-    isPositive: selectors.getCounterIsPositive
-  });
+  const { count, isOdd, isPositive } = useReduxState(stateSelector);
 
   const counterStyle: React.CSSProperties = {
     color: isPositive ? (isOdd ? colors.odd : colors.even) : colors.negative,
     fontWeight: "bold",
     paddingLeft: 5,
     paddingRight: 5,
-    width: 50
+    width: 50,
   };
 
   return (
