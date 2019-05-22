@@ -19,7 +19,8 @@
     "docz": "docz dev",
     "docz:build": "docz build",
     "typedoc": "typedoc --out api-reference src/lib",
-    "lint": "eslint src/**/*.ts"
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "npm run lint -- --fix"
   },
   "repository": {
     "type": "git",
