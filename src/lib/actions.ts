@@ -105,7 +105,6 @@ export function createActions<
 export function createActions() {
   const namespace: string | undefined =
     arguments.length === 1 ? undefined : arguments[0];
-
   const actionsContructor =
     arguments.length === 1 ? arguments[0] : arguments[1];
   const defs = actionsContructor(CreateActionsAPI);
