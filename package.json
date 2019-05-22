@@ -48,13 +48,14 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged"
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
     "linters": {
       "*.ts": [
-        "npm run lint:fix",
+        "eslint",
+        "pretty-quick",
         "git add"
       ]
     },
