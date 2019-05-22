@@ -5,7 +5,7 @@ import merge from "ramda/src/merge";
 import { ActionReducerMap, ActionCreator, ActionReducer } from "./core";
 
 export function createReducer<TState>(
-  handlers: ActionReducerMap<TState> | Array<ActionReducerMap<TState>>,
+  handlers: ActionReducerMap<TState> | ActionReducerMap<TState>[],
   initialState: TState
 ): Reducer<TState> {
   const $handlers = Array.isArray(handlers)
@@ -28,7 +28,7 @@ export function createReducer<TState>(
  */
 export const handleActions = createReducer;
 
-export type InferPayload<T> = T extends Array<ActionCreator<infer U>>
+export type InferPayload<T> = T extends ActionCreator<infer U>[]
   ? U
   : T extends ActionCreator<infer P>
   ? P
@@ -42,7 +42,7 @@ export type InferPayload<T> = T extends Array<ActionCreator<infer U>>
  */
 export function match<
   TState,
-  TActions extends ActionCreator<any> | Array<ActionCreator<any>>
+  TActions extends ActionCreator<any> | ActionCreator<any>[]
 >(
   actions: TActions,
   reducer: ActionReducer<TState, InferPayload<TActions>>
