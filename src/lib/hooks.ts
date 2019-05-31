@@ -1,12 +1,10 @@
 import { useMemo } from "react";
 import applySpec from "ramda/src/applySpec";
-import { useDispatch, useMappedState, StoreContext } from "redux-react-hook";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Tree } from "../helpers/objects";
 import { ActionCreator } from "./core";
 import { bindActionCreators, SelectorSpec } from "./react-redux";
-
-export const StoreProvider = StoreContext.Provider;
 
 /**
  * Return store-bound action-creators.
@@ -44,6 +42,6 @@ export function useReduxState<TResult, TState = any>(
         selectorOrMapState;
   }, [selectorOrMapState]);
 
-  const state = useMappedState<TResult>(stateToProps);
+  const state = useSelector<TResult>(stateToProps);
   return state;
 }
