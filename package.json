@@ -42,7 +42,6 @@
   "peerDependencies": {
     "react-redux": ">=6",
     "redux": ">=4",
-    "redux-react-hook": ">=3",
     "redux-saga": ">=1",
     "reselect": ">=4"
   },
@@ -72,7 +71,6 @@
     "@types/jest": "^24.0.13",
     "@types/ramda": "^0.26.8",
     "@types/react": "^16.8.18",
-    "@types/react-redux": "^7.0.9",
     "@types/styled-components": "^4.1.15",
     "@typescript-eslint/eslint-plugin": "^1.9.0",
     "@typescript-eslint/parser": "^1.9.0",
@@ -93,7 +91,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-hot-loader": "^4.8.7",
-    "react-redux": "^7.0.3",
+    "react-redux": "^7.1.0-rc.1",
     "redux": "^4.0.1",
     "redux-saga": "^1.0.2",
     "redux-saga-test-plan": "^4.0.0-beta.3",
@@ -104,7 +102,6 @@
     "typescript": "^3.4.5"
   },
   "dependencies": {
-    "ramda": "^0.26.1",
-    "redux-react-hook": "^3.3.2"
+    "ramda": "^0.26.1"
   }
 }
