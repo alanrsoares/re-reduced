@@ -19,5 +19,6 @@ export default () => (
     {/* use hook */}
     <span>Using hooks:</span>
     <AppWithHook />
+    <AppWithHook useStateFn />
   </Provider>
 );
