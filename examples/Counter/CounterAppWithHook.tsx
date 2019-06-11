@@ -8,14 +8,23 @@ import { colors } from "./constants";
 
 import Button from "./Button";
 
-const stateSelector = {
+const stateSelectorAsObj = {
   count: selectors.getCounter,
   isOdd: selectors.getCounterIsOdd,
   isPositive: selectors.getCounterIsPositive,
 };
 
-export default function Counter() {
+const stateSelectorAsFn = (state: any) => ({
+  count: selectors.getCounter(state),
+  isOdd: selectors.getCounterIsOdd(state),
+  isPositive: selectors.getCounterIsPositive(state),
+});
+
+export default function Counter(props) {
+  const { useStateFn = false } = props
   const { decrement, increment, adjust } = useActions(actions);
+
+  const stateSelector = useStateFn ? stateSelectorAsFn : stateSelectorAsObj;
   const { count, isOdd, isPositive } = useReduxState(stateSelector);
 
   const counterStyle: React.CSSProperties = {
