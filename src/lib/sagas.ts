@@ -7,6 +7,7 @@ import {
   ForkEffect,
   PutEffect,
   CallEffect,
+  SelectEffect,
 } from "redux-saga/effects";
 
 import { Action, AsyncAction } from "./core";
@@ -15,7 +16,8 @@ export type APIWorkerHookEffect<TPayload, TCombiner = any> =
   | PutEffect<Action<TPayload>>
   | AllEffect<TCombiner>
   | ForkEffect
-  | CallEffect;
+  | CallEffect
+  | SelectEffect;
 
 export interface APIWorkerHooks<TResult, TFailure, TAction> {
   onSuccess(
