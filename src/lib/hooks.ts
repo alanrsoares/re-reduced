@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import applySpec from "ramda/src/applySpec";
 
-// @ts-ignore TODO: uncomment this line once @types/react-redux is updated
 import { useDispatch, useSelector } from "react-redux";
 
 import { Tree } from "../helpers/objects";
@@ -44,6 +43,6 @@ export function useReduxState<TResult, TState = any>(
         selectorOrMapState;
   }, [selectorOrMapState]);
 
-  const state = useSelector<TResult>(stateToProps);
+  const state = useSelector<TState, TResult>(stateToProps);
   return state;
 }

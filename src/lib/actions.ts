@@ -1,5 +1,4 @@
 import flip from "ramda/src/flip";
-import assoc from "ramda/src/assoc";
 
 import { ActionCreator, ActionCreatorOptions, AsyncAction } from "./core";
 import { toSnakeCase } from "../helpers/strings";
@@ -109,8 +108,9 @@ export function createActions() {
     arguments.length === 1 ? arguments[0] : arguments[1];
   const defs = actionsContructor(CreateActionsAPI);
 
-  return Object.keys(defs).reduce(
-    (acc, key) => assoc(key, defs[key](key, namespace), acc),
-    {}
-  );
+  return Object.keys(defs).reduce((acc, key) => {
+    const action = defs[key](key, namespace);
+
+    return { ...acc, [key]: action };
+  }, {});
 }

@@ -4,8 +4,11 @@ node_modules
 .rts2_cache_cjs
 .rts2_cache_es
 .rts2_cache_umd
+.rts2_cache_esm/
 dist
 coverage/
 .vscode/
 .docz/
 .size-snapshot.json
+
+
