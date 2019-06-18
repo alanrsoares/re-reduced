@@ -13544,10 +13544,10 @@ ts-jest@^24.0.2:
     semver "^5.5"
     yargs-parser "10.x"
 
-tsdx@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/tsdx/-/tsdx-0.6.1.tgz#fac0cc72a71f420cbfc9b38706f056f963bf72a1"
-  integrity sha512-s0OR47VSYgSaJoJZGpZwp+u8o+KCJhjgDF9cnj/TvfguESr3GFmsheMGMIYxOjipm5dp1dbZyYYrqu3I5QudTA==
+tsdx@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/tsdx/-/tsdx-0.7.1.tgz#5db87bcff22c9b24ee5afa1b727a32f28c9e0c7b"
+  integrity sha512-/JNDzZXOAXqfiXxJQSfmJsPD9SLxl9VfUXBm9QR43fO1hQ0pkf12+ZxR2nGKwtiUXC9FiI7aNv8z9YvRhU0lIg==
   dependencies:
     "@babel/core" "^7.4.4"
     "@babel/plugin-proposal-class-properties" "^7.4.4"
@@ -13585,7 +13585,6 @@ tsdx@^0.6.1:
     tiny-glob "^0.2.6"
     ts-jest "^24.0.2"
     tslib "^1.9.3"
-    typescript "^3.4.5"
 
 tslib@1.9.3, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
   version "1.9.3"
