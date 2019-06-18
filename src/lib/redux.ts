@@ -12,7 +12,7 @@ import { transformTree, Tree } from "../helpers/objects";
 export type Dispatcher<T = any> = (payload: T) => void;
 
 export type SelectorSpec<TProps, TState, TOwnProps extends {} = any> = {
-  [K in keyof TProps]: (state: TState, ownProps?: TOwnProps) => TProps[K]
+  [P in keyof TProps]: (state: TState, ownProps?: TOwnProps) => TProps[P];
 };
 
 export interface ConnectWithActions {

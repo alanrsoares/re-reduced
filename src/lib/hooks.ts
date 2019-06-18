@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Tree } from "../helpers/objects";
 import { ActionCreator } from "./core";
-import { bindActionCreators, SelectorSpec } from "./react-redux";
+import { bindActionCreators, SelectorSpec } from "./redux";
 
 /**
  * Return store-bound action-creators.
