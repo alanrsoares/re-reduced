@@ -98,7 +98,6 @@
     "reselect": "^4.0.0",
     "styled-components": "^4.3.1",
     "tsdx": "^0.7.1",
-    "tslint": "^5.16.0",
     "typescript": "^3.5.2"
   },
   "dependencies": {
