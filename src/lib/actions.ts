@@ -1,6 +1,12 @@
 import flip from "ramda/src/flip";
 
-import { ActionCreator, ActionCreatorOptions, AsyncAction } from "./core";
+import {
+  ActionCreator,
+  ActionCreatorOptions,
+  AsyncAction,
+  ActionReducer,
+  ActionFolder,
+} from "./core";
 import { toSnakeCase } from "../helpers/strings";
 
 /**
@@ -28,14 +34,12 @@ export function createAction<TPayload = void, TMeta = any>(
   actionCreator.type = $type;
 
   actionCreator.reduce = <TState>(
-    handler: (state: TState, payload: TPayload) => TState
+    handler: ActionReducer<TState, TPayload>
   ) => ({
     [actionCreator.type]: handler,
   });
 
-  actionCreator.fold = <TState>(
-    handler: (payload: TPayload, state: TState) => TState
-  ) => ({
+  actionCreator.fold = <TState>(handler: ActionFolder<TState, TPayload>) => ({
     [actionCreator.type]: flip(handler),
   });
 
@@ -65,9 +69,7 @@ export function createAsyncAction<TResult, TPayload = void, TFailure = Error>(
 }
 
 export type ActionCreatorMap<
-  T extends {
-    [k: string]: (type: string, namespace?: string) => any;
-  }
+  T extends Record<string, (type: string, namespace?: string) => any>
 > = { [P in keyof T]: ReturnType<T[P]> };
 
 export class CreateActionsAPI {
@@ -89,14 +91,10 @@ export class CreateActionsAPI {
  * @param actionsContructor
  */
 export function createActions<
-  T extends {
-    [k: string]: (type: string, namespace?: string) => any;
-  }
+  T extends Record<string, (type: string, namespace?: string) => any>
 >(actionsContructor: (api: typeof CreateActionsAPI) => T): ActionCreatorMap<T>;
 export function createActions<
-  T extends {
-    [k: string]: (type: string, namespace?: string) => any;
-  }
+  T extends Record<string, (type: string, namespace?: string) => any>
 >(
   namespace: string,
   actionsContructor: (api: typeof CreateActionsAPI) => T

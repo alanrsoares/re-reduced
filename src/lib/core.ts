@@ -26,6 +26,11 @@ export type ActionReducer<TState, TPayload> = (
   payload: TPayload
 ) => TState;
 
+export type ActionFolder<TState, TPayload> = (
+  payload: TPayload,
+  state: TState
+) => TState;
+
 /**
  * A map-like structure where values are action-reducers
  */
@@ -51,14 +56,10 @@ export interface ActionCreator<TPayload = void, TMeta = any> {
   >;
   type: string;
   reduce<TState>(
-    fn: ActionReducer<TState, TPayload>
-  ): {
-    [key: string]: ActionReducer<TState, TPayload>;
-  };
+    handler: ActionReducer<TState, TPayload>
+  ): Record<string, ActionReducer<TState, TPayload>>;
 
   fold<TState>(
-    fn: (payload: TPayload, state: TState) => TState
-  ): {
-    [key: string]: ActionReducer<TState, TPayload>;
-  };
+    handler: ActionFolder<TState, TPayload>
+  ): Record<string, ActionReducer<TState, TPayload>>;
 }

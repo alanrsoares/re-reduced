@@ -9,7 +9,7 @@ export type Node<TLeaf> = TLeaf | Tree<TLeaf>;
  * Represents a tree-like structure where the leaves have type TLeaf
  */
 export interface Tree<TLeaf> {
-  [k: string]: Node<TLeaf>;
+  [key: string]: Node<TLeaf>;
 }
 
 /**
