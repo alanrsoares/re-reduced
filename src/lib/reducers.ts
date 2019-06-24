@@ -2,7 +2,12 @@ import { Reducer } from "redux";
 import mergeAll from "ramda/src/mergeAll";
 import merge from "ramda/src/merge";
 
-import { ActionReducerMap, ActionCreator, ActionReducer } from "./core";
+import {
+  ActionReducerMap,
+  ActionCreator,
+  ActionReducer,
+  ActionFolder,
+} from "./core";
 
 export function createReducer<TState>(
   handlers: ActionReducerMap<TState> | ActionReducerMap<TState>[],
@@ -47,12 +52,43 @@ export function match<
   actions: TActions,
   reducer: ActionReducer<TState, InferPayload<TActions>>
 ): ActionReducerMap<TState> {
-  if (Array.isArray(actions)) {
-    return actions.reduce(
-      (acc, action) => merge(acc, action.reduce(reducer)),
-      {}
-    );
-  } else {
-    return (actions as ActionCreator<InferPayload<TActions>>).reduce(reducer);
-  }
+  return Array.isArray(actions)
+    ? actions.reduce(
+        (acc: ActionReducerMap<TState>, action: ActionCreator<any>) =>
+          merge(acc, action.reduce(reducer)),
+        {}
+      )
+    : (actions as ActionCreator<InferPayload<TActions>>).reduce(reducer);
 }
+
+/**
+ * registers a reducer handler for one or many actions
+ *
+ * @param action
+ * @param reducer
+ */
+export function matchF<
+  TState,
+  TActions extends ActionCreator<any> | ActionCreator<any>[]
+>(
+  actions: TActions,
+  reducer: ActionFolder<TState, InferPayload<TActions>>
+): ActionReducerMap<TState> {
+  return Array.isArray(actions)
+    ? actions.reduce(
+        (acc: ActionReducerMap<TState>, action: ActionCreator<any>) =>
+          merge(acc, action.fold(reducer)),
+        {}
+      )
+    : (actions as ActionCreator<InferPayload<TActions>>).fold(reducer);
+}
+
+/**
+ * pointfree helper for action.reduce
+ */
+export const reduce = match;
+
+/**
+ * pointfree helper for action.fold
+ */
+export const fold = matchF;

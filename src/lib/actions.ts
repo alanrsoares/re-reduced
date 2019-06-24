@@ -1,5 +1,3 @@
-import flip from "ramda/src/flip";
-
 import {
   ActionCreator,
   ActionCreatorOptions,
@@ -40,7 +38,7 @@ export function createAction<TPayload = void, TMeta = any>(
   });
 
   actionCreator.fold = <TState>(handler: ActionFolder<TState, TPayload>) => ({
-    [actionCreator.type]: flip(handler),
+    [actionCreator.type]: (state: TState, payload) => handler(payload)(state),
   });
 
   return actionCreator;

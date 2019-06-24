@@ -1,3 +1,5 @@
+import add from "ramda/src/add";
+
 import {
   createAsyncAction,
   createActions,
@@ -16,13 +18,11 @@ describe("Reducers", () => {
 
       const INITIAL_STATE = 0;
 
-      const add = (a: number, b: number) => a + b;
-
       const reducer = createReducer<number>(
         [
-          actions.increment.reduce(state => state + 1),
-          actions.decrement.reduce(state => state - 1),
-          actions.adjust.fold(add),
+          actions.increment.reduce(add(1)),
+          actions.decrement.reduce(add(-1)),
+          actions.adjust.fold(n => add(n)),
         ],
         INITIAL_STATE
       );

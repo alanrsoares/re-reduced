@@ -27,9 +27,8 @@ export type ActionReducer<TState, TPayload> = (
 ) => TState;
 
 export type ActionFolder<TState, TPayload> = (
-  payload: TPayload,
-  state: TState
-) => TState;
+  payload: TPayload
+) => (state: TState) => TState;
 
 /**
  * A map-like structure where values are action-reducers
