@@ -29,20 +29,20 @@ export type SimpleMapStateToProps<TResult, TState> = (state: TState) => TResult;
 /**
  * Return mappedState.
  *
- * @param selectorOrMapState either normal mapStateToProps (without ownProps as 2nd parameter) or selectorSpecs
+ * @param stateMapper either normal mapStateToProps (without ownProps as 2nd parameter) or selectorSpecs
  */
 export function useReduxState<TResult, TState = any>(
-  selectorOrMapState:
+  stateMapper:
     | SelectorSpec<TResult, TState>
     | SimpleMapStateToProps<TResult, TState>
 ): TResult {
   const stateToProps = useMemo(() => {
-    return typeof selectorOrMapState === "object"
+    return typeof stateMapper === "object"
       ? // selector
-        applySpec<TResult>(selectorOrMapState)
+        applySpec<TResult>(stateMapper)
       : // mapStateFn
-        selectorOrMapState;
-  }, [selectorOrMapState]);
+        stateMapper;
+  }, [stateMapper]);
 
   const state = useSelector<TState, TResult>(stateToProps);
   return state;

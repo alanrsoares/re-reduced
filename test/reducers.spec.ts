@@ -5,7 +5,7 @@ import {
   createActions,
   createAction,
 } from "../src/lib/actions";
-import { createReducer, match } from "../src/lib/reducers";
+import { createReducer, match, composeReducers } from "../src/lib/reducers";
 
 describe("Reducers", () => {
   describe("createReducer", () => {
@@ -70,6 +70,38 @@ describe("Reducers", () => {
       );
 
       expect(reducer(undefined, action)).toBe("BAR");
+    });
+  });
+
+  describe("composeReducers", () => {
+    it("should combine two or reducers of the same state", () => {
+      const actions = createActions("COUNTER", create => ({
+        adjust: create.action<number>(),
+        decrement: create.action(),
+        increment: create.action(),
+      }));
+
+      const INITIAL_STATE = 0;
+
+      const reducerA = createReducer<number>(
+        [
+          match(actions.increment, a => a + 1),
+          match(actions.adjust, (state, payload) => state + payload),
+        ],
+        INITIAL_STATE
+      );
+
+      const reducerB = createReducer<number>(
+        actions.decrement.reduce(a => a - 1),
+        INITIAL_STATE
+      );
+
+      const reducer = composeReducers(reducerA, reducerB);
+
+      expect(reducer(0, actions.increment())).toBe(1);
+      expect(reducer(0, actions.decrement())).toBe(-1);
+      expect(reducer(10, actions.adjust(-5))).toBe(5);
+      expect(reducer(10, actions.adjust(5))).toBe(15);
     });
   });
 
