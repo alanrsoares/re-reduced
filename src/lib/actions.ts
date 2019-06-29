@@ -4,6 +4,8 @@ import {
   AsyncAction,
   ActionReducer,
   ActionFolder,
+  PartialActionFolder,
+  PartialActionReducer,
 } from "./core";
 import { toSnakeCase } from "../helpers/strings";
 
@@ -37,7 +39,19 @@ export function createAction<TPayload = void, TMeta = any>(
     [actionCreator.type]: handler,
   });
 
+  actionCreator.reduceP = <TState>(
+    handler: PartialActionReducer<TState, TPayload>
+  ) => ({
+    [actionCreator.type]: (state: TState, payload) => handler(state)(payload),
+  });
+
   actionCreator.fold = <TState>(handler: ActionFolder<TState, TPayload>) => ({
+    [actionCreator.type]: (state: TState, payload) => handler(payload, state),
+  });
+
+  actionCreator.foldP = <TState>(
+    handler: PartialActionFolder<TState, TPayload>
+  ) => ({
     [actionCreator.type]: (state: TState, payload) => handler(payload)(state),
   });
 

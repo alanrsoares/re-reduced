@@ -26,7 +26,16 @@ export type ActionReducer<TState, TPayload> = (
   payload: TPayload
 ) => TState;
 
+export type PartialActionReducer<TState, TPayload> = (
+  state: TState
+) => (payload: TPayload) => TState;
+
 export type ActionFolder<TState, TPayload> = (
+  payload: TPayload,
+  state: TState
+) => TState;
+
+export type PartialActionFolder<TState, TPayload> = (
   payload: TPayload
 ) => (state: TState) => TState;
 
@@ -58,7 +67,15 @@ export interface ActionCreator<TPayload = void, TMeta = any> {
     handler: ActionReducer<TState, TPayload>
   ): Record<string, ActionReducer<TState, TPayload>>;
 
+  reduceP<TState>(
+    handler: PartialActionReducer<TState, TPayload>
+  ): Record<string, ActionReducer<TState, TPayload>>;
+
   fold<TState>(
     handler: ActionFolder<TState, TPayload>
+  ): Record<string, ActionReducer<TState, TPayload>>;
+
+  foldP<TState>(
+    handler: PartialActionFolder<TState, TPayload>
   ): Record<string, ActionReducer<TState, TPayload>>;
 }
