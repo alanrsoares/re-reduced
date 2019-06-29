@@ -5,9 +5,7 @@ export interface ToDo {
   tags: string[];
 }
 
-export interface ToDoMap {
-  [id: string]: ToDo;
-}
+export type ToDoMap = Record<string, ToDo>;
 
 export const Filters = {
   All: "All",

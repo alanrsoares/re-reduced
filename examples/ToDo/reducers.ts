@@ -4,7 +4,7 @@ import dissoc from "ramda/src/dissoc";
 import assoc from "ramda/src/assoc";
 import indexBy from "ramda/src/indexBy";
 
-import { createReducer, match } from "../../src";
+import { createReducer, match, foldP } from "../../src";
 
 import actions from "./actions";
 import { State, ToDoMap } from "./types";
@@ -19,9 +19,7 @@ const INITIAL_STATE: State = {
 const byId = createReducer<ToDoMap>(
   [
     match(actions.fetch.success, (_, todos) => indexBy(todo => todo.id, todos)),
-    match([actions.add.success, actions.update], (state, todo) =>
-      assoc(todo.id, todo, state)
-    ),
+    foldP([actions.add.success, actions.update], todo => assoc(todo.id, todo)),
     match(actions.delete, (state, todoId) => dissoc(todoId, state)),
   ],
   INITIAL_STATE.byId

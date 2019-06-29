@@ -12,7 +12,7 @@ export const counter = createReducer<number>(
   [
     actions.increment.reduce(add(1)),
     actions.decrement.reduce(add(-1)),
-    actions.adjust.fold(payload => add(payload)),
+    actions.adjust.foldP(payload => add(payload)),
   ],
   INITIAL_STATE
 );
