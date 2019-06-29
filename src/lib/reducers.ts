@@ -30,6 +30,10 @@ export function createReducer<TState>(
   };
 }
 
+/**
+ * Composes an array of reducers of a state type TState and
+ * @param reducers
+ */
 export function composeReducers<TState>(...reducers: Reducer<TState>[]) {
   return (<TAction extends AnyAction>(state: TState, action: TAction) =>
     reducers.reduce(

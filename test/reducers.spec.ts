@@ -22,7 +22,7 @@ describe("Reducers", () => {
         [
           actions.increment.reduce(add(1)),
           actions.decrement.reduce(add(-1)),
-          actions.adjust.fold(n => add(n)),
+          actions.adjust.foldP(add as (a: number) => (b: number) => number),
         ],
         INITIAL_STATE
       );
