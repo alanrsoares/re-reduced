@@ -1,16 +1,22 @@
-import add from "ramda/src/add";
-
 import {
   createAsyncAction,
   createActions,
   createAction,
 } from "../src/lib/actions";
-import { createReducer, match, composeReducers } from "../src/lib/reducers";
+
+import {
+  createReducer,
+  match,
+  composeReducers,
+  foldP,
+} from "../src/lib/reducers";
+
+const add = (a: number) => (b: number) => a + b;
 
 describe("Reducers", () => {
   describe("createReducer", () => {
     it("should create a reducer that's able to reduce the actions assigned to it", () => {
-      const actions = createActions("COUNTER", create => ({
+      const actions = createActions(create => ({
         adjust: create.action<number>(),
         decrement: create.action(),
         increment: create.action(),
@@ -22,7 +28,7 @@ describe("Reducers", () => {
         [
           actions.increment.reduce(add(1)),
           actions.decrement.reduce(add(-1)),
-          actions.adjust.foldP(add as (a: number) => (b: number) => number),
+          actions.adjust.foldP(add),
         ],
         INITIAL_STATE
       );
@@ -35,7 +41,7 @@ describe("Reducers", () => {
     });
 
     it("should create a reducer that's able to reduce the actions assigned to it (using match)", () => {
-      const actions = createActions("COUNTER", create => ({
+      const actions = createActions(create => ({
         adjust: create.action<number>(),
         decrement: create.action(),
         increment: create.action(),
@@ -45,9 +51,9 @@ describe("Reducers", () => {
 
       const reducer = createReducer<number>(
         [
-          match(actions.increment, state => state + 1),
-          match(actions.decrement, state => state - 1),
-          match(actions.adjust, (state, payload) => state + payload),
+          match(actions.increment, add(1)),
+          match(actions.decrement, add(-1)),
+          foldP(actions.adjust, add),
         ],
         INITIAL_STATE
       );
@@ -84,10 +90,7 @@ describe("Reducers", () => {
       const INITIAL_STATE = 0;
 
       const reducerA = createReducer<number>(
-        [
-          match(actions.increment, a => a + 1),
-          match(actions.adjust, (state, payload) => state + payload),
-        ],
+        [match(actions.increment, add(1)), foldP(actions.adjust, add)],
         INITIAL_STATE
       );
 
