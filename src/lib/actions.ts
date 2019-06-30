@@ -1,3 +1,6 @@
+import uncurryN from "ramda/src/uncurryN";
+import flip from "ramda/src/flip";
+
 import {
   ActionCreator,
   ActionCreatorOptions,
@@ -33,29 +36,21 @@ export function createAction<TPayload = void, TMeta = any>(
 
   actionCreator.type = $type;
 
-  actionCreator.reduce = <TState>(
-    handler: ActionReducer<TState, TPayload>
-  ) => ({
-    [actionCreator.type]: handler,
+  return Object.assign(actionCreator, {
+    type: $type,
+    reduce: <TState>(handler: ActionReducer<TState, TPayload>) => ({
+      [actionCreator.type]: handler,
+    }),
+    reduceP: <TState>(handler: PartialActionReducer<TState, TPayload>) => ({
+      [actionCreator.type]: uncurryN(2, handler),
+    }),
+    fold: <TState>(handler: ActionFolder<TState, TPayload>) => ({
+      [actionCreator.type]: flip(handler),
+    }),
+    foldP: <TState>(handler: PartialActionFolder<TState, TPayload>) => ({
+      [actionCreator.type]: flip(uncurryN(2, handler)),
+    }),
   });
-
-  actionCreator.reduceP = <TState>(
-    handler: PartialActionReducer<TState, TPayload>
-  ) => ({
-    [actionCreator.type]: (state: TState, payload) => handler(state)(payload),
-  });
-
-  actionCreator.fold = <TState>(handler: ActionFolder<TState, TPayload>) => ({
-    [actionCreator.type]: (state: TState, payload) => handler(payload, state),
-  });
-
-  actionCreator.foldP = <TState>(
-    handler: PartialActionFolder<TState, TPayload>
-  ) => ({
-    [actionCreator.type]: (state: TState, payload) => handler(payload)(state),
-  });
-
-  return actionCreator;
 }
 
 /**
