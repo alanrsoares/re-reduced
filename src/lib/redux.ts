@@ -63,7 +63,8 @@ export const bindActionCreators = <TActions extends Tree<ActionCreator<any>>>(
 
 export const applySelectors = <TProps = {}, TState = {}, TOwnProps = {}>(
   spec: SelectorSpec<TProps, TState, TOwnProps>
-): MapStateToProps<Partial<TProps>, TOwnProps, TState> => applySpec(spec);
+): MapStateToProps<Partial<TProps>, TOwnProps, TState> =>
+  applySpec<Partial<TProps>>(spec);
 
 /**
  * connectWithActions

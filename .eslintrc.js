@@ -22,7 +22,7 @@ module.exports = {
   },
   plugins: ["react"],
   rules: {
-    "@typescript-eslint/no-explicit-any": false,
-    "@typescript-eslint/explicit-function-return-type": false,
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/explicit-function-return-type": 0,
   },
 };
