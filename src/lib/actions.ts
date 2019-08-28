@@ -106,11 +106,9 @@ export function createActions<
   namespace: string,
   actionsContructor: (api: typeof CreateActionsAPI) => T
 ): ActionCreatorMap<T>;
-export function createActions() {
-  const namespace: string | undefined =
-    arguments.length === 1 ? undefined : arguments[0];
-  const actionsContructor =
-    arguments.length === 1 ? arguments[0] : arguments[1];
+export function createActions(...args: any[]) {
+  const namespace: string | undefined = args.length === 1 ? undefined : args[0];
+  const actionsContructor = args.length === 1 ? args[0] : args[1];
   const defs = actionsContructor(CreateActionsAPI);
 
   return Object.keys(defs).reduce((acc, key) => {
