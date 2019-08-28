@@ -66,8 +66,17 @@ export function createAsyncAction<TResult, TPayload = void, TFailure = Error>(
   const asyncAction: AsyncAction<TResult, TPayload, TFailure> = Object.assign(
     createAction<TPayload>(type, namespace),
     {
+      /**
+       * action to be dispatched before an async call
+       */
       request: createAction(`${type}_REQUEST`, namespace),
+      /**
+       * action to be dispatched upon a successfull async call
+       */
       success: createAction<TResult>(`${type}_SUCCESS`, namespace),
+      /**
+       * action to be dispatched upon a failed async call
+       */
       failure: createAction<TFailure>(`${type}_FAILURE`, namespace),
     }
   );
