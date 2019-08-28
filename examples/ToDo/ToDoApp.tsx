@@ -24,7 +24,7 @@ interface State {
   editingId: string | undefined;
 }
 
-class App extends React.Component<Props, State> {
+export class App extends React.Component<Props, State> {
   public state: State = {
     filter: "All",
     editingId: undefined,
