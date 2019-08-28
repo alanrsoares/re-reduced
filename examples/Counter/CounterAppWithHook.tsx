@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { useActions, useReduxState } from "../../src";
 
@@ -27,13 +27,16 @@ export default function Counter(props) {
   const stateSelector = useStateFn ? stateSelectorAsFn : stateSelectorAsObj;
   const { count, isOdd, isPositive } = useReduxState(stateSelector);
 
-  const counterStyle: React.CSSProperties = {
-    color: isPositive ? (isOdd ? colors.odd : colors.even) : colors.negative,
-    fontWeight: "bold",
-    paddingLeft: 5,
-    paddingRight: 5,
-    width: 50,
-  };
+  const counterStyle: React.CSSProperties = useMemo(
+    () => ({
+      color: isPositive ? (isOdd ? colors.odd : colors.even) : colors.negative,
+      fontWeight: "bold",
+      paddingLeft: 5,
+      paddingRight: 5,
+      width: 50,
+    }),
+    [isOdd, isPositive]
+  );
 
   return (
     <div>
