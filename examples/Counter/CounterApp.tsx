@@ -24,7 +24,7 @@ function Counter(props: Props) {
     fontWeight: "bold",
     paddingLeft: 5,
     paddingRight: 5,
-    width: 50
+    width: 50,
   };
 
   return (
@@ -53,7 +53,7 @@ function Counter(props: Props) {
 const enhance = connectWithActions<Props>(actions, {
   count: selectors.getCounter,
   isOdd: selectors.getCounterIsOdd,
-  isPositive: selectors.getCounterIsPositive
+  isPositive: selectors.getCounterIsPositive,
 });
 
 export default enhance(Counter);

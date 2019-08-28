@@ -2,10 +2,6 @@
   Styles addapted from https://github.com/tastejs/todomvc-app-css/blob/master/index.css
 */
 
-.react-live-preview {
-  background-color: #2e3440;
-}
-
 .hidden {
   display: none;
 }

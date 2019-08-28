@@ -31,11 +31,11 @@ class App extends React.Component<Props, State> {
     newToDoTitle: "",
   };
 
-  componentDidMount() {
+  public componentDidMount() {
     this.props.actions.fetch();
   }
 
-  get filteredItems() {
+  private get filteredItems() {
     switch (this.state.filter) {
       case Filters.Active:
         return this.props.activeTodos;
