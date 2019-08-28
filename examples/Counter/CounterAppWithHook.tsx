@@ -21,7 +21,7 @@ const stateSelectorAsFn = (state: any) => ({
 });
 
 export default function Counter(props) {
-  const { useStateFn = false } = props
+  const { useStateFn = false } = props;
   const { decrement, increment, adjust } = useActions(actions);
 
   const stateSelector = useStateFn ? stateSelectorAsFn : stateSelectorAsObj;
