@@ -48,6 +48,13 @@
       "pre-commit": "lint-staged"
     }
   },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "pretty-quick",
+      "git add"
+    ]
+  },
   "prettier": {
     "printWidth": 80,
     "semi": true,
@@ -87,11 +94,5 @@
   },
   "dependencies": {
     "ramda": "^0.26.1"
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
-      "git add"
-    ]
   }
 }
