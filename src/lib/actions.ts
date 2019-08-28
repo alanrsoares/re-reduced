@@ -24,33 +24,29 @@ export function createAction<TPayload = void, TMeta = any>(
 ) {
   const $type = toSnakeCase(namespace ? `${namespace}/${type}` : type);
 
-  const actionCreator = ((
-    payload: TPayload,
-    options?: ActionCreatorOptions<TMeta>
-  ) => ({
-    error: options ? options.error : undefined,
-    meta: options ? options.meta : undefined,
-    payload,
-    type: $type,
-  })) as ActionCreator<TPayload, TMeta>;
-
-  actionCreator.type = $type;
-
-  return Object.assign(actionCreator, {
-    type: $type,
-    reduce: <TState>(handler: ActionReducer<TState, TPayload>) => ({
-      [actionCreator.type]: handler,
+  return Object.assign(
+    (payload: TPayload, options?: ActionCreatorOptions<TMeta>) => ({
+      error: options ? options.error : undefined,
+      meta: options ? options.meta : undefined,
+      payload,
+      type: $type,
     }),
-    reduceP: <TState>(handler: PartialActionReducer<TState, TPayload>) => ({
-      [actionCreator.type]: uncurryN(2, handler),
-    }),
-    fold: <TState>(handler: ActionFolder<TState, TPayload>) => ({
-      [actionCreator.type]: flip(handler),
-    }),
-    foldP: <TState>(handler: PartialActionFolder<TState, TPayload>) => ({
-      [actionCreator.type]: flip(uncurryN(2, handler)),
-    }),
-  });
+    {
+      type: $type,
+      reduce: <TState>(handler: ActionReducer<TState, TPayload>) => ({
+        [$type]: handler,
+      }),
+      reduceP: <TState>(handler: PartialActionReducer<TState, TPayload>) => ({
+        [$type]: uncurryN(2, handler),
+      }),
+      fold: <TState>(handler: ActionFolder<TState, TPayload>) => ({
+        [$type]: flip(handler),
+      }),
+      foldP: <TState>(handler: PartialActionFolder<TState, TPayload>) => ({
+        [$type]: flip(uncurryN(2, handler)),
+      }),
+    }
+  ) as ActionCreator<TPayload, TMeta>;
 }
 
 /**
@@ -63,25 +59,11 @@ export function createAsyncAction<TResult, TPayload = void, TFailure = Error>(
   type: string,
   namespace?: string
 ) {
-  const asyncAction: AsyncAction<TResult, TPayload, TFailure> = Object.assign(
-    createAction<TPayload>(type, namespace),
-    {
-      /**
-       * action to be dispatched before an async call
-       */
-      request: createAction(`${type}_REQUEST`, namespace),
-      /**
-       * action to be dispatched upon a successfull async call
-       */
-      success: createAction<TResult>(`${type}_SUCCESS`, namespace),
-      /**
-       * action to be dispatched upon a failed async call
-       */
-      failure: createAction<TFailure>(`${type}_FAILURE`, namespace),
-    }
-  );
-
-  return asyncAction;
+  return Object.assign(createAction<TPayload>(type, namespace), {
+    request: createAction(`${type}_REQUEST`, namespace),
+    success: createAction<TResult>(`${type}_SUCCESS`, namespace),
+    failure: createAction<TFailure>(`${type}_FAILURE`, namespace),
+  }) as AsyncAction<TResult, TPayload, TFailure>;
 }
 
 export type ActionCreatorMap<

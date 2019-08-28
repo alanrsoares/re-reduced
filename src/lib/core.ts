@@ -13,8 +13,17 @@ export interface Action<T = void, TMeta = any> {
  */
 export interface AsyncAction<TResult, TPayload = void, TError = Error>
   extends ActionCreator<TPayload> {
+  /**
+   * action to be dispatched before an async call
+   */
   request: ActionCreator<void>;
+  /**
+   * action to be dispatched upon a successfull async call
+   */
   success: ActionCreator<TResult>;
+  /**
+   * action to be dispatched upon a failed async call
+   */
   failure: ActionCreator<TError>;
 }
 
@@ -58,23 +67,38 @@ export interface ActionCreatorOptions<TMeta> {
  * An action-creator is a function capable of creating a type-safe Flux Standard Action (FSA)
  */
 export interface ActionCreator<TPayload = void, TMeta = any> {
+  /**
+   * action creator function
+   */
   (payload: TPayload, options?: ActionCreatorOptions<TMeta>): Action<
     TPayload,
     TMeta
   >;
+  /**
+   * actions's string type
+   */
   type: string;
+  /**
+   * handles an action with a classic `reducer` function that takes state and payload as arguments
+   */
   reduce<TState>(
     handler: ActionReducer<TState, TPayload>
   ): Record<string, ActionReducer<TState, TPayload>>;
-
+  /**
+   * handles an action with a `partial reducer` function that takes state and payload as arguments
+   */
   reduceP<TState>(
     handler: PartialActionReducer<TState, TPayload>
   ): Record<string, ActionReducer<TState, TPayload>>;
-
+  /**
+   * handles an action with a classic `folder` function that takes payload and state as arguments
+   */
   fold<TState>(
     handler: ActionFolder<TState, TPayload>
   ): Record<string, ActionReducer<TState, TPayload>>;
-
+  /**
+   * handles an action with a `partial folder` function that takes payload and state as arguments
+   */
   foldP<TState>(
     handler: PartialActionFolder<TState, TPayload>
   ): Record<string, ActionReducer<TState, TPayload>>;
