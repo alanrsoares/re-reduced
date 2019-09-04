@@ -1,6 +1,7 @@
 import uncurryN from "ramda/src/uncurryN";
 import flip from "ramda/src/flip";
 
+import { toSnakeCase } from "../helpers/strings";
 import {
   ActionCreator,
   ActionCreatorOptions,
@@ -9,9 +10,7 @@ import {
   ActionFolder,
   PartialActionFolder,
   PartialActionReducer,
-  Action,
 } from "./core";
-import { toSnakeCase } from "../helpers/strings";
 
 /**
  * returns an action-creator function
@@ -70,7 +69,7 @@ export function createAsyncAction<TResult, TPayload = void, TFailure = Error>(
 
 export type BaseActionCreatorMap = Record<
   string,
-  (type: string, namespace?: string) => Action<any> | AsyncAction<any, any>
+  (type: string, namespace?: string) => any
 >;
 
 export type ActionCreatorMap<T extends BaseActionCreatorMap> = {
