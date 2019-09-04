@@ -14,10 +14,12 @@ export const getToDos = createSelector(
   (byId, idList) => idList.map(id => byId[id])
 );
 
-export const getActiveToDos = createSelector(getToDos, todos =>
-  todos.filter(todo => !todo.isCompleted)
+export const getActiveToDos = createSelector(
+  getToDos,
+  todos => todos.filter(todo => !todo.isCompleted)
 );
 
-export const getCompletedToDos = createSelector(getToDos, todos =>
-  todos.filter(todo => todo.isCompleted)
+export const getCompletedToDos = createSelector(
+  getToDos,
+  todos => todos.filter(todo => todo.isCompleted)
 );

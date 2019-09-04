@@ -31,6 +31,6 @@ export default function* sagaWatcher() {
     takeLatest(actions.fetch.type, fetchToDos),
     takeLatest(actions.add.type, addToDos),
     takeLatest(actions.update.type, updateToDo),
-    takeLatest(actions.delete.type, deleteToDo)
+    takeLatest(actions.delete.type, deleteToDo),
   ]);
 }

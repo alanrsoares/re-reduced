@@ -9,22 +9,26 @@ export interface Action<T = void, TMeta = any> {
 }
 
 /**
- * A composite Action to handle async workflows with nested actions for request, success and failure
+ * A composite Action to handle async workflows with nested actions for `request`, `success`, `failure` and `cancel`
  */
 export interface AsyncAction<TResult, TPayload = void, TError = Error>
   extends ActionCreator<TPayload> {
   /**
-   * action to be dispatched before an async call
+   * action to be dispatched before an async task
    */
   request: ActionCreator<void>;
   /**
-   * action to be dispatched upon a successfull async call
+   * action to be dispatched upon a successfull async task
    */
   success: ActionCreator<TResult>;
   /**
-   * action to be dispatched upon a failed async call
+   * action to be dispatched upon a failed async task
    */
   failure: ActionCreator<TError>;
+  /**
+   * action to be dispatched to cancel an async task
+   */
+  cancel: ActionCreator<void>;
 }
 
 /**

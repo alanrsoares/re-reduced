@@ -9,6 +9,7 @@ import {
   ActionFolder,
   PartialActionFolder,
   PartialActionReducer,
+  Action,
 } from "./core";
 import { toSnakeCase } from "../helpers/strings";
 
@@ -63,12 +64,18 @@ export function createAsyncAction<TResult, TPayload = void, TFailure = Error>(
     request: createAction(`${type}_REQUEST`, namespace),
     success: createAction<TResult>(`${type}_SUCCESS`, namespace),
     failure: createAction<TFailure>(`${type}_FAILURE`, namespace),
+    cancel: createAction(`${type}_CANCEL`, namespace),
   }) as AsyncAction<TResult, TPayload, TFailure>;
 }
 
-export type ActionCreatorMap<
-  T extends Record<string, (type: string, namespace?: string) => any>
-> = { [P in keyof T]: ReturnType<T[P]> };
+export type BaseActionCreatorMap = Record<
+  string,
+  (type: string, namespace?: string) => Action<any> | AsyncAction<any, any>
+>;
+
+export type ActionCreatorMap<T extends BaseActionCreatorMap> = {
+  [P in keyof T]: ReturnType<T[P]>;
+};
 
 export class CreateActionsAPI {
   public static action = <TPayload = void, TMeta = any>() => (
@@ -82,23 +89,25 @@ export class CreateActionsAPI {
   ) => createAsyncAction<TResult, TPayload, TError>(type, namespace);
 }
 
+export type ActionsConstructor<T> = (api: typeof CreateActionsAPI) => T;
+
 /**
  * Creates an object with namespaced action-creators
  *
  * @param namespace - string - a namespace to be prepended to the generated action types
  * @param actionsContructor
  */
-export function createActions<
-  T extends Record<string, (type: string, namespace?: string) => any>
->(actionsContructor: (api: typeof CreateActionsAPI) => T): ActionCreatorMap<T>;
-export function createActions<
-  T extends Record<string, (type: string, namespace?: string) => any>
->(
-  namespace: string,
-  actionsContructor: (api: typeof CreateActionsAPI) => T
+export function createActions<T extends BaseActionCreatorMap>(
+  actionsContructor: ActionsConstructor<T>
 ): ActionCreatorMap<T>;
-export function createActions(...args: any[]) {
-  const namespace: string | undefined = args.length === 1 ? undefined : args[0];
+export function createActions<T extends BaseActionCreatorMap>(
+  namespace: string,
+  actionsContructor: ActionsConstructor<T>
+): ActionCreatorMap<T>;
+export function createActions<T extends BaseActionCreatorMap>(
+  ...args: [ActionsConstructor<T>] | [string, ActionsConstructor<T>]
+) {
+  const namespace = args.length === 1 ? undefined : args[0];
   const actionsContructor = args.length === 1 ? args[0] : args[1];
   const defs = actionsContructor(CreateActionsAPI);
 

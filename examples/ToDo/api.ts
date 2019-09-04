@@ -5,7 +5,7 @@ const LS_KEY = "re-reduced:todo_app";
 
 const paths = {
   todos: `${LS_KEY}/todos`,
-  tags: `${LS_KEY}/tags`
+  tags: `${LS_KEY}/tags`,
 };
 
 export const fetchToDos = async () => {
@@ -16,7 +16,7 @@ export const fetchToDos = async () => {
 export const addToDo = async (todo: Partial<ToDo>) => {
   const $todo = {
     ...todo,
-    id: `todo-id-${Date.now()}`
+    id: `todo-id-${Date.now()}`,
   } as ToDo;
 
   const todos = await fetchToDos();
@@ -38,8 +38,8 @@ export const deleteToDo = async (id: string) => {
 export const patchToDo = async (updatedToDo: ToDo) => {
   const todos = await fetchToDos();
 
-  const updatedToDos = todos.map(
-    todo => (todo.id === updatedToDo.id ? updatedToDo : todo)
+  const updatedToDos = todos.map(todo =>
+    todo.id === updatedToDo.id ? updatedToDo : todo
   );
 
   localStorage.setItem(paths.todos, JSON.stringify(updatedToDos));
