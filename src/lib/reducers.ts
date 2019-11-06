@@ -126,10 +126,13 @@ export function fold<
 }
 
 /**
- * Registers a reducer handler for one or many actions
+ * Registers a reducer handler for one or multiple actions
  *
- * @param action
- * @param reducer
+ * @template TState - the reducer state
+ * @template TActions
+ *
+ * @param actions - a single action creator or multiple action creators
+ * @param reducer - a `PartialActionFolder`: TPayload -> TState -> TState
  */
 export function foldP<
   TState,
