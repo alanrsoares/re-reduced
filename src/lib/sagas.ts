@@ -30,6 +30,13 @@ export interface APIWorkerHooks<TResult, TFailure, TAction> {
   ): IterableIterator<APIWorkerHookEffect<TFailure>>;
 }
 
+/**
+ * Higher order saga for handling common remote resource fetching and error handling routines
+ *
+ * @param asyncAction
+ * @param asyncHandler
+ * @param hooks
+ */
 export function apiWorkerFactory<
   TResult,
   TPayload = void,

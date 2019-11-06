@@ -11,6 +11,12 @@ import {
   PartialActionFolder,
 } from "./core";
 
+/**
+ * Creates a redux standard reducer for a state `TState` from an `ActionHandlerMap<State>`
+ *
+ * @param handlers
+ * @param initialState
+ */
 export function createReducer<TState>(
   handlers: ActionReducerMap<TState> | ActionReducerMap<TState>[],
   initialState: TState
@@ -31,7 +37,8 @@ export function createReducer<TState>(
 }
 
 /**
- * Composes an array of reducers of a state type TState and
+ * Composes any number of reducers of a state type TState into a single reducer of that state type
+ *
  * @param reducers
  */
 export function composeReducers<TState>(...reducers: Reducer<TState>[]) {
@@ -54,7 +61,7 @@ export type InferPayload<T> = T extends ActionCreator<infer U>[]
   : never;
 
 /**
- * registers a reducer handler for one or many actions
+ * Registers a reducer handler for one or many actions
  *
  * @param action
  * @param reducer
@@ -76,7 +83,7 @@ export function reduce<
 }
 
 /**
- * registers a reducer handler for one or many actions
+ * Registers a reducer handler for one or many actions
  *
  * @param action
  * @param reducer
@@ -98,7 +105,7 @@ export function reduceP<
 }
 
 /**
- * registers a reducer handler for one or many actions
+ * Registers a reducer handler for one or many actions
  *
  * @param action
  * @param reducer
@@ -119,7 +126,7 @@ export function fold<
 }
 
 /**
- * registers a reducer handler for one or many actions
+ * Registers a reducer handler for one or many actions
  *
  * @param action
  * @param reducer
@@ -140,11 +147,11 @@ export function foldP<
 }
 
 /**
- *  @deprecated temporary alias for reduce
+ *  @deprecated temporary alias for `reduce`
  */
 export const match = reduce;
 
 /**
- *  @deprecated temporary alias for foldP
+ *  @deprecated temporary alias for `foldP`
  */
 export const matchF = foldP;

@@ -27,7 +27,7 @@ export function useActions<TActions extends Tree<ActionCreator<any>> = {}>(
 export type SimpleMapStateToProps<TResult, TState> = (state: TState) => TResult;
 
 /**
- * Return mappedState.
+ * Returns the deriver redux state based on a map of state seelctors
  *
  * @param stateMapper either normal mapStateToProps (without ownProps as 2nd parameter) or selectorSpecs
  */
