@@ -10336,6 +10336,14 @@ npm-bundled@^1.0.1:
   resolved "https://registry.yarnpkg.com/npm-bundled/-/npm-bundled-1.0.6.tgz#e7ba9aadcef962bb61248f91721cd932b3fe6bdd"
   integrity sha512-8/JCaftHwbd//k6y2rEWp6k1wxVfpFzB6t1p825+cUb7Ym2XQfhwIC5KwhrvzZRJu+LtDE585zVaS32+CGtf0g==
 
+npm-greenbot@^0.1.9:
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/npm-greenbot/-/npm-greenbot-0.1.9.tgz#fc983d6287378c54a889bba3fd11306343226d61"
+  integrity sha512-BEjPO8C4IRY9dsxiLpqhXPLzUOY5mDtbLLAZNKCmPg7gQj2WyEhb6j9ZGWoC6XEzG/zQGH4+CrbzZwvkhzkssw==
+  dependencies:
+    express "^4.17.1"
+    package-json "^6.5.0"
+
 npm-packlist@^1.1.6:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/npm-packlist/-/npm-packlist-1.4.4.tgz#866224233850ac534b63d1a6e76050092b5d2f44"
@@ -10807,7 +10815,7 @@ package-json@^4.0.0:
     registry-url "^3.0.3"
     semver "^5.1.0"
 
-package-json@^6.3.0:
+package-json@^6.3.0, package-json@^6.5.0:
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/package-json/-/package-json-6.5.0.tgz#6feedaca35e75725876d0b0e64974697fed145b0"
   integrity sha512-k3bdm2n25tkyxcjSKzB5x8kfVxlMdgsbPr0GkZcwHsLpba6cBjqCt1KlcChKEvxHIcTB1FVMuwoijZ26xex5MQ==
