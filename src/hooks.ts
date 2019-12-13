@@ -3,7 +3,7 @@ import applySpec from "ramda/src/applySpec";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { Tree } from "../helpers/objects";
+import { Tree } from "./helpers/objects";
 import { ActionCreator } from "./core";
 import { bindActionCreators, SelectorSpec } from "./redux";
 

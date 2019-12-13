@@ -7,7 +7,7 @@ import {
 import { compose, Dispatch } from "redux";
 
 import { ActionCreator } from "./core";
-import { transformTree, Tree } from "../helpers/objects";
+import { transformTree, Tree } from "./helpers/objects";
 
 export type Dispatcher<T = any> = (payload: T) => void;
 
@@ -39,11 +39,7 @@ export interface ConnectWithActions {
 
 const toDispatcher = (dispatch: Dispatch) => <TPayload>(
   action: ActionCreator<TPayload>
-) =>
-  compose<Dispatcher<TPayload>>(
-    dispatch,
-    action
-  );
+) => compose<Dispatcher<TPayload>>(dispatch, action);
 
 /**
  * bindActionCreators
@@ -96,8 +92,5 @@ export const connectWithActions: ConnectWithActions = <
       ? applySelectors(mapStateToProps)
       : mapStateToProps;
 
-  return connect(
-    stateToProps,
-    bindActionCreators(actions)
-  );
+  return connect(stateToProps, bindActionCreators(actions));
 };

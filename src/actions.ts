@@ -1,7 +1,7 @@
 import uncurryN from "ramda/src/uncurryN";
 import flip from "ramda/src/flip";
 
-import { toSnakeCase } from "../helpers/strings";
+import { toSnakeCase } from "./helpers/strings";
 import {
   ActionCreator,
   ActionCreatorOptions,

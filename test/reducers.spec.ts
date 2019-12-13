@@ -1,15 +1,6 @@
-import {
-  createAsyncAction,
-  createActions,
-  createAction,
-} from "../src/lib/actions";
+import { createAsyncAction, createActions, createAction } from "../src/actions";
 
-import {
-  createReducer,
-  match,
-  composeReducers,
-  foldP,
-} from "../src/lib/reducers";
+import { createReducer, match, composeReducers, foldP } from "../src/reducers";
 
 const add = (a: number) => (b: number) => a + b;
 

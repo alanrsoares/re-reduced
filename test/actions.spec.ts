@@ -3,7 +3,7 @@ import {
   createActions,
   createAsyncAction,
   CreateActionsAPI,
-} from "../src/lib/actions";
+} from "../src/actions";
 
 describe("Actions", () => {
   describe("createAction", () => {
