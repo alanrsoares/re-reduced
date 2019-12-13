@@ -5,7 +5,8 @@ node_modules
 .rts2_cache_es
 .rts2_cache_umd
 .rts2_cache_esm
-dist
+dist/
+es/
 coverage/
 .vscode/
 .docz/
