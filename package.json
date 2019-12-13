@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "start": "tsdx watch",
-    "build": "tsdx build",
+    "build": "scripts/build.sh",
     "test": "tsdx test",
     "test:coverage": "tsdx test --coverage",
     "prepare": "npm run build",
