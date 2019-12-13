@@ -6,7 +6,8 @@
   "module": "dist/re-reduced.esm.production.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "es"
   ],
   "scripts": {
     "start": "tsdx watch",
