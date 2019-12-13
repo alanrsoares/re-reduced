@@ -1,6 +1,6 @@
 {
   "name": "re-reduced",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "main": "dist/index.js",
   "umd:main": "dist/re-reduced.umd.production.js",
   "module": "dist/re-reduced.esm.production.js",
