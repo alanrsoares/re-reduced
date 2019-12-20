@@ -14,18 +14,20 @@ interface Props {
   actions: typeof actions;
 }
 
+const getCounterStyle = (props: Props): React.CSSProperties => ({
+  color: props.isPositive
+    ? props.isOdd
+      ? colors.odd
+      : colors.even
+    : colors.negative,
+  fontWeight: "bold",
+  paddingLeft: 5,
+  paddingRight: 5,
+  width: 50,
+});
+
 function Counter(props: Props) {
-  const counterStyle: React.CSSProperties = {
-    color: props.isPositive
-      ? props.isOdd
-        ? colors.odd
-        : colors.even
-      : colors.negative,
-    fontWeight: "bold",
-    paddingLeft: 5,
-    paddingRight: 5,
-    width: 50,
-  };
+  const counterStyle = getCounterStyle(props);
 
   return (
     <div>
