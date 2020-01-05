@@ -11,10 +11,11 @@
   ],
   "scripts": {
     "start": "tsdx watch",
-    "build": "scripts/build.sh",
+    "build": "tsdx build",
     "test": "tsdx test",
     "test:coverage": "tsdx test --coverage",
     "prepare": "npm run build",
+    "prepublish": "scripts/build_es.sh",
     "prepublishOnly": "npm test",
     "postversion": "git push && git push --tags",
     "docz": "docz dev",

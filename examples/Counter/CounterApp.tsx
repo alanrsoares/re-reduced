@@ -5,7 +5,7 @@ import actions from "./actions";
 import * as selectors from "./selectors";
 import { colors } from "./constants";
 
-import Button from "./Button";
+import { Button } from "./components";
 
 interface Props {
   count: number;

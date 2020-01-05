@@ -1,6 +1,5 @@
 #!/bin/bash
 
-yarn tsdx build
 yarn tsc -p tsconfig.json --outDir es_temp
 
 rm -rf es/

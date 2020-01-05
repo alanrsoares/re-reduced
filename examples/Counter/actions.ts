@@ -1,6 +1,8 @@
 import { createActions } from "../../src";
 
-export default createActions("COUNTER", create => ({
+const NAMESPACE = "COUNTER";
+
+export default createActions(NAMESPACE, create => ({
   adjust: create.action<number>(),
   decrement: create.action(),
   increment: create.action(),
