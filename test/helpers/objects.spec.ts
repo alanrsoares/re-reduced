@@ -1,5 +1,7 @@
 import { transformTree } from "../../src/helpers/objects";
 
+/* eslint-disable @typescript-eslint/camelcase */
+
 describe("Helpers - Objects", () => {
   describe("transformTree", () => {
     it("should apply a recursive transform function to nodes in a tree-like object", () => {
