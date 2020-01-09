@@ -55,9 +55,10 @@ export type PartialActionFolder<TState, TPayload> = (
 /**
  * A map-like structure where values are action-reducers
  */
-export interface ActionReducerMap<TState> {
-  [key: string]: ActionReducer<TState, any>;
-}
+export type ActionReducerMap<TState> = Record<
+  string,
+  ActionReducer<TState, any>
+>;
 
 /**
  * Optional configuration for action-creators

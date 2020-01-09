@@ -1,7 +1,7 @@
 import uncurryN from "ramda/src/uncurryN";
 import flip from "ramda/src/flip";
 
-import { toSnakeCase } from "./helpers/strings";
+import { toUpperSnakeCase } from "./helpers/strings";
 import {
   ActionCreator,
   ActionCreatorOptions,
@@ -22,31 +22,38 @@ export function createAction<TPayload = void, TMeta = any>(
   type: string,
   namespace?: string
 ) {
-  const $type = toSnakeCase(namespace ? `${namespace}/${type}` : type);
+  const $type = toUpperSnakeCase(namespace ? `${namespace}/${type}` : type);
 
-  return Object.assign(
-    (payload: TPayload, options?: ActionCreatorOptions<TMeta>) => ({
-      error: options ? options.error : undefined,
-      meta: options ? options.meta : undefined,
-      payload,
-      type: $type,
+  const baseActionCreator = (
+    payload: TPayload,
+    options?: ActionCreatorOptions<TMeta>
+  ) => ({
+    error: options ? options.error : undefined,
+    meta: options ? options.meta : undefined,
+    payload,
+    type: $type,
+  });
+
+  const extensions = {
+    type: $type,
+    reduce: <TState>(handler: ActionReducer<TState, TPayload>) => ({
+      [$type]: handler,
     }),
-    {
-      type: $type,
-      reduce: <TState>(handler: ActionReducer<TState, TPayload>) => ({
-        [$type]: handler,
-      }),
-      reduceP: <TState>(handler: PartialActionReducer<TState, TPayload>) => ({
-        [$type]: uncurryN(2, handler),
-      }),
-      fold: <TState>(handler: ActionFolder<TState, TPayload>) => ({
-        [$type]: flip(handler),
-      }),
-      foldP: <TState>(handler: PartialActionFolder<TState, TPayload>) => ({
-        [$type]: flip(uncurryN(2, handler)),
-      }),
-    }
-  ) as ActionCreator<TPayload, TMeta>;
+    reduceP: <TState>(handler: PartialActionReducer<TState, TPayload>) => ({
+      [$type]: uncurryN(2, handler),
+    }),
+    fold: <TState>(handler: ActionFolder<TState, TPayload>) => ({
+      [$type]: flip(handler),
+    }),
+    foldP: <TState>(handler: PartialActionFolder<TState, TPayload>) => ({
+      [$type]: flip(uncurryN(2, handler)),
+    }),
+  };
+
+  return Object.assign(baseActionCreator, extensions) as ActionCreator<
+    TPayload,
+    TMeta
+  >;
 }
 
 /**
@@ -59,12 +66,19 @@ export function createAsyncAction<TResult, TPayload = void, TFailure = Error>(
   type: string,
   namespace?: string
 ) {
-  return Object.assign(createAction<TPayload>(type, namespace), {
+  const baseAction = createAction<TPayload>(type, namespace);
+  const extensions = {
     request: createAction(`${type}_REQUEST`, namespace),
     success: createAction<TResult>(`${type}_SUCCESS`, namespace),
     failure: createAction<TFailure>(`${type}_FAILURE`, namespace),
     cancel: createAction(`${type}_CANCEL`, namespace),
-  }) as AsyncAction<TResult, TPayload, TFailure>;
+  };
+
+  return Object.assign(baseAction, extensions) as AsyncAction<
+    TResult,
+    TPayload,
+    TFailure
+  >;
 }
 
 export type BaseActionCreatorMap = Record<
