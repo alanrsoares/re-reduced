@@ -6,7 +6,7 @@ import {
 } from "react-redux";
 import { compose, Dispatch } from "redux";
 
-import { ActionCreator, AsyncAction, Action } from "./core";
+import { ActionCreator, AsyncAction } from "./core";
 import { transformTree, Tree } from "./helpers/objects";
 
 export type Dispatcher<T = any> = (payload: T) => void;
