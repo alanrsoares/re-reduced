@@ -50,10 +50,26 @@ describe("Actions", () => {
 
       const fetchMovies = createAsyncAction<Movie[]>("FETCH", "MOVIES");
 
+      const MOCK_RESULT: Movie[] = [];
+      const MOCK_ERROR = new Error("foo");
+
       expect(fetchMovies()).toEqual({ type: "MOVIES/FETCH" });
+      expect(fetchMovies.request()).toEqual({ type: "MOVIES/FETCH_REQUEST" });
       expect(fetchMovies.request.type).toBe("MOVIES/FETCH_REQUEST");
+      expect(fetchMovies.success(MOCK_RESULT)).toEqual({
+        type: "MOVIES/FETCH_SUCCESS",
+        payload: MOCK_RESULT,
+      });
       expect(fetchMovies.success.type).toBe("MOVIES/FETCH_SUCCESS");
+      expect(fetchMovies.failure(MOCK_ERROR)).toEqual({
+        type: "MOVIES/FETCH_FAILURE",
+        payload: MOCK_ERROR,
+      });
       expect(fetchMovies.failure.type).toBe("MOVIES/FETCH_FAILURE");
+      expect(fetchMovies.cancel()).toEqual({
+        type: "MOVIES/FETCH_CANCEL",
+      });
+      expect(fetchMovies.cancel.type).toBe("MOVIES/FETCH_CANCEL");
     });
 
     it("should create a group of actions to handle async flows (CreateActionsAPI)", () => {
@@ -71,6 +87,7 @@ describe("Actions", () => {
       expect(fetchMovies.request.type).toBe("MOVIES/FETCH_REQUEST");
       expect(fetchMovies.success.type).toBe("MOVIES/FETCH_SUCCESS");
       expect(fetchMovies.failure.type).toBe("MOVIES/FETCH_FAILURE");
+      expect(fetchMovies.cancel.type).toBe("MOVIES/FETCH_CANCEL");
     });
   });
 
@@ -85,6 +102,11 @@ describe("Actions", () => {
       expect(typeof actions.doSomething).toBe("function");
       expect(actions.doSomething.type).toBe("DO_SOMETHING");
       expect(actions.doSomethingElse.type).toBe("DO_SOMETHING_ELSE");
+
+      expect(typeof actions.doSomethingAsync).toBe("function");
+      expect(typeof actions.doSomethingAsync.request).toBe("function");
+      expect(typeof actions.doSomethingAsync.success).toBe("function");
+      expect(typeof actions.doSomethingAsync.failure).toBe("function");
       expect(actions.doSomethingAsync.type).toBe("DO_SOMETHING_ASYNC");
     });
 
