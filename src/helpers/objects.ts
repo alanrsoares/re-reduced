@@ -18,12 +18,15 @@ export interface Tree<TLeaf> {
  * @param transform - a function to be applied to each leaf
  * @param tree - a tree-like object with deeply nested props
  */
-export const transformTree = <TLeft, TRight>(
+export function transformTree<TLeft, TRight>(
   transform: (value: TLeft, key: string) => TRight,
   tree: Tree<TLeft>
-): Tree<TRight> =>
-  mapObjIndexed((value: Node<TLeft>, key: string): Node<TRight> => {
-    return typeof value === "object"
-      ? transformTree(transform, value as Tree<TLeft>)
-      : (transform(value, key) as TRight);
-  }, tree);
+): Tree<TRight> {
+  return mapObjIndexed<Node<TLeft>, Node<TRight>>(
+    (value, key) =>
+      typeof value === "object"
+        ? transformTree(transform, value as Tree<TLeft>)
+        : transform(value, key),
+    tree
+  );
+}
