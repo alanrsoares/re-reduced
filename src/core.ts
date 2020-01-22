@@ -33,7 +33,7 @@ export interface AsyncActionCreator<TResult, TPayload = void, TError = Error>
 
 /**
  *  @deprecated temporary alias for AsyncActionCreator
- * will be removed in v3.x
+ * this alias will be removed in v3.x
  */
 export type AsyncAction<
   TResult,
