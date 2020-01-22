@@ -51,10 +51,9 @@
     }
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
+    "*.{js,jsx,ts,tsx}": [
       "eslint --fix",
-      "pretty-quick",
-      "git add"
+      "pretty-quick"
     ]
   },
   "prettier": {
@@ -65,11 +64,11 @@
   "devDependencies": {
     "@types/jest": "^24.9.0",
     "@types/ramda": "^0.26.39",
-    "@types/react": "^16.9.17",
+    "@types/react": "^16.9.18",
     "@types/react-redux": "^7.1.6",
     "@types/styled-components": "^4.4.2",
-    "@typescript-eslint/eslint-plugin": "^2.16.0",
-    "@typescript-eslint/parser": "^2.16.0",
+    "@typescript-eslint/eslint-plugin": "^2.17.0",
+    "@typescript-eslint/parser": "^2.17.0",
     "docz": "^2.2.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.0.1",
@@ -78,8 +77,8 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.18.0",
-    "husky": "^4.0.10",
-    "lint-staged": "^9.5.0",
+    "husky": "^4.2.0",
+    "lint-staged": "^10.0.1",
     "prettier": "^1.19.1",
     "pretty-quick": "^2.0.1",
     "react": "^16.12.0",
