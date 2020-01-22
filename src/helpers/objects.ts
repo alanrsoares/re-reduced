@@ -30,3 +30,19 @@ export function transformTree<TLeft, TRight>(
     tree
   );
 }
+
+/**
+ * Verifies whether the `target` has all the properties in `props`
+ *
+ * @param props
+ * @param target
+ */
+export function hasOwnProps<T extends {}, P extends keyof T>(
+  props: P[],
+  target: T
+) {
+  const hasOwnProp = (prop: P) =>
+    Object.prototype.hasOwnProperty.call(target, prop);
+
+  return props.every(hasOwnProp);
+}

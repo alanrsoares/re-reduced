@@ -10,7 +10,7 @@ import {
   SelectEffect,
 } from "redux-saga/effects";
 
-import { Action, AsyncAction } from "./core";
+import { Action, AsyncActionCreator } from "./core";
 
 export type APIWorkerHookEffect<TPayload, TCombiner = any> =
   | PutEffect<Action<TPayload>>
@@ -42,7 +42,7 @@ export function apiWorkerFactory<
   TPayload = void,
   TFailure extends Error = Error
 >(
-  asyncAction: AsyncAction<TResult, TPayload>,
+  asyncAction: AsyncActionCreator<TResult, TPayload>,
   asyncHandler: TPayload extends void | undefined
     ? () => Promise<TResult>
     : (payload: TPayload) => Promise<TResult>,

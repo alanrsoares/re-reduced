@@ -11,7 +11,7 @@ export interface Action<T = void, TMeta = any> {
 /**
  * A composite Action to handle async workflows with nested actions for `request`, `success`, `failure` and `cancel`
  */
-export interface AsyncAction<TResult, TPayload = void, TError = Error>
+export interface AsyncActionCreator<TResult, TPayload = void, TError = Error>
   extends ActionCreator<TPayload> {
   /**
    * action to be dispatched before an async task
@@ -30,6 +30,14 @@ export interface AsyncAction<TResult, TPayload = void, TError = Error>
    */
   cancel: ActionCreator<void>;
 }
+/**
+ * type alias for AsyncActionCreator
+ */
+export type AsyncAction<
+  TResult,
+  TPayload = void,
+  TError = Error
+> = AsyncActionCreator<TResult, TPayload, TError>;
 
 /**
  * A reducer-like function that is handled by a specific action

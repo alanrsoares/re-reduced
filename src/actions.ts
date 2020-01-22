@@ -5,7 +5,7 @@ import { toUpperSnakeCase } from "./helpers/strings";
 import {
   ActionCreator,
   ActionCreatorOptions,
-  AsyncAction,
+  AsyncActionCreator,
   ActionReducer,
   ActionFolder,
   PartialActionFolder,
@@ -74,17 +74,16 @@ export function createAsyncAction<TResult, TPayload = void, TFailure = Error>(
     cancel: createAction(`${type}_CANCEL`, namespace),
   };
 
-  return Object.assign(baseAction, extensions) as AsyncAction<
+  return Object.assign(baseAction, extensions) as AsyncActionCreator<
     TResult,
     TPayload,
     TFailure
   >;
 }
 
-export type BaseActionCreatorMap = Record<
-  string,
-  (type: string, namespace?: string) => any
->;
+export type ActionCreatorFactory = (type: string, namespace?: string) => any;
+
+export type BaseActionCreatorMap = Record<string, ActionCreatorFactory>;
 
 export type ActionCreatorMap<T extends BaseActionCreatorMap> = {
   [P in keyof T]: ReturnType<T[P]>;
@@ -124,8 +123,8 @@ export function createActions<T extends BaseActionCreatorMap>(
   const actionsContructor = args.length === 1 ? args[0] : args[1];
   const defs = actionsContructor(CreateActionsAPI);
 
-  return Object.keys(defs).reduce((acc, key) => {
-    const action = defs[key](key, namespace);
+  return Object.entries(defs).reduce((acc, [key, value]) => {
+    const action = value(key, namespace);
 
     return { ...acc, [key]: action };
   }, {});

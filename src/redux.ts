@@ -6,8 +6,8 @@ import {
 } from "react-redux";
 import { compose, Dispatch } from "redux";
 
-import { ActionCreator, AsyncAction } from "./core";
-import { transformTree, Tree } from "./helpers/objects";
+import { ActionCreator, AsyncActionCreator } from "./core";
+import { transformTree, Tree, hasOwnProps } from "./helpers/objects";
 
 export type Dispatcher<T = any> = (payload: T) => void;
 
@@ -37,15 +37,17 @@ export interface ConnectWithActions {
   ): InferableComponentEnhancerWithProps<TProps, TOwnProps>;
 }
 
-const isAsyncActionCreator = (
-  action: ActionCreator<any> | AsyncAction<unknown, void>
-) => {
-  const props = ["request", "success", "failure", "cancel"];
-  return props.every(prop => Object.getOwnPropertyNames(action).includes(prop));
-};
+function isAsyncActionCreator<T>(
+  action: AsyncActionCreator<unknown, T> | ActionCreator<T>
+) {
+  return hasOwnProps(
+    ["request", "success", "failure", "cancel"],
+    action as AsyncActionCreator<unknown, T>
+  );
+}
 
 const toDispatcher = (dispatch: Dispatch) => <TPayload>(
-  action: ActionCreator<TPayload>
+  action: ActionCreator<TPayload> | AsyncActionCreator<any, TPayload>
 ) => {
   const baseDispatcher = compose<Dispatcher<TPayload>>(dispatch, action);
 
@@ -53,7 +55,7 @@ const toDispatcher = (dispatch: Dispatch) => <TPayload>(
     return baseDispatcher;
   }
 
-  const asyncAction = (action as any) as AsyncAction<any, TPayload>;
+  const asyncAction = action as AsyncActionCreator<any, TPayload>;
 
   const extensions = {
     request: compose(dispatch, asyncAction.request),
