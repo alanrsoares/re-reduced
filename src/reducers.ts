@@ -51,6 +51,7 @@ export function composeReducers<TState>(...reducers: Reducer<TState>[]) {
 
 /**
  *  @deprecated temporary alias for createReducer
+ * this alias will be removed in v3.x
  */
 export const handleActions = createReducer;
 
@@ -151,10 +152,12 @@ export function foldP<
 
 /**
  *  @deprecated temporary alias for `reduce`
+ * this alias will be removed in v3.x
  */
 export const match = reduce;
 
 /**
  *  @deprecated temporary alias for `foldP`
+ * this alias will be removed in v3.x
  */
 export const matchF = foldP;
