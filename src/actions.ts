@@ -123,9 +123,11 @@ export function createActions<T extends BaseActionCreatorMap>(
   const actionsContructor = args.length === 1 ? args[0] : args[1];
   const defs = actionsContructor(CreateActionsAPI);
 
-  return Object.entries(defs).reduce((acc, [key, value]) => {
-    const action = value(key, namespace);
-
-    return { ...acc, [key]: action };
-  }, {});
+  return Object.entries(defs).reduce(
+    (actionCreatorMap, [key, factory]) => ({
+      ...actionCreatorMap,
+      [key]: factory(key, namespace),
+    }),
+    {} as ActionCreatorMap<T>
+  );
 }
