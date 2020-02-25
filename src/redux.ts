@@ -1,10 +1,10 @@
-import applySpec from "ramda/src/applySpec";
+import { compose, Dispatch } from "redux";
 import {
   connect,
   InferableComponentEnhancerWithProps,
   MapStateToProps,
 } from "react-redux";
-import { compose, Dispatch } from "redux";
+import applySpec from "ramda/src/applySpec";
 
 import { ActionCreator, AsyncActionCreator } from "./core";
 import { transformTree, Tree, hasOwnProps } from "./helpers/objects";
