@@ -29,8 +29,8 @@ With Yarn: `yarn add re-reduced`
 
 ## Examples
 
-- [Counter](/examples/Counter) - Counter app using both `connectWithActions` and `react hooks`
-- [ToDo](/examples/ToDo) - ToDo app using `connectWithActions`, selectors and async integration
+- [Counter](/examples/counter) - Counter app using both `connectWithActions` and `react hooks`
+- [ToDo](/examples/todo) - ToDo app using `connectWithActions`, selectors and async integration
 
 ### Go check out the [docs](https://re-reduced.netlify.com/)!
 
