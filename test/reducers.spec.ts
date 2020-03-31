@@ -7,7 +7,7 @@ const add = (a: number) => (b: number) => a + b;
 describe("Reducers", () => {
   describe("createReducer", () => {
     it("should create a reducer that's able to reduce the actions assigned to it", () => {
-      const actions = createActions(create => ({
+      const actions = createActions((create) => ({
         adjust: create.action<number>(),
         decrement: create.action(),
         increment: create.action(),
@@ -32,7 +32,7 @@ describe("Reducers", () => {
     });
 
     it("should create a reducer that's able to reduce the actions assigned to it (using match)", () => {
-      const actions = createActions(create => ({
+      const actions = createActions((create) => ({
         adjust: create.action<number>(),
         decrement: create.action(),
         increment: create.action(),
@@ -72,7 +72,7 @@ describe("Reducers", () => {
 
   describe("composeReducers", () => {
     it("should combine two or reducers of the same state", () => {
-      const actions = createActions("COUNTER", create => ({
+      const actions = createActions("COUNTER", (create) => ({
         adjust: create.action<number>(),
         decrement: create.action(),
         increment: create.action(),
@@ -86,7 +86,7 @@ describe("Reducers", () => {
       );
 
       const reducerB = createReducer<number>(
-        actions.decrement.reduce(a => a - 1),
+        actions.decrement.reduce((a) => a - 1),
         INITIAL_STATE
       );
 

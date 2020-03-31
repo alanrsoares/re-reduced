@@ -93,7 +93,7 @@ describe("Actions", () => {
 
   describe("createActions", () => {
     describe("with no namespace", () => {
-      const actions = createActions(create => ({
+      const actions = createActions((create) => ({
         doSomething: create.action(),
         doSomethingElse: create.action(),
         doSomethingAsync: create.asyncAction(),
@@ -111,7 +111,7 @@ describe("Actions", () => {
     });
 
     describe("with namespace", () => {
-      const actions = createActions("FOOS", create => ({
+      const actions = createActions("FOOS", (create) => ({
         doSomething: create.action(),
         doSomethingElse: create.action(),
         doSomethingAsync: create.asyncAction(),

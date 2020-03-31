@@ -19,9 +19,11 @@ const INITIAL_STATE: State = {
 const byId = createReducer<ToDoMap>(
   [
     reduce(actions.fetch.success, (_, todos) =>
-      indexBy(todo => todo.id, todos)
+      indexBy((todo) => todo.id, todos)
     ),
-    foldP([actions.add.success, actions.update], todo => assoc(todo.id, todo)),
+    foldP([actions.add.success, actions.update], (todo) =>
+      assoc(todo.id, todo)
+    ),
     reduce(actions.delete, (state, todoId) => dissoc(todoId, state)),
   ],
   INITIAL_STATE.byId
@@ -29,10 +31,10 @@ const byId = createReducer<ToDoMap>(
 
 const idList = createReducer<string[]>(
   [
-    reduce(actions.fetch.success, (_, todos) => todos.map(todo => todo.id)),
+    reduce(actions.fetch.success, (_, todos) => todos.map((todo) => todo.id)),
     reduce(actions.add.success, (state, todo) => state.concat(todo.id)),
     reduce(actions.delete, (state, todoId) =>
-      state.filter(id => id !== todoId)
+      state.filter((id) => id !== todoId)
     ),
   ],
   INITIAL_STATE.idList

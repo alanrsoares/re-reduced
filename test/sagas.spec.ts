@@ -46,7 +46,7 @@ describe("Sagas", () => {
       it("should also handle a saga triggered by an action with a payload", () => {
         const triggerAction = createAsyncAction<string[], string>("FETCH_FOOS");
         const mockApiResponse = ["foo", "bar", "baz"];
-        const mockApiCall = (_id: string) => Promise.resolve(mockApiResponse);
+        const mockApiCall = () => Promise.resolve(mockApiResponse);
 
         const saga = apiWorkerFactory<string[], string>(
           triggerAction,

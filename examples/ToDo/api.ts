@@ -28,7 +28,7 @@ export const addToDo = async (todo: Partial<ToDo>) => {
 
 export const deleteToDo = async (id: string) => {
   const todos = await fetchToDos();
-  const filtered = todos.filter(todo => todo.id !== id);
+  const filtered = todos.filter((todo) => todo.id !== id);
 
   localStorage.setItem(paths.todos, JSON.stringify(filtered));
 
@@ -38,7 +38,7 @@ export const deleteToDo = async (id: string) => {
 export const patchToDo = async (updatedToDo: ToDo) => {
   const todos = await fetchToDos();
 
-  const updatedToDos = todos.map(todo =>
+  const updatedToDos = todos.map((todo) =>
     todo.id === updatedToDo.id ? updatedToDo : todo
   );
 

@@ -11,15 +11,13 @@ export const getToDosIsAdding = (state: State) => state.isAdding;
 export const getToDos = createSelector(
   getToDosById,
   getToDosIdList,
-  (byId, idList) => idList.map(id => byId[id])
+  (byId, idList) => idList.map((id) => byId[id])
 );
 
-export const getActiveToDos = createSelector(
-  getToDos,
-  todos => todos.filter(todo => !todo.isCompleted)
+export const getActiveToDos = createSelector(getToDos, (todos) =>
+  todos.filter((todo) => !todo.isCompleted)
 );
 
-export const getCompletedToDos = createSelector(
-  getToDos,
-  todos => todos.filter(todo => todo.isCompleted)
+export const getCompletedToDos = createSelector(getToDos, (todos) =>
+  todos.filter((todo) => todo.isCompleted)
 );

@@ -1,4 +1,8 @@
-import * as React from "react";
+import React, {
+  KeyboardEventHandler,
+  ChangeEventHandler,
+  MouseEventHandler,
+} from "react";
 
 import { connectWithActions } from "../../src";
 
@@ -46,12 +50,16 @@ export class App extends React.Component<Props, State> {
     }
   }
 
-  public handleSelectFilter = (filter: Filter) => e => {
+  public handleSelectFilter = (
+    filter: Filter
+  ): MouseEventHandler<HTMLAnchorElement> => (e) => {
     e.preventDefault();
     this.setState({ filter });
   };
 
-  public handleSelectForEdit = (todo: ToDo) => e => {
+  public handleSelectForEdit = (
+    todo: ToDo
+  ): MouseEventHandler<HTMLLabelElement> => (e) => {
     e.stopPropagation();
     if (!todo.isCompleted) {
       this.setState({ editingId: todo.id });
@@ -64,25 +72,27 @@ export class App extends React.Component<Props, State> {
     this.props.actions.delete(todo.id);
   };
 
-  public handleNewToDoChange = e => {
+  public handleNewToDoChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     this.setState({ newToDoTitle: e.target.value });
   };
 
-  public handleNewToDoKeyDown = e => {
+  public handleNewToDoKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key === "Enter") {
       this.props.actions.add({
-        title: e.target.value,
+        title: (e.target as HTMLInputElement).value,
       });
       this.setState({ newToDoTitle: "" });
     }
   };
 
-  public handleEditingToDoKeyDown = (todo: ToDo) => e => {
+  public handleEditingToDoKeyDown = (
+    todo: ToDo
+  ): KeyboardEventHandler<HTMLInputElement> => (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
       this.props.actions.update({
         ...todo,
-        title: e.target.value,
+        title: (e.target as HTMLInputElement).value,
       });
       this.setState({ editingId: undefined });
     }
@@ -93,10 +103,11 @@ export class App extends React.Component<Props, State> {
   };
 
   public handleToggleAll = () => {
-    const everyCompleted = this.filteredItems.every(todo => todo.isCompleted);
+    const everyCompleted = this.filteredItems.every((todo) => todo.isCompleted);
 
     this.setState({ editingId: undefined });
-    this.filteredItems.forEach(todo =>
+
+    this.filteredItems.forEach((todo) =>
       this.props.actions.update({
         ...todo,
         isCompleted: !everyCompleted,
@@ -105,7 +116,7 @@ export class App extends React.Component<Props, State> {
   };
 
   public handleClearCompleted = () => {
-    this.props.completedTodos.forEach(todo =>
+    this.props.completedTodos.forEach((todo) =>
       this.props.actions.delete(todo.id)
     );
   };
@@ -151,7 +162,7 @@ export class App extends React.Component<Props, State> {
           className="toggle-all"
           type="checkbox"
           onChange={this.handleToggleAll}
-          defaultChecked={this.filteredItems.every(todo => todo.isCompleted)}
+          defaultChecked={this.filteredItems.every((todo) => todo.isCompleted)}
         />
         <label htmlFor="toggle-all">Mark all as complete</label>
         {this.renderList()}
@@ -224,7 +235,7 @@ export class App extends React.Component<Props, State> {
         <ul className="filters">
           {Object.keys(Filters)
             // only needed to prevent a Docz related runtime issue
-            .filter(key => !key.startsWith("_"))
+            .filter((key) => !key.startsWith("_"))
             .map(this.renderFilter)}
         </ul>
         <button className="clear-completed" onClick={this.handleClearCompleted}>
