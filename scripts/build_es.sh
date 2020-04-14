@@ -7,5 +7,5 @@ yarn tsc -p tsconfig.json --outDir es_temp
 rm -rf es/
 
 # replace with freshly built es modules
-mv es_temp/src es/
+mv es_temp/ es/
 rm -rf es_temp/
