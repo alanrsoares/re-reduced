@@ -9,6 +9,8 @@ import applySpec from "ramda/src/applySpec";
 import { ActionCreator, AsyncActionCreator } from "./core";
 import { transformTree, Tree, hasOwnProps } from "./helpers/objects";
 
+export { connect, connectAdvanced } from "react-redux";
+
 export type Dispatcher<T = any> = (payload: T) => void;
 
 export type SelectorSpec<TProps, TState, TOwnProps extends {} = any> = {
