@@ -1,4 +1,4 @@
-![# Re-reduced](/docs/assets/logo-positive.png)
+![# Re-reduced](/src/gatsby-theme-docz/assets/logo-positive.png)
 
 [![npm module](https://badge.fury.io/js/re-reduced.svg)](https://www.npmjs.org/package/re-reduced)
 [![bundle size minified](https://badgen.net/bundlephobia/min/re-reduced)](https://bundlephobia.com/result?p=re-reduced)
