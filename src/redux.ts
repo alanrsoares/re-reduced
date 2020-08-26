@@ -13,24 +13,28 @@ export { connect, connectAdvanced } from "react-redux";
 
 export type Dispatcher<T = any> = (payload: T) => void;
 
-export type SelectorSpec<TProps, TState, TOwnProps extends {} = any> = {
+export type SelectorSpec<
+  TProps,
+  TState,
+  TOwnProps extends Record<string, any> = any
+> = {
   [P in keyof TProps]: (state: TState, ownProps?: TOwnProps) => TProps[P];
 };
 
 export interface ConnectWithActions {
   <
     TProps extends { actions: TActions },
-    TOwnProps extends {} = any,
-    TActions extends Tree<ActionCreator<any>> = {}
+    TOwnProps extends Record<string, any> = any,
+    TActions extends Tree<ActionCreator<any>> = Record<string, any>
   >(
     actions: TActions
   ): InferableComponentEnhancerWithProps<TProps, TOwnProps>;
 
   <
     TProps extends { actions: TActions },
-    TOwnProps extends {} = any,
-    TState extends {} = any,
-    TActions extends Tree<ActionCreator<any>> = {}
+    TOwnProps extends Record<string, any> = any,
+    TState extends Record<string, any> = any,
+    TActions extends Tree<ActionCreator<any>> = Record<string, any>
   >(
     actions: TActions,
     mapStateToProps:
@@ -78,14 +82,18 @@ const toDispatcher = (dispatch: Dispatch) => <TPayload>(
  */
 export const bindActionCreators = <TActions extends Tree<ActionCreator<any>>>(
   actions: TActions
-) => (dispatch: Dispatch) => ({
+) => (dispatch: Dispatch): { actions: TActions } => ({
   actions: transformTree<ActionCreator, Dispatcher>(
     toDispatcher(dispatch),
     actions
   ) as TActions,
 });
 
-export const applySelectors = <TProps = {}, TState = {}, TOwnProps = {}>(
+export const applySelectors = <
+  TProps = Record<string, any>,
+  TState = Record<string, any>,
+  TOwnProps = Record<string, any>
+>(
   spec: SelectorSpec<TProps, TState, TOwnProps>
 ): MapStateToProps<Partial<TProps>, TOwnProps, TState> =>
   applySpec<Partial<TProps>>(spec);
@@ -106,9 +114,9 @@ export const applySelectors = <TProps = {}, TState = {}, TOwnProps = {}>(
  */
 export const connectWithActions: ConnectWithActions = <
   TProps extends { actions: TActions },
-  TOwnProps extends {} = any,
-  TState extends {} = any,
-  TActions extends Tree<ActionCreator<any>> = {}
+  TOwnProps extends Record<string, any> = any,
+  TState extends Record<string, any> = any,
+  TActions extends Tree<ActionCreator<any>> = Record<string, any>
 >(
   actions: TActions,
   mapStateToProps?:

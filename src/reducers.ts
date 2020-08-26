@@ -41,7 +41,9 @@ export function createReducer<TState>(
  *
  * @param reducers
  */
-export function composeReducers<TState>(...reducers: Reducer<TState>[]) {
+export function composeReducers<TState>(
+  ...reducers: Reducer<TState>[]
+): Reducer<TState, AnyAction> {
   return (<TAction extends AnyAction>(state: TState, action: TAction) =>
     reducers.reduce(
       (nextState, reducer) => reducer(nextState, action),

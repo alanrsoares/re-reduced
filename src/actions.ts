@@ -21,7 +21,7 @@ import {
 export function createAction<TPayload = void, TMeta = any>(
   type: string,
   namespace?: string
-) {
+): ActionCreator<TPayload, TMeta> {
   const $type = toUpperSnakeCase(namespace ? `${namespace}/${type}` : type);
 
   const baseActionCreator = (
@@ -65,7 +65,7 @@ export function createAction<TPayload = void, TMeta = any>(
 export function createAsyncAction<TResult, TPayload = void, TFailure = Error>(
   type: string,
   namespace?: string
-) {
+): AsyncActionCreator<TResult, TPayload, TFailure> {
   const baseAction = createAction<TPayload>(type, namespace);
   const extensions = {
     request: createAction(`${type}_REQUEST`, namespace),
@@ -93,12 +93,14 @@ export class CreateActionsAPI {
   public static action = <TPayload = void, TMeta = any>() => (
     type: string,
     namespace?: string
-  ) => createAction<TPayload, TMeta>(type, namespace);
+  ): ActionCreator<TPayload, TMeta> =>
+    createAction<TPayload, TMeta>(type, namespace);
 
   public static asyncAction = <TResult, TPayload = void, TError = Error>() => (
     type: string,
     namespace?: string
-  ) => createAsyncAction<TResult, TPayload, TError>(type, namespace);
+  ): AsyncActionCreator<TResult, TPayload, TError> =>
+    createAsyncAction<TResult, TPayload, TError>(type, namespace);
 }
 
 export type ActionsConstructor<T> = (api: typeof CreateActionsAPI) => T;
@@ -118,7 +120,7 @@ export function createActions<T extends BaseActionCreatorMap>(
 ): ActionCreatorMap<T>;
 export function createActions<T extends BaseActionCreatorMap>(
   ...args: [ActionsConstructor<T>] | [string, ActionsConstructor<T>]
-) {
+): ActionCreatorMap<T> {
   const namespace = args.length === 1 ? undefined : args[0];
   const actionsContructor = args.length === 1 ? args[0] : args[1];
   const defs = actionsContructor(CreateActionsAPI);

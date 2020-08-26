@@ -1,4 +1,4 @@
-import { combineReducers } from "redux";
+import { combineReducers, Reducer } from "redux";
 import uniq from "ramda/src/uniq";
 import always from "ramda/src/always";
 import mergeLeft from "ramda/src/mergeLeft";
@@ -16,7 +16,9 @@ export function createRequestReducer<
   TResult = any,
   TPayload = void,
   TError = Error
->(action: AsyncAction<TResult, TPayload, TError>) {
+>(
+  action: AsyncAction<TResult, TPayload, TError>
+): Reducer<RequestState<TError>> {
   const INITIAL_STATE: RequestState<TError> = REQUEST_INITIAL_STATE;
 
   return createReducer<RequestState<TError>>(
@@ -63,7 +65,7 @@ export function createAsyncCollectionReducer<
   idKey: keyof TData;
   initialState?: Partial<AsyncCollection<TData, TError>>;
   mergeStrategy?: "merge" | "overwrite"; // default = overwrite
-}) {
+}): Reducer<AsyncCollection<TData, TError>> {
   type TState = AsyncCollection<TData, TError>;
 
   const defaultState: TState = ASYNC_COLLECTION_INITIAL_STATE;
