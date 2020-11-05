@@ -1,8 +1,5 @@
 import { combineReducers, Reducer } from "redux";
-import uniq from "ramda/src/uniq";
-import always from "ramda/src/always";
-import mergeLeft from "ramda/src/mergeLeft";
-import indexBy from "ramda/src/indexBy";
+import { uniq, always, mergeLeft, indexBy } from "ramda";
 
 import { AsyncActionCreator, createReducer, foldP, fold, reduce } from "../..";
 

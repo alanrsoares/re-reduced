@@ -8,12 +8,12 @@ const paths = {
   tags: `${LS_KEY}/tags`,
 };
 
-export const fetchToDos = async () => {
+export async function fetchToDos(): Promise<ToDo[]> {
   await delay(1000);
   return JSON.parse(localStorage.getItem(paths.todos) || "[]") as ToDo[];
-};
+}
 
-export const addToDo = async (todo: Partial<ToDo>) => {
+export async function addToDo(todo: Partial<ToDo>): Promise<ToDo> {
   const $todo = {
     ...todo,
     id: `todo-id-${Date.now()}`,
@@ -24,18 +24,18 @@ export const addToDo = async (todo: Partial<ToDo>) => {
   localStorage.setItem(paths.todos, JSON.stringify(todos.concat($todo)));
 
   return $todo;
-};
+}
 
-export const deleteToDo = async (id: string) => {
+export async function deleteToDo(id: string): Promise<string> {
   const todos = await fetchToDos();
   const filtered = todos.filter((todo) => todo.id !== id);
 
   localStorage.setItem(paths.todos, JSON.stringify(filtered));
 
   return id;
-};
+}
 
-export const patchToDo = async (updatedToDo: ToDo) => {
+export async function patchToDo(updatedToDo: ToDo): Promise<ToDo> {
   const todos = await fetchToDos();
 
   const updatedToDos = todos.map((todo) =>
@@ -45,4 +45,4 @@ export const patchToDo = async (updatedToDo: ToDo) => {
   localStorage.setItem(paths.todos, JSON.stringify(updatedToDos));
 
   return updatedToDo;
-};
+}

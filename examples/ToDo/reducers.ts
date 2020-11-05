@@ -1,8 +1,6 @@
 import { combineReducers } from "redux";
 
-import dissoc from "ramda/src/dissoc";
-import assoc from "ramda/src/assoc";
-import indexBy from "ramda/src/indexBy";
+import { assoc, dissoc, indexBy } from "ramda";
 
 import { createReducer, reduce, foldP } from "../../src";
 

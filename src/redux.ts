@@ -4,7 +4,7 @@ import {
   InferableComponentEnhancerWithProps,
   MapStateToProps,
 } from "react-redux";
-import applySpec from "ramda/src/applySpec";
+import { applySpec } from "ramda";
 
 import { ActionCreator, AsyncActionCreator } from "./core";
 import { transformTree, Tree, hasOwnProps } from "./helpers/objects";
@@ -48,7 +48,7 @@ function isAsyncActionCreator<T>(
 ) {
   return hasOwnProps(
     ["request", "success", "failure", "cancel"],
-    action as AsyncActionCreator<unknown, T>
+    action as any
   );
 }
 

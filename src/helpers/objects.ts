@@ -1,4 +1,4 @@
-import mapObjIndexed from "ramda/src/mapObjIndexed";
+import { mapObjIndexed } from "ramda";
 
 /**
  * Represents a node in a Tree, a node can be either a Leaf or a Branch (wich is also a Tree)
@@ -37,10 +37,10 @@ export function transformTree<TLeft, TRight>(
  * @param props
  * @param target
  */
-export function hasOwnProps<T extends {}, P extends keyof T>(
-  props: P[],
-  target: T
-) {
+export function hasOwnProps<
+  T extends Record<string, unknown>,
+  P extends keyof T
+>(props: P[], target: T): boolean {
   const hasOwnProp = (prop: P) =>
     Object.prototype.hasOwnProperty.call(target, prop);
 

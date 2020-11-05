@@ -1,6 +1,5 @@
 import { Reducer, AnyAction } from "redux";
-import mergeAll from "ramda/src/mergeAll";
-import merge from "ramda/src/merge";
+import { merge, mergeAll } from "ramda";
 
 import {
   ActionReducerMap,

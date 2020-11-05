@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import applySpec from "ramda/src/applySpec";
+import { applySpec } from "ramda";
 
 import { useDispatch, useSelector } from "react-redux";
 

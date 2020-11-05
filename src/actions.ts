@@ -1,5 +1,4 @@
-import uncurryN from "ramda/src/uncurryN";
-import flip from "ramda/src/flip";
+import { flip, uncurryN } from "ramda";
 
 import { toUpperSnakeCase } from "./helpers/strings";
 import {
