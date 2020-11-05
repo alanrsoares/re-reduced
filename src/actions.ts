@@ -57,7 +57,7 @@ export function createAction<TPayload = void, TMeta = any>(
 }
 
 /**
- * returns a composite action-creator with nested action-creators for request, success and failure
+ * Returns a composite action-creator with nested action-creators for request, success and failure
  *
  * @param type - the action identifier, must be unique
  * @param namespace - optional namespace string to be prepended to the type

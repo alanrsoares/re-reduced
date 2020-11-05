@@ -4,7 +4,7 @@ import always from "ramda/src/always";
 import mergeLeft from "ramda/src/mergeLeft";
 import indexBy from "ramda/src/indexBy";
 
-import { AsyncAction, createReducer, foldP, fold, reduce } from "../..";
+import { AsyncActionCreator, createReducer, foldP, fold, reduce } from "../..";
 
 import { AsyncCollection, Result, RequestState, REQUEST_STATUS } from "./types";
 
@@ -17,7 +17,7 @@ export function createRequestReducer<
   TPayload = void,
   TError = Error
 >(
-  action: AsyncAction<TResult, TPayload, TError>
+  action: AsyncActionCreator<TResult, TPayload, TError>
 ): Reducer<RequestState<TError>> {
   const INITIAL_STATE: RequestState<TError> = REQUEST_INITIAL_STATE;
 
@@ -61,7 +61,7 @@ export function createAsyncCollectionReducer<
   TError = Error,
   TResult extends Result<TData[]> = Result<TData[]>
 >(options: {
-  action: AsyncAction<TResult, TPayload, TError>;
+  action: AsyncActionCreator<TResult, TPayload, TError>;
   idKey: keyof TData;
   initialState?: Partial<AsyncCollection<TData, TError>>;
   mergeStrategy?: "merge" | "overwrite"; // default = overwrite
