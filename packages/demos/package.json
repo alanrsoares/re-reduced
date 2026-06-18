@@ -12,7 +12,16 @@
     "./react": {
       "types": "./src/react.tsx",
       "default": "./src/react.tsx"
-    }
+    },
+    "./life-store": {
+      "types": "./src/life-store.ts",
+      "default": "./src/life-store.ts"
+    },
+    "./life": {
+      "types": "./src/life.tsx",
+      "default": "./src/life.tsx"
+    },
+    "./life.css": "./src/life.css"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit"
