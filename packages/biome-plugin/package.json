@@ -1,0 +1,23 @@
+{
+  "name": "@re-reduced/biome-plugin",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Biome GritQL plugin: lint rules for the re-reduced container API.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["rules"],
+  "exports": {
+    "./rules/no-unstable-selector.grit": "./rules/no-unstable-selector.grit"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "peerDependencies": {
+    "@biomejs/biome": ">=2.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.0"
+  }
+}

@@ -5,7 +5,13 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!**/.claude", "!**/dist", "!apps/docs"]
+    "includes": [
+      "**",
+      "!**/.claude",
+      "!**/dist",
+      "!apps/docs",
+      "!packages/biome-plugin"
+    ]
   },
   "linter": {
     "enabled": true

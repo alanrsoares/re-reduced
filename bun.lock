@@ -102,6 +102,16 @@
         "typescript": ">=6",
       },
     },
+    "packages/biome-plugin": {
+      "name": "@re-reduced/biome-plugin",
+      "version": "0.1.0",
+      "devDependencies": {
+        "@biomejs/biome": "^2.5.0",
+      },
+      "peerDependencies": {
+        "@biomejs/biome": ">=2.0.0",
+      },
+    },
     "packages/core": {
       "name": "@re-reduced/core",
       "version": "0.1.0",
@@ -584,6 +594,8 @@
     "@re-reduced/adapter-kit": ["@re-reduced/adapter-kit@workspace:packages/adapter-kit"],
 
     "@re-reduced/bench": ["@re-reduced/bench@workspace:bench"],
+
+    "@re-reduced/biome-plugin": ["@re-reduced/biome-plugin@workspace:packages/biome-plugin"],
 
     "@re-reduced/core": ["@re-reduced/core@workspace:packages/core"],
 
