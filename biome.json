@@ -5,7 +5,7 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"includes": ["**", "!**/.claude", "!spike/**"]
+		"includes": ["**", "!**/.claude", "!**/dist"]
 	},
 	"linter": {
 		"enabled": true
@@ -16,17 +16,28 @@
 	"overrides": [
 		{
 			"includes": [
-				"src/core.ts",
-				"src/reducers.ts",
-				"src/redux.ts",
-				"src/hooks.ts",
-				"src/sagas.ts",
-				"src/lib/workflow/reducers.ts"
+				"packages/legacy/src/core.ts",
+				"packages/legacy/src/reducers.ts",
+				"packages/legacy/src/redux.ts",
+				"packages/legacy/src/hooks.ts",
+				"packages/legacy/src/sagas.ts",
+				"packages/legacy/src/lib/workflow/reducers.ts"
 			],
 			"linter": {
 				"rules": {
 					"suspicious": {
 						"noExplicitAny": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["packages/core/src/**", "packages/signals/src/**"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noExplicitAny": "off",
+						"noConfusingVoidType": "off"
 					}
 				}
 			}

@@ -1,12 +1,12 @@
 /**
- * Effect intents (spike) — ADR-0004/0006.
+ * Built-in effect-intent vocabulary (ADR-0004/0006).
  *
- * Tagged unions. Constructors build descriptors; reactions return them; the
- * interpreter registered for each `kind` executes them. The result of I/O
- * flows back via the descriptor's callbacks, which close over the reaction's
- * `actions` — so results re-enter as actions (the SSOT discipline).
+ * Constructors build descriptors; reactions return them; the interpreter
+ * registered for each `kind` executes them. Results re-enter as actions via
+ * the descriptor callbacks (the SSOT discipline). The `query` *interpreter*
+ * ships in the adapter layer (ADR-0006); its intent shape lives here as part
+ * of the shared vocabulary.
  */
-
 export interface QueryIntent {
 	readonly kind: "query";
 	readonly key: readonly unknown[];
@@ -14,20 +14,17 @@ export interface QueryIntent {
 	readonly onData: (data: unknown) => void;
 	readonly onError?: (error: unknown) => void;
 }
-
 export interface TimeoutIntent {
 	readonly kind: "timeout";
 	readonly ms: number;
 	readonly run: () => void;
 }
-
 export interface StorageSetIntent {
 	readonly kind: "storageSet";
 	readonly key: string;
 	readonly value: unknown;
 }
 
-/** The built-in intent vocabulary for this spike. Users extend the union. */
 export type BuiltinIntent = QueryIntent | TimeoutIntent | StorageSetIntent;
 
 export const query = <T>(spec: {

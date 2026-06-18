@@ -1,8 +1,10 @@
 /**
- * @re-reduced/signals façade (spike) — ADR-0001.
+ * @re-reduced/signals — façade over the signal engine (ADR-0001).
  *
- * Core/adapters program against THIS, never the engine directly, so the engine
- * is swappable. Default engine: @preact/signals-core.
+ * Core and adapters program against THIS, never the engine directly, so the
+ * engine is swappable. Default engine: @preact/signals-core. The `.raw` escape
+ * hatch exposes the underlying native signal for engine-specific fast paths
+ * (e.g. Preact JSX auto-subscription) — see ADR-0001.
  */
 import {
 	batch as _batch,
@@ -22,5 +24,6 @@ export interface WriteSignal<T> extends ReadSignal<T> {
 
 export const signal = <T>(value: T): WriteSignal<T> => _signal(value);
 export const computed = <T>(fn: () => T): ReadSignal<T> => _computed(fn);
-export const effect = (fn: () => void | (() => void)): (() => void) => _effect(fn);
+export const effect = (fn: () => void | (() => void)): (() => void) =>
+	_effect(fn);
 export const batch = <T>(fn: () => T): T => _batch(fn);

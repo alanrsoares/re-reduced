@@ -1,12 +1,15 @@
 /**
- * @re-reduced/core (spike, M2) — container with the effects runtime.
+ * @re-reduced/core — the container.
  *
- * Builds on M1 (per-field signals, pure transitions, computed derive) and adds:
- *  - a post-commit action-event stream (ADR-0005: reactions observe committed actions)
- *  - a reactions block `effects: (fx) => ({...})` emitting intents (ADR-0004/0005)
- *  - an intent dispatcher routing by `kind` to a registered interpreter (ADR-0006)
+ * - per-field signals + shallow-diff dispatch (ADR-0002)
+ * - pure transitions (state, payload) => state (ADR-0003)
+ * - auto-tracked computed derivations (ADR-0002)
+ * - reactions block emitting effect intents (ADR-0004/0005)
+ * - intent dispatcher routing by kind to registered interpreters (ADR-0006)
  *
- * Reuses M1's action-registry type machinery (method bivariance → zero `any`).
+ * Action-registry inference uses method bivariance so a
+ * `Record<string, ActionSpec<S, unknown>>` constraint accepts concrete payload
+ * types with zero `any` (the v1 wall).
  */
 import {
 	batch,
@@ -15,21 +18,39 @@ import {
 	type ReadSignal,
 	signal,
 	type WriteSignal,
-} from "../m1/signals";
-import type {
-	ActionSpec,
-	Actions,
-	DerivedSignals,
-	OnBuilder,
-	StateSignals,
-} from "../m1/container";
+} from "@re-reduced/signals";
 
-// ── intent dispatch / interpreters (ADR-0006) ──
+// ── action registry ──
+/** Handler stored as a METHOD → bivariant params → satisfies the unknown-constraint. */
+export interface ActionSpec<S, P> {
+	reduce(state: S, payload: P): S;
+}
+export type OnBuilder<S> = <P = void>(
+	reduce: (state: S, payload: P) => S,
+) => ActionSpec<S, P>;
+
+type PayloadOf<Sp> = Sp extends ActionSpec<any, infer P> ? P : never;
+/** void OR unknown payload (handler ignores payload) → nullary creator. */
+type IsVoid<P> = [P] extends [void] ? true : unknown extends P ? true : false;
+type Args<P> = IsVoid<P> extends true ? [] : [payload: P];
+
+export type Actions<R> = {
+	[K in keyof R & string]: (...args: Args<PayloadOf<R[K]>>) => void;
+};
+export type StateSignals<S> = { readonly [K in keyof S]: ReadSignal<S[K]> };
+export type DerivedSignals<D> = {
+	readonly [K in keyof D]: D[K] extends () => infer T ? ReadSignal<T> : never;
+};
+
+// ── intents / interpreters (ADR-0006) ──
 export interface InterpCtx<A> {
 	readonly actions: A;
 	readonly signal: AbortSignal;
 }
-export type Interpreter<I, A> = (intent: I, ctx: InterpCtx<A>) => void | (() => void);
+export type Interpreter<I, A> = (
+	intent: I,
+	ctx: InterpCtx<A>,
+) => void | (() => void);
 /** Typed coverage: a registry MUST supply an interpreter for every intent kind. */
 export type Interpreters<I extends { kind: string }, A> = {
 	[K in I["kind"]]: Interpreter<Extract<I, { kind: K }>, A>;
@@ -42,10 +63,18 @@ export interface ReactionCtx<S, A> {
 }
 type Emit<I> = I | I[] | void;
 export interface EffectBuilder<S, ActionName extends string, A, I> {
-	onAction(name: ActionName, handler: (payload: unknown, ctx: ReactionCtx<S, A>) => Emit<I>): void;
+	onAction(
+		name: ActionName,
+		handler: (payload: unknown, ctx: ReactionCtx<S, A>) => Emit<I>,
+	): void;
 	onChange<T>(
 		select: (s: StateSignals<S>) => T,
 		handler: (value: T, prev: T, ctx: ReactionCtx<S, A>) => Emit<I>,
+	): void;
+	/** Fires when `predicate` transitions into true (and once at mount if already true). */
+	onEnter(
+		predicate: (s: StateSignals<S>) => boolean,
+		handler: (ctx: ReactionCtx<S, A>) => Emit<I>,
 	): void;
 }
 
@@ -66,13 +95,15 @@ export interface Store<S, R, D extends Record<string, () => unknown>> {
 	readonly $derived: DerivedSignals<D>;
 	readonly actions: Actions<R>;
 	getState(): S;
-	select<T>(sel: (s: StateSignals<S>, d: DerivedSignals<D>) => T): ReadSignal<T>;
+	select<T>(
+		sel: (s: StateSignals<S>, d: DerivedSignals<D>) => T,
+	): ReadSignal<T>;
 	destroy(): void;
 }
 
 /**
  * Curried so the intent union `I` is given explicitly while `S`/`R`/`D` are
- * inferred from the definition body:  `defineContainer<MyIntent>()("name", {...})`.
+ * inferred from the definition body: `defineContainer<MyIntent>()("name", {...})`.
  */
 export function defineContainer<I extends { kind: string } = never>() {
 	return <
@@ -92,9 +123,9 @@ export function createContainer<
 	I extends { kind: string },
 >(
 	def: ContainerDef<S, R, D, I>,
-	opts: { interpreters: Interpreters<I, Actions<R>>; init?: Partial<S> },
+	opts?: { interpreters?: Interpreters<I, Actions<R>>; init?: Partial<S> },
 ): Store<S, R, D> {
-	const initial = { ...def.state, ...opts.init };
+	const initial = { ...def.state, ...opts?.init };
 	const controller = new AbortController();
 	const cleanups: Array<() => void> = [];
 
@@ -107,21 +138,25 @@ export function createContainer<
 		return out as S;
 	};
 
-	// intent dispatch
+	const interpreters = (opts?.interpreters ?? {}) as unknown as Record<
+		string,
+		Interpreter<I, Actions<R>>
+	>;
 	const runIntent = (intent: I) => {
-		const interpret = (opts.interpreters as unknown as Record<string, Interpreter<I, Actions<R>>>)[
-			intent.kind
-		];
-		if (!interpret) throw new Error(`no interpreter for intent kind "${intent.kind}"`);
-		const cleanup = interpret(intent, { actions: api.actions, signal: controller.signal });
+		const interpret = interpreters[intent.kind];
+		if (!interpret)
+			throw new Error(`no interpreter for intent kind "${intent.kind}"`);
+		const cleanup = interpret(intent, {
+			actions: api.actions,
+			signal: controller.signal,
+		});
 		if (cleanup) cleanups.push(cleanup);
 	};
-	const emit = (result: Emit<I>) => {
+	const dispatchIntents = (result: Emit<I>) => {
 		if (!result) return;
 		for (const i of Array.isArray(result) ? result : [result]) runIntent(i);
 	};
 
-	// actions + post-commit action-event stream
 	const actionListeners = new Set<(name: string, payload: unknown) => void>();
 	const specs = def.actions(((reduce) => ({ reduce })) as OnBuilder<S>);
 	const actions = {} as Record<string, (payload?: unknown) => void>;
@@ -131,9 +166,8 @@ export function createContainer<
 			const next = specs[key].reduce(prev, payload) as Record<string, unknown>;
 			batch(() => {
 				for (const k of Object.keys(next)) {
-					if (!Object.is(next[k], (prev as Record<string, unknown>)[k])) {
+					if (!Object.is(next[k], (prev as Record<string, unknown>)[k]))
 						$state[k].value = next[k];
-					}
 				}
 			});
 			for (const fn of actionListeners) fn(key, payload); // committed → notify (ADR-0005)
@@ -143,7 +177,8 @@ export function createContainer<
 	const $derived = {} as Record<string, ReadSignal<unknown>>;
 	if (def.derive) {
 		const builders = def.derive($state as StateSignals<S>);
-		for (const key of Object.keys(builders)) $derived[key] = computed(builders[key]);
+		for (const key of Object.keys(builders))
+			$derived[key] = computed(builders[key]);
 	}
 
 	const api: Store<S, R, D> = {
@@ -152,7 +187,9 @@ export function createContainer<
 		actions: actions as unknown as Actions<R>,
 		getState: snapshot,
 		select: (sel) =>
-			computed(() => sel($state as StateSignals<S>, $derived as DerivedSignals<D>)),
+			computed(() =>
+				sel($state as StateSignals<S>, $derived as DerivedSignals<D>),
+			),
 		destroy: () => {
 			controller.abort();
 			for (const fn of cleanups.splice(0)) fn();
@@ -160,13 +197,15 @@ export function createContainer<
 		},
 	};
 
-	// wire reactions
 	if (def.effects) {
-		const ctx: ReactionCtx<S, Actions<R>> = { getState: snapshot, actions: api.actions };
+		const ctx: ReactionCtx<S, Actions<R>> = {
+			getState: snapshot,
+			actions: api.actions,
+		};
 		const fx: EffectBuilder<S, keyof R & string, Actions<R>, I> = {
 			onAction: (name, handler) => {
 				const listener = (firedName: string, payload: unknown) => {
-					if (firedName === name) emit(handler(payload, ctx));
+					if (firedName === name) dispatchIntents(handler(payload, ctx));
 				};
 				actionListeners.add(listener);
 				cleanups.push(() => actionListeners.delete(listener));
@@ -174,20 +213,31 @@ export function createContainer<
 			onChange: (select, handler) => {
 				let prev: unknown;
 				let first = true;
-				const dispose = effect(() => {
-					const value = select($state as StateSignals<S>);
-					if (first) {
-						first = false;
-						prev = value;
-						return;
-					}
-					if (!Object.is(value, prev)) {
-						const before = prev;
-						prev = value;
-						emit(handler(value as never, before as never, ctx));
-					}
-				});
-				cleanups.push(dispose);
+				cleanups.push(
+					effect(() => {
+						const value = select($state as StateSignals<S>);
+						if (first) {
+							first = false;
+							prev = value;
+							return;
+						}
+						if (!Object.is(value, prev)) {
+							const before = prev;
+							prev = value;
+							dispatchIntents(handler(value as never, before as never, ctx));
+						}
+					}),
+				);
+			},
+			onEnter: (predicate, handler) => {
+				let was = false;
+				cleanups.push(
+					effect(() => {
+						const now = predicate($state as StateSignals<S>);
+						if (now && !was) dispatchIntents(handler(ctx));
+						was = now;
+					}),
+				);
 			},
 		};
 		def.effects(fx);

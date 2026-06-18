@@ -1,12 +1,12 @@
 {
-	"extends": "../tsconfig.json",
+	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
 		"noEmit": true,
 		"declaration": false,
-		"rootDir": "..",
+		"rootDir": ".",
 		"types": ["bun"],
 		"noUnusedLocals": false,
 		"noUnusedParameters": false
 	},
-	"include": ["m1", "m2"]
+	"include": ["src", "test"]
 }
