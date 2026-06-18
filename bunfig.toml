@@ -1,0 +1,4 @@
+# Register happy-dom globals for DOM-based tests (@re-reduced/react render tests).
+# Harmless for non-DOM packages (they don't touch document/window).
+[test]
+preload = ["./packages/react/test/happydom.ts"]

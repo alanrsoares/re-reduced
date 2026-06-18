@@ -1,0 +1,54 @@
+{
+	"name": "@re-reduced/react",
+	"version": "0.1.0",
+	"description": "React bindings for re-reduced (useContainer/useSelect/useWatch + context).",
+	"type": "module",
+	"main": "./src/index.ts",
+	"types": "./src/index.ts",
+	"exports": {
+		".": {
+			"types": "./src/index.ts",
+			"default": "./src/index.ts"
+		}
+	},
+	"publishConfig": {
+		"main": "./dist/index.js",
+		"module": "./dist/index.mjs",
+		"types": "./dist/index.d.ts",
+		"exports": {
+			".": {
+				"types": "./dist/index.d.ts",
+				"import": "./dist/index.mjs",
+				"require": "./dist/index.js"
+			}
+		}
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"scripts": {
+		"build": "tsdown src/index.ts --format esm,cjs --dts --clean",
+		"typecheck": "tsc -p tsconfig.test.json",
+		"test": "bun test"
+	},
+	"license": "MIT",
+	"peerDependencies": {
+		"react": ">=18",
+		"typescript": ">=6"
+	},
+	"dependencies": {
+		"@re-reduced/core": "workspace:*"
+	},
+	"devDependencies": {
+		"@happy-dom/global-registrator": "^15.11.0",
+		"@testing-library/dom": "^10.4.0",
+		"@testing-library/react": "^16.1.0",
+		"@types/react": "^19.0.0",
+		"@types/react-dom": "^19.0.0",
+		"happy-dom": "^15.11.0",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"ts-expect": "^1.3.0"
+	}
+}

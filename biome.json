@@ -32,7 +32,11 @@
 			}
 		},
 		{
-			"includes": ["packages/core/src/**", "packages/signals/src/**"],
+			"includes": [
+				"packages/core/src/**",
+				"packages/signals/src/**",
+				"packages/react/src/**"
+			],
 			"linter": {
 				"rules": {
 					"suspicious": {
