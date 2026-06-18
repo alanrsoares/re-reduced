@@ -35,3 +35,7 @@ _Avoid_: binding (use as a verb only), integration.
 **Effect Intent**:
 A side-effect *request* a Container declares but does not execute. An Adapter interprets it. The escape hatch for "server data participates in a transition" — not the default path for rendering server data.
 _Avoid_: command, saga, thunk.
+
+**Reaction**:
+A descriptor returned by the `effects` builder (`onAction` / `onChange` / `onEnter`) that, on its trigger, emits an Effect Intent. The Container's intent union is inferred from the reactions the `effects` block returns.
+_Avoid_: listener, subscription, handler.
