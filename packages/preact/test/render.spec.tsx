@@ -1,7 +1,7 @@
 /** @jsxImportSource preact */
-import { beforeEach, describe, expect, it } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { defineContainer } from "@re-reduced/core";
-import { fireEvent, render } from "@testing-library/preact";
+import { cleanup, fireEvent, render } from "@testing-library/preact";
 import { createContainerContext, useSelect } from "../src";
 
 const todos = defineContainer()("todos", {
@@ -72,6 +72,7 @@ describe("@re-reduced/preact — fine-grained re-renders (real DOM)", () => {
 		counts.list = 0;
 		counts.controls = 0;
 	});
+	afterEach(cleanup);
 
 	it("a draft keystroke re-renders only the input", () => {
 		const { getByTestId } = render(<App />);

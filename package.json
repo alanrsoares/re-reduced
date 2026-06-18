@@ -5,7 +5,8 @@
 	"type": "module",
 	"description": "re-reduced v2 — signal-backed functional state container. Monorepo root.",
 	"workspaces": [
-		"packages/*"
+		"packages/*",
+		"examples/*"
 	],
 	"scripts": {
 		"lint": "biome check .",
