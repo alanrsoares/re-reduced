@@ -8,5 +8,5 @@
 		"noUnusedLocals": false,
 		"noUnusedParameters": false
 	},
-	"include": ["m1"]
+	"include": ["m1", "m2"]
 }
