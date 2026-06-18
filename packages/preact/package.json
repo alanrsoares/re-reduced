@@ -1,0 +1,50 @@
+{
+	"name": "@re-reduced/preact",
+	"version": "0.1.0",
+	"description": "Preact bindings for re-reduced (native signal rendering).",
+	"type": "module",
+	"main": "./src/index.ts",
+	"types": "./src/index.ts",
+	"exports": {
+		".": {
+			"types": "./src/index.ts",
+			"default": "./src/index.ts"
+		}
+	},
+	"publishConfig": {
+		"main": "./dist/index.js",
+		"module": "./dist/index.mjs",
+		"types": "./dist/index.d.ts",
+		"exports": {
+			".": {
+				"types": "./dist/index.d.ts",
+				"import": "./dist/index.mjs",
+				"require": "./dist/index.js"
+			}
+		}
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"scripts": {
+		"build": "tsdown src/index.ts --format esm,cjs --dts --clean",
+		"typecheck": "tsc -p tsconfig.test.json",
+		"test": "bun test"
+	},
+	"license": "MIT",
+	"peerDependencies": {
+		"@preact/signals": ">=1.3.0",
+		"preact": ">=10.11.0",
+		"typescript": ">=6"
+	},
+	"dependencies": {
+		"@re-reduced/core": "workspace:*"
+	},
+	"devDependencies": {
+		"@preact/signals": "^1.3.0",
+		"@testing-library/preact": "^3.2.4",
+		"preact": "^10.24.0",
+		"ts-expect": "^1.3.0"
+	}
+}

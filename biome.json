@@ -35,7 +35,8 @@
 			"includes": [
 				"packages/core/src/**",
 				"packages/signals/src/**",
-				"packages/react/src/**"
+				"packages/react/src/**",
+				"packages/preact/src/**"
 			],
 			"linter": {
 				"rules": {
