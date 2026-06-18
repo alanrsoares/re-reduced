@@ -1,0 +1,14 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"noEmit": true,
+		"declaration": false,
+		"rootDir": ".",
+		"jsx": "react-jsx",
+		"jsxImportSource": "preact",
+		"types": ["bun"],
+		"noUnusedLocals": false,
+		"noUnusedParameters": false
+	},
+	"include": ["src", "test"]
+}
