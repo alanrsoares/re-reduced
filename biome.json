@@ -1,0 +1,59 @@
+{
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!**/.claude",
+      "!**/dist",
+      "!apps/docs",
+      "!packages/biome-plugin"
+    ]
+  },
+  "linter": {
+    "enabled": true
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "overrides": [
+    {
+      "includes": [
+        "packages/legacy/src/core.ts",
+        "packages/legacy/src/reducers.ts",
+        "packages/legacy/src/redux.ts",
+        "packages/legacy/src/hooks.ts",
+        "packages/legacy/src/sagas.ts",
+        "packages/legacy/src/lib/workflow/reducers.ts"
+      ],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "packages/core/src/**",
+        "packages/signals/src/**",
+        "packages/react/src/**",
+        "packages/preact/src/**"
+      ],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "off",
+            "noConfusingVoidType": "off"
+          }
+        }
+      }
+    }
+  ]
+}

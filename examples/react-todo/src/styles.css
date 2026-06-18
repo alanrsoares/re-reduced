@@ -1,0 +1,67 @@
+:root {
+  font-family: system-ui, sans-serif;
+  color-scheme: light dark;
+}
+.app {
+  max-width: 32rem;
+  margin: 3rem auto;
+  padding: 0 1rem;
+}
+h1 {
+  font-weight: 200;
+  color: #b83f45;
+}
+form {
+  display: flex;
+  gap: 0.5rem;
+}
+.draft {
+  flex: 1;
+  padding: 0.6rem;
+  font-size: 1rem;
+}
+.draft.error {
+  outline: 2px solid #b83f45;
+}
+.banner {
+  color: #b83f45;
+}
+.list {
+  list-style: none;
+  padding: 0;
+}
+.list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #8884;
+}
+.list li span {
+  flex: 1;
+}
+.list li.done span {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+.destroy {
+  border: 0;
+  background: none;
+  color: #b83f45;
+  cursor: pointer;
+}
+.footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+}
+.filters button {
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.filters button.selected {
+  font-weight: 700;
+  color: #b83f45;
+}

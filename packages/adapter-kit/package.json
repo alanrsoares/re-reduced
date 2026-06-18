@@ -1,0 +1,44 @@
+{
+  "name": "@re-reduced/adapter-kit",
+  "version": "0.1.0",
+  "description": "Renderer-agnostic effect interpreters (query/mutate bridge) for re-reduced.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsdown src/index.ts --format esm,cjs --dts --clean",
+    "typecheck": "tsc -p tsconfig.test.json"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "typescript": ">=6"
+  },
+  "dependencies": {
+    "@re-reduced/core": "workspace:*"
+  },
+  "devDependencies": {
+    "ts-expect": "^1.3.0"
+  }
+}

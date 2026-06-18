@@ -1,0 +1,21 @@
+// @re-reduced/biome-plugin: no-unstable-selector
+//
+// TypeScript can't catch this: a `useSelect` selector that returns a fresh
+// object or array literal type-checks fine, but produces a new reference on
+// every call — defeating the snapshot bail-out, so the component re-renders on
+// EVERY store update. Return a primitive or a stable reference, or split into
+// multiple `useSelect` calls.
+
+engine biome(1.0)
+language js
+
+or {
+  `useSelect($store, ($args) => ({ $props }))` as $sel,
+  `useSelect($store, ($args) => [$elems])` as $sel
+} where {
+  register_diagnostic(
+    span = $sel,
+    message = "useSelect selector returns a fresh object/array each call — this defeats the bail-out and re-renders on every update. Return a primitive/stable ref, or use multiple useSelect calls.",
+    severity = "warn"
+  )
+}

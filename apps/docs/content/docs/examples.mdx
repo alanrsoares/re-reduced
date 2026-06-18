@@ -1,0 +1,63 @@
+---
+title: Live example
+description: A real re-reduced container running interactively, embedded in the docs.
+---
+
+import { TodoDemo } from "@/components/demos/todo-demo";
+
+The TODO below is a **real re-reduced container running live on this page** —
+the same definition shape the [example apps](https://github.com/alanrsoares/re-reduced/tree/main/examples)
+use. Add, toggle, remove, and filter; each interaction is a typed action, and
+each list re-renders only when its slice changes.
+
+<TodoDemo />
+
+## The container
+
+Framework-agnostic — pure state, actions, and derivations:
+
+```ts
+const todos = defineContainer("todos", {
+  state: { draft: "", filter: "all" as Filter, items: [] as Todo[], error: null as string | null },
+  actions: (on) => ({
+    draftChanged: on<string>((s, draft) => ({ ...s, draft, error: null })),
+    filterChanged: on<Filter>((s, filter) => ({ ...s, filter })),
+    submit: on((s) =>
+      s.draft.trim() === ""
+        ? { ...s, error: "Title can't be empty" }
+        : { ...s, draft: "", items: [{ id: makeId(), title: s.draft.trim(), done: false }, ...s.items] }),
+    toggled: on<{ id: string }>((s, { id }) => ({
+      ...s,
+      items: s.items.map((t) => (t.id === id ? { ...t, done: !t.done } : t)),
+    })),
+    removed: on<{ id: string }>((s, { id }) => ({ ...s, items: s.items.filter((t) => t.id !== id) })),
+    loaded: on<Todo[]>((s, items) => ({ ...s, items })),
+  }),
+  derive: ($) => ({
+    visible: () => {
+      const f = $.filter.value;
+      return $.items.value.filter((t) => (f === "active" ? !t.done : f === "done" ? t.done : true));
+    },
+    activeCount: () => $.items.value.filter((t) => !t.done).length,
+    canSubmit: () => $.draft.value.trim().length > 0,
+  }),
+  // `load` fetches via the query intent; the result re-enters as `loaded`
+  effects: (fx) => [/* fx.onAction("load", … query(...)) */],
+});
+```
+
+## The component
+
+```tsx
+function Todo() {
+  const store = useContainer(todos);
+  const draft = useSelect(store, (s) => s.draft.value);
+  const visible = useSelect(store, (_s, d) => d.visible.value);
+  const active = useSelect(store, (_s, d) => d.activeCount.value);
+  // …render a form + list; store.actions.add() / toggle(id) / filterChanged(f)
+}
+```
+
+The full runnable apps (React and Preact) live under
+[`examples/`](https://github.com/alanrsoares/re-reduced/tree/main/examples) —
+the container is byte-for-byte identical between them.

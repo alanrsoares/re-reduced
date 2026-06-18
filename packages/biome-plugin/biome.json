@@ -1,0 +1,6 @@
+{
+  "linter": { "enabled": true, "rules": { "recommended": false } },
+  "formatter": { "enabled": false },
+  "plugins": ["./rules/no-unstable-selector.grit"],
+  "files": { "includes": ["fixtures/**"] }
+}

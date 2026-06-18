@@ -1,0 +1,42 @@
+---
+title: Migrating from v1
+description: How v2 relates to the original Redux/redux-saga helper.
+---
+
+re-reduced **v1** was a helper layer over Redux, redux-saga, and react-redux.
+re-reduced **v2** is a different paradigm: a signal-backed, component-scoped
+state-machine + effect container that composes with your data layer instead of
+owning a global store. There is **no automated codemod** — this is a conceptual
+migration.
+
+## What stays available
+
+v1 is frozen and continues to publish as **`re-reduced@2`**. Existing apps on
+`^2` keep working indefinitely; nothing forces an upgrade. The v2 line ships
+under the **`@re-reduced/*`** scope.
+
+## Concept mapping
+
+| v1 (Redux/saga) | v2 |
+| --- | --- |
+| `createActions` / FSA action creators | `defineContainer` `actions` block |
+| Higher-order reducers (`createReducer`, `reduce`/`fold`) | transitions inside `actions` |
+| `connect` / `connectWithActions` | `useContainer` + `useSelect` (or `createContainerContext`) |
+| `useReduxState` / selectors | `derive` + `useSelect` |
+| redux-saga workers / the `workflow` request+collection reducers | `effects` reactions + intents, with server data in your query library |
+| global store | component-scoped Store (lift via context when needed) |
+
+## Mindset shifts
+
+- **Local-first, not global.** A Store is scoped to a component or a provider,
+  not the whole app.
+- **Server state isn't mirrored.** Drop the request/collection reducers; read
+  server data from TanStack Query and keep only UI/transition state in the
+  container. Bridge fetches that gate a transition with the `query` intent.
+- **Errors live in state**, not in thrown exceptions or `Result` returns from
+  reducers.
+- **Effects are intents**, interpreted by the renderer adapter — no saga
+  middleware.
+
+If you only need typed actions + reducers and want to stay on Redux, v1
+(`re-reduced@2`) remains a valid choice.

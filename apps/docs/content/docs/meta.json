@@ -1,0 +1,16 @@
+{
+  "title": "re-reduced",
+  "pages": [
+    "index",
+    "getting-started",
+    "core-concepts",
+    "effects",
+    "testing",
+    "react",
+    "preact",
+    "examples",
+    "benchmarks",
+    "agents",
+    "migration"
+  ]
+}

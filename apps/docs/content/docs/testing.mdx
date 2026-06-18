@@ -1,0 +1,210 @@
+---
+title: Testing
+description: Test your logic without a renderer — plus type tests and render-count tests.
+---
+
+Testing is where re-reduced's design pays off. A **Container Definition** is pure
+data and pure functions, so the bulk of your logic — transitions, derivations,
+and effect intent — is testable with **no renderer, no DOM, no mocking**. The
+renderer adapters add a thin layer you test separately.
+
+Examples below use `bun:test`, but nothing is bun-specific.
+
+## 1. The pure container (no renderer)
+
+Instantiate a Store with `createContainer`, dispatch actions, and assert on
+`getState()` and the derived signals. This covers most of your logic.
+
+```ts title="todos.container.spec.ts"
+import { describe, expect, it } from "bun:test";
+import { createContainer } from "@re-reduced/core";
+import { todos } from "../src/todos.container";
+
+describe("todos", () => {
+  it("adds a trimmed item and clears the draft", () => {
+    const store = createContainer(todos, { init: { draft: "  Ship v2  " } });
+
+    store.actions.submit();
+
+    expect(store.getState().items).toHaveLength(1);
+    expect(store.getState().items[0].title).toBe("Ship v2");
+    expect(store.getState().draft).toBe("");
+  });
+
+  it("rejects an empty draft into state (no throw, no Result)", () => {
+    const store = createContainer(todos, { init: { draft: "   " } });
+    store.actions.submit();
+    expect(store.getState().error).toBe("Title can't be empty");
+  });
+
+  it("derives canSubmit from the draft", () => {
+    const store = createContainer(todos);
+    expect(store.$derived.canSubmit.peek()).toBe(false);
+    store.actions.draftChanged("hi");
+    expect(store.$derived.canSubmit.peek()).toBe(true);
+  });
+});
+```
+
+<Callout title="Why this is the whole point">
+No `Provider`, no `renderHook`, no fake store. Transitions are `(state, payload)
+=> state` and derivations are pure, so they test like any other function.
+</Callout>
+
+## 2. Effects — assert intents with stub interpreters
+
+Reactions emit **intents**, which are plain data. Register stub interpreters
+that capture them, dispatch the trigger, and assert what was emitted — no
+network, no timers.
+
+```ts title="effects.spec.ts"
+import { describe, expect, it } from "bun:test";
+import { createContainer, type BuiltinIntent } from "@re-reduced/core";
+import { todos } from "../src/todos.container";
+
+it("load emits a query intent", () => {
+  const intents: BuiltinIntent[] = [];
+  const store = createContainer(todos, {
+    interpreters: {
+      query: (intent) => void intents.push(intent),
+      timeout: () => {},
+      storageSet: () => {},
+    },
+  });
+
+  store.actions.load();
+
+  expect(intents).toHaveLength(1);
+  expect(intents[0].kind).toBe("query");
+});
+```
+
+To test the result path, drive the captured intent's callback and assert the
+follow-up action landed:
+
+```ts
+const q = intents[0];
+if (q.kind === "query") q.onData([{ id: "1", title: "x", done: false }]);
+expect(store.getState().items).toHaveLength(1);
+```
+
+## 3. Type tests
+
+Inference is part of the contract, so test it at compile time with
+[`ts-expect`](https://github.com/TypeStrong/ts-expect). These assertions are
+enforced by `tsc`, not at runtime.
+
+```ts title="todos.types.spec.ts"
+import { expectType, type TypeEqual } from "ts-expect";
+import { createContainer } from "@re-reduced/core";
+import { todos } from "../src/todos.container";
+
+// keep type-only assertions in an uncalled function — tsc checks it, the
+// runtime never executes the @ts-expect-error lines
+function _types() {
+  const c = createContainer(todos);
+
+  expectType<TypeEqual<Parameters<typeof c.actions.filterChanged>, [payload: "all" | "active" | "done"]>>(true);
+  expectType<TypeEqual<Parameters<typeof c.actions.submit>, []>>(true);
+
+  // @ts-expect-error wrong payload type
+  c.actions.filterChanged("nope");
+}
+```
+
+<Callout type="warn">
+Make sure your `tsconfig` `include`s the test files, otherwise `tsc` never
+checks these assertions. The interpreter registry is typed too — a missing
+interpreter for an emitted intent kind is a compile error.
+</Callout>
+
+## 4. Renderer tests (fine-grained re-renders)
+
+The adapters bind the Store to the renderer. Use the framework's testing library
+with a DOM (e.g. `happy-dom`) to assert behavior — and that a dispatch
+re-renders **only** the component reading the changed slice.
+
+<Tabs items={["React", "Preact"]}>
+<Tab value="React">
+
+```tsx title="render.spec.tsx"
+import { describe, expect, it } from "bun:test";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { useContainer, useSelect } from "@re-reduced/react";
+import { counter } from "../src/counter.container";
+
+let renders = 0;
+function View() {
+  const store = useContainer(counter);
+  const n = useSelect(store, (s) => s.count.value);
+  renders += 1;
+  return <button type="button" onClick={() => store.actions.add(1)}>{n}</button>;
+}
+
+it("re-renders only on the slice it reads", () => {
+  render(<View />);
+  const before = renders;
+  fireEvent.click(screen.getByRole("button"));
+  expect(renders).toBe(before + 1);
+});
+```
+
+</Tab>
+<Tab value="Preact">
+
+```tsx title="render.spec.tsx"
+/** @jsxImportSource preact */
+import { describe, expect, it } from "bun:test";
+import { fireEvent, render, screen } from "@testing-library/preact";
+import { useContainer, useSelect } from "@re-reduced/preact";
+import { counter } from "../src/counter.container";
+
+it("updates via native signal tracking", () => {
+  function View() {
+    const store = useContainer(counter);
+    const n = useSelect(store, (s) => s.count.value);
+    return <button type="button" onClick={() => store.actions.add(1)}>{n}</button>;
+  }
+  render(<View />);
+  fireEvent.click(screen.getByRole("button"));
+  expect(screen.getByRole("button").textContent).toBe("1");
+});
+```
+
+</Tab>
+</Tabs>
+
+A couple of practical notes for DOM tests under bun:
+
+<Steps>
+<Step>
+Register DOM globals once via a preload — `bunfig.toml`:
+
+```toml
+[test]
+preload = ["./test/happydom.ts"]
+```
+
+```ts title="test/happydom.ts"
+import { GlobalRegistrator } from "@happy-dom/global-registrator";
+GlobalRegistrator.register();
+```
+</Step>
+<Step>
+Add `afterEach(cleanup)` so mounted trees don't leak between tests.
+</Step>
+<Step>
+`useContainer` is StrictMode-safe and `useSelect` is tearing-safe under
+transitions, so you can render under `<StrictMode>` and dispatch inside
+`startTransition` without flakiness.
+</Step>
+</Steps>
+
+## What to test where
+
+| Layer | Tooling | What |
+| --- | --- | --- |
+| Transitions & derivations | `createContainer` + assertions | the bulk of your logic |
+| Effects | stub interpreters capturing intents | which intents fire, and the result path |
+| Inference | `ts-expect` + `tsc` | action/derived/interpreter types |
+| Rendering | testing-library + happy-dom | binding, fine-grained re-renders |

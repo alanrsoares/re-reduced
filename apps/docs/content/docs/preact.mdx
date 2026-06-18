@@ -1,0 +1,44 @@
+---
+title: Preact
+description: The @re-reduced/preact bindings and native signal rendering.
+---
+
+`@re-reduced/preact` mirrors the React API but binds through Preact's native
+signal integration (`@preact/signals`). Reading a selector's value during render
+subscribes the component fine-grainedly; a signal rendered directly in JSX
+updates its text node with no VDOM diff at all.
+
+## Hooks
+
+```tsx
+import {
+  useContainer,
+  useSelect,
+  useWatch,
+  createContainerContext,
+} from "@re-reduced/preact";
+```
+
+The surface is identical to React's — `useSelect` returns the selected value and
+the component re-renders only when it changes.
+
+```tsx
+function Counter() {
+  const store = useContainer(counter);
+  const count = useSelect(store, (s) => s.count.value);
+  return <button type="button" onClick={() => store.actions.add(1)}>{count}</button>;
+}
+```
+
+## Same definition, different renderer
+
+The container definition is framework-agnostic, so the *exact same* definition
+powers both the React and Preact examples — only the import of the renderer
+package differs:
+
+```ts
+// works unchanged under @re-reduced/react and @re-reduced/preact
+export const todos = defineContainer("todos", { /* state, actions, derive, effects */ });
+```
+
+A full runnable app lives in `examples/preact-todo`.
