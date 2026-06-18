@@ -1,0 +1,77 @@
+---
+title: Render Inspector
+description: Conway's Game of Life on two state backends at once — watch re-reduced re-render only the cells that changed.
+---
+
+import { RenderInspector } from "@/components/demos/render-inspector";
+
+This is [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
+running on a grid of DOM nodes, driven by **two state backends at the same
+time** from one set of controls. The board and the actions are shared — the
+_only_ difference is how each side subscribes to state.
+
+Press **Play** (or **Step**), and watch the render pulses and the
+`cell re-renders` counters.
+
+<RenderInspector />
+
+## What you're seeing
+
+Every generation rewrites the whole board, but only a handful of cells actually
+flip. The two backends react very differently:
+
+- **re-reduced** — one signal per cell. A tick dispatches the full next
+  generation; the shallow diff writes only the cells that changed, so only those
+  cells' subscriptions fire. A few dozen DOM updates out of ~900.
+- **`useReducer` + Context** — one state object behind a Context. Any change is a
+  new reference, so every cell consumer re-renders every tick, whether it changed
+  or not. At speed the whole grid strobes and janks.
+
+This is the [fine-grained re-render](/docs/benchmarks#fine-grained-re-renders-the-headline)
+result from the benchmarks, made physical: re-reduced gets per-component bail-out
+**structurally**, from per-field signals, with no hand-written equality
+selectors.
+
+## The honest part
+
+The re-reduced tick is still **O(cells)** in JavaScript — it snapshots and
+diffs every field on each dispatch (see the
+[dispatch scaling](/docs/benchmarks#how-dispatch-scales-with-state-size)
+numbers). But that cost is tens of microseconds; the DOM commit it avoids is
+milliseconds. In the browser, the render savings dominate by orders of
+magnitude — which is why the re-reduced board stays smooth while the Context
+board stutters.
+
+## The container
+
+The board is an ordinary container — one numeric field per cell, a `tick` action
+that returns the next generation, and a memoized `population` derivation:
+
+```ts
+const defineLife = (rc: RecomputeCounter) =>
+  defineContainer("life", {
+    state: emptyBoard(), // { c0: 0, c1: 0, …, c899: 0 }
+    actions: (on) => ({
+      setCell: on((s, p: { i: number; v: number }) => ({ ...s, [`c${p.i}`]: p.v })),
+      tick: on((s) => nextGeneration(s)),
+      load: on((_s, board) => board),
+      clear: on(() => emptyBoard()),
+    }),
+    derive: ($) => ({
+      population: () => CELL_KEYS.reduce((sum, k) => sum + $[k].value, 0),
+    }),
+  });
+```
+
+```tsx
+// each cell subscribes to its OWN signal — re-renders only when that cell flips
+function Cell({ store, i }: { store: LifeStore; i: number }) {
+  const alive = useSelect(store, (s) => s[`c${i}`].value);
+  return <div className={alive ? "cell on" : "cell"} />;
+}
+```
+
+The full runnable app lives under
+[`examples/render-inspector`](https://github.com/alanrsoares/re-reduced/tree/main/examples/render-inspector),
+and the shared component under
+[`packages/demos/src/life.tsx`](https://github.com/alanrsoares/re-reduced/tree/main/packages/demos/src/life.tsx).
