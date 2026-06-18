@@ -1,0 +1,35 @@
+{
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"includes": ["**", "!**/.claude"]
+	},
+	"linter": {
+		"enabled": true
+	},
+	"formatter": {
+		"enabled": true
+	},
+	"overrides": [
+		{
+			"includes": [
+				"src/core.ts",
+				"src/reducers.ts",
+				"src/redux.ts",
+				"src/hooks.ts",
+				"src/sagas.ts",
+				"src/lib/workflow/reducers.ts"
+			],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noExplicitAny": "off"
+					}
+				}
+			}
+		}
+	]
+}
