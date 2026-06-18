@@ -1,77 +1,79 @@
-import { compose, Dispatch } from "redux";
-import {
-  connect,
-  InferableComponentEnhancerWithProps,
-  MapStateToProps,
-} from "react-redux";
 import { applySpec } from "ramda";
+import {
+	connect,
+	type InferableComponentEnhancerWithProps,
+	type MapStateToProps,
+} from "react-redux";
+import { compose, type Dispatch } from "redux";
 
-import { ActionCreator, AsyncActionCreator } from "./core";
-import { transformTree, Tree, hasOwnProps } from "./helpers/objects";
+import type { ActionCreator, AsyncActionCreator } from "./core";
+import { hasOwnProps, type Tree, transformTree } from "./helpers/objects";
 
 export { connect, connectAdvanced } from "react-redux";
 
-export type Dispatcher<T = any> = (payload: T) => void;
+export type Dispatcher<T = unknown> = (payload: T) => void;
 
 export type SelectorSpec<
-  TProps,
-  TState,
-  TOwnProps extends Record<string, any> = any
+	TProps,
+	TState,
+	TOwnProps extends Record<string, any> = any,
 > = {
-  [P in keyof TProps]: (state: TState, ownProps?: TOwnProps) => TProps[P];
+	[P in keyof TProps]: (state: TState, ownProps?: TOwnProps) => TProps[P];
 };
 
 export interface ConnectWithActions {
-  <
-    TProps extends { actions: TActions },
-    TOwnProps extends Record<string, any> = any,
-    TActions extends Tree<ActionCreator<any>> = Record<string, any>
-  >(
-    actions: TActions
-  ): InferableComponentEnhancerWithProps<TProps, TOwnProps>;
+	<
+		TProps extends { actions: TActions },
+		TOwnProps extends Record<string, any> = any,
+		TActions extends Tree<ActionCreator<any>> = Record<string, any>,
+	>(
+		actions: TActions,
+	): InferableComponentEnhancerWithProps<TProps, TOwnProps>;
 
-  <
-    TProps extends { actions: TActions },
-    TOwnProps extends Record<string, any> = any,
-    TState extends Record<string, any> = any,
-    TActions extends Tree<ActionCreator<any>> = Record<string, any>
-  >(
-    actions: TActions,
-    mapStateToProps:
-      | MapStateToProps<Partial<TProps>, TOwnProps, TState>
-      | SelectorSpec<Partial<TProps>, TState, TOwnProps>
-  ): InferableComponentEnhancerWithProps<TProps, TOwnProps>;
+	<
+		TProps extends { actions: TActions },
+		TOwnProps extends Record<string, any> = any,
+		TState extends Record<string, any> = any,
+		TActions extends Tree<ActionCreator<any>> = Record<string, any>,
+	>(
+		actions: TActions,
+		mapStateToProps:
+			| MapStateToProps<Partial<TProps>, TOwnProps, TState>
+			| SelectorSpec<Partial<TProps>, TState, TOwnProps>,
+	): InferableComponentEnhancerWithProps<TProps, TOwnProps>;
 }
 
 function isAsyncActionCreator<T>(
-  action: AsyncActionCreator<unknown, T> | ActionCreator<T>
+	action: AsyncActionCreator<unknown, T> | ActionCreator<T>,
 ) {
-  return hasOwnProps(
-    ["request", "success", "failure", "cancel"],
-    action as any
-  );
+	return hasOwnProps(
+		["request", "success", "failure", "cancel"],
+		action as any,
+	);
 }
 
-const toDispatcher = (dispatch: Dispatch) => <TPayload>(
-  action: ActionCreator<TPayload> | AsyncActionCreator<any, TPayload>
-) => {
-  const baseDispatcher = compose<Dispatcher<TPayload>>(dispatch, action);
+const toDispatcher =
+	(dispatch: Dispatch) =>
+	<TPayload>(
+		action: ActionCreator<TPayload> | AsyncActionCreator<any, TPayload>,
+	) => {
+		const baseDispatcher = compose<Dispatcher<TPayload>>(dispatch, action);
 
-  if (!isAsyncActionCreator(action)) {
-    return baseDispatcher;
-  }
+		if (!isAsyncActionCreator(action)) {
+			return baseDispatcher;
+		}
 
-  const asyncAction = action as AsyncActionCreator<any, TPayload>;
+		const asyncAction = action as AsyncActionCreator<any, TPayload>;
 
-  const extensions = {
-    request: compose(dispatch, asyncAction.request),
-    success: compose(dispatch, asyncAction.success),
-    failure: compose(dispatch, asyncAction.failure),
-    cancel: compose(dispatch, asyncAction.cancel),
-  };
+		const extensions = {
+			request: compose(dispatch, asyncAction.request),
+			success: compose(dispatch, asyncAction.success),
+			failure: compose(dispatch, asyncAction.failure),
+			cancel: compose(dispatch, asyncAction.cancel),
+		};
 
-  return Object.assign(baseDispatcher, extensions);
-};
+		return Object.assign(baseDispatcher, extensions);
+	};
 
 /**
  * bindActionCreators
@@ -80,23 +82,23 @@ const toDispatcher = (dispatch: Dispatch) => <TPayload>(
  *
  * @param actions
  */
-export const bindActionCreators = <TActions extends Tree<ActionCreator<any>>>(
-  actions: TActions
-) => (dispatch: Dispatch): { actions: TActions } => ({
-  actions: transformTree<ActionCreator, Dispatcher>(
-    toDispatcher(dispatch),
-    actions
-  ) as TActions,
-});
+export const bindActionCreators =
+	<TActions extends Tree<ActionCreator<any>>>(actions: TActions) =>
+	(dispatch: Dispatch): { actions: TActions } => ({
+		actions: transformTree<ActionCreator, Dispatcher>(
+			toDispatcher(dispatch),
+			actions,
+		) as TActions,
+	});
 
 export const applySelectors = <
-  TProps = Record<string, any>,
-  TState = Record<string, any>,
-  TOwnProps = Record<string, any>
+	TProps = Record<string, any>,
+	TState = Record<string, any>,
+	TOwnProps extends Record<string, any> = Record<string, any>,
 >(
-  spec: SelectorSpec<TProps, TState, TOwnProps>
+	spec: SelectorSpec<TProps, TState, TOwnProps>,
 ): MapStateToProps<Partial<TProps>, TOwnProps, TState> =>
-  applySpec<Partial<TProps>>(spec);
+	applySpec<Partial<TProps>>(spec);
 
 /**
  * connectWithActions
@@ -113,20 +115,20 @@ export const applySelectors = <
  *
  */
 export const connectWithActions: ConnectWithActions = <
-  TProps extends { actions: TActions },
-  TOwnProps extends Record<string, any> = any,
-  TState extends Record<string, any> = any,
-  TActions extends Tree<ActionCreator<any>> = Record<string, any>
+	TProps extends { actions: TActions },
+	TOwnProps extends Record<string, any> = any,
+	TState extends Record<string, any> = any,
+	TActions extends Tree<ActionCreator<any>> = Record<string, any>,
 >(
-  actions: TActions,
-  mapStateToProps?:
-    | MapStateToProps<Partial<TProps>, TOwnProps, TState>
-    | SelectorSpec<Partial<TProps>, TState, TOwnProps>
+	actions: TActions,
+	mapStateToProps?:
+		| MapStateToProps<Partial<TProps>, TOwnProps, TState>
+		| SelectorSpec<Partial<TProps>, TState, TOwnProps>,
 ) => {
-  const stateToProps =
-    typeof mapStateToProps === "object"
-      ? applySelectors(mapStateToProps)
-      : mapStateToProps;
+	const stateToProps =
+		typeof mapStateToProps === "object"
+			? applySelectors(mapStateToProps)
+			: mapStateToProps;
 
-  return connect(stateToProps, bindActionCreators(actions));
+	return connect(stateToProps, bindActionCreators(actions));
 };

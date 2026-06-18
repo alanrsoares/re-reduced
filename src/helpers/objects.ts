@@ -9,7 +9,7 @@ export type Node<TLeaf> = TLeaf | Tree<TLeaf>;
  * Represents a tree-like structure where the leaves have type TLeaf
  */
 export interface Tree<TLeaf> {
-  [key: string]: Node<TLeaf>;
+	[key: string]: Node<TLeaf>;
 }
 
 /**
@@ -19,16 +19,16 @@ export interface Tree<TLeaf> {
  * @param tree - a tree-like object with deeply nested props
  */
 export function transformTree<TLeft, TRight>(
-  transform: (value: TLeft, key: string) => TRight,
-  tree: Tree<TLeft>
+	transform: (value: TLeft, key: string) => TRight,
+	tree: Tree<TLeft>,
 ): Tree<TRight> {
-  return mapObjIndexed<Node<TLeft>, Node<TRight>>(
-    (value, key) =>
-      typeof value === "object"
-        ? transformTree(transform, value as Tree<TLeft>)
-        : transform(value, key),
-    tree
-  );
+	return mapObjIndexed<Node<TLeft>, Node<TRight>>(
+		(value, key) =>
+			typeof value === "object"
+				? transformTree(transform, value as Tree<TLeft>)
+				: transform(value, key),
+		tree,
+	);
 }
 
 /**
@@ -38,11 +38,10 @@ export function transformTree<TLeft, TRight>(
  * @param target
  */
 export function hasOwnProps<
-  T extends Record<string, unknown>,
-  P extends keyof T
+	T extends Record<string, unknown>,
+	P extends keyof T,
 >(props: P[], target: T): boolean {
-  const hasOwnProp = (prop: P) =>
-    Object.prototype.hasOwnProperty.call(target, prop);
+	const hasOwnProp = (prop: P) => Object.hasOwn(target, prop);
 
-  return props.every(hasOwnProp);
+	return props.every(hasOwnProp);
 }
