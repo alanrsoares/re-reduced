@@ -1,0 +1,26 @@
+{
+  "name": "@re-reduced/bench",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Benchmarks: re-reduced vs Zustand vs useReducer. Not published.",
+  "scripts": {
+    "bench": "bun run src/throughput.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "bun test"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@re-reduced/core": "workspace:*",
+    "@re-reduced/react": "workspace:*",
+    "mitata": "^1.0.34",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.1.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0"
+  }
+}

@@ -1,0 +1,62 @@
+---
+title: Benchmarks
+description: How re-reduced compares to Zustand and useReducer on renders and throughput.
+---
+
+Numbers are **indicative** (Apple Silicon, Bun) — run them yourself with
+`bun run --filter @re-reduced/bench bench` and the render-count comparison with
+`bun test bench`. The harness lives in [`bench/`](https://github.com/alanrsoares/re-reduced/tree/main/bench).
+
+## Fine-grained re-renders (the headline)
+
+A container with `{ a, b }`; one leaf reads `a`, another reads `b`. Bump `a` and
+count which leaves re-render:
+
+| Approach | `a` leaf | `b` leaf |
+| --- | --- | --- |
+| **re-reduced** (`useSelect`) | re-renders | **bails out** |
+| Zustand (selector) | re-renders | **bails out** |
+| `useReducer` + Context | re-renders | re-renders |
+
+re-reduced matches Zustand's per-component bail-out, and both avoid the
+broadcast re-render a naive `useReducer` + Context tree suffers. With re-reduced
+the granularity is **structural** (per-field signals) — you don't hand-write
+equality selectors to get it.
+
+## Dispatch throughput
+
+A `count: count + 1` transition, dispatched + read in a tight loop (no React):
+
+| Operation | Time / op |
+| --- | --- |
+| plain reducer (baseline) | ~2.6 ns |
+| **re-reduced** dispatch + read | ~47 ns |
+| Zustand dispatch + read | ~54 ns |
+
+re-reduced is in the same class as Zustand (a touch faster here), ~18× a bare
+function call — the cost of the signal write + shallow diff that buys the
+fine-grained updates above. For UI event rates this is far below the noise floor.
+
+## Derivation reads
+
+An expensive derivation (reduce over 1,000 items) read repeatedly while its
+input is unchanged:
+
+| Read | Time / op |
+| --- | --- |
+| **re-reduced** `derive` (memoized) | single-digit ns (cached) |
+| manual recompute each read | **~75× slower** |
+
+This is what memoization is for: derivations recompute only when a tracked input
+changes, so repeated reads are effectively free. For a *trivial* derivation
+(`count * 2`) the signal overhead isn't worth it — reach for `derive` when the
+computation is non-trivial or read often.
+
+## Takeaways
+
+- **Renders:** fine-grained by construction, on par with Zustand, ahead of
+  Context-based reducers.
+- **Dispatch:** Zustand-class; the modest overhead vs a bare reducer is the
+  price of the signal graph.
+- **Derivations:** memoized — a large win for non-trivial computed values read
+  repeatedly.

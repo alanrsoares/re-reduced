@@ -7,7 +7,8 @@
   "workspaces": [
     "packages/*",
     "examples/*",
-    "apps/*"
+    "apps/*",
+    "bench"
   ],
   "scripts": {
     "lint": "biome check .",
