@@ -14,8 +14,11 @@
     "lint:fix": "biome check --write .",
     "typecheck": "bun run --filter '*' typecheck",
     "test": "bun test",
-    "build": "bun run --filter '*' build",
-    "check": "bun run lint && bun run typecheck && bun test"
+    "build": "bun run --filter './packages/*' build",
+    "check": "bun run lint && bun run typecheck && bun test",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "bun run build && changeset publish"
   },
   "repository": {
     "type": "git",
@@ -25,7 +28,9 @@
   "license": "MIT",
   "devDependencies": {
     "@biomejs/biome": "^2.5.0",
+    "@changesets/cli": "^2.31.0",
     "@types/bun": "^1.3.14",
+    "tsdown": "^0.22.3",
     "typescript": "^6.0.3"
   }
 }
