@@ -151,7 +151,7 @@ export interface Store<S, R, D extends Record<string, () => unknown>> {
  *
  *   defineContainer("name", { state, actions, derive, effects: (fx) => [ ... ] })
  */
-export function defineContainer<
+export const defineContainer = <
   S extends Record<string, unknown>,
   R extends Record<string, ActionSpec<S, unknown>>,
   D extends Record<string, () => unknown> = Record<string, never>,
@@ -164,11 +164,10 @@ export function defineContainer<
     derive?: (state: StateSignals<S>) => D;
     effects?: (fx: EffectBuilder<S, keyof R & string, Actions<R>>) => RS;
   },
-): ContainerDef<S, R, D, IntentOf<RS>> & { name: string } {
-  return { name, ...def } as ContainerDef<S, R, D, IntentOf<RS>> & {
+): ContainerDef<S, R, D, IntentOf<RS>> & { name: string } =>
+  ({ name, ...def }) as ContainerDef<S, R, D, IntentOf<RS>> & {
     name: string;
   };
-}
 
 export function createContainer<
   S extends Record<string, unknown>,
