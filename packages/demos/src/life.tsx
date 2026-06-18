@@ -2,6 +2,8 @@ import { useContainer, useSelect } from "@re-reduced/react";
 import {
   createContext,
   memo,
+  Profiler,
+  type ProfilerOnRenderCallback,
   type ReactNode,
   useCallback,
   useContext,
@@ -28,7 +30,7 @@ import {
 /** Per-board cumulative render tally — mutated in cell render bodies. */
 type Stats = { renders: number };
 
-const gridStyle = { gridTemplateColumns: `repeat(${COLS}, 1fr)` };
+const gridStyle = { gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` };
 
 const LifeCtx = createContext<LifeState>(emptyBoard());
 
@@ -171,12 +173,14 @@ function Panel({
   title,
   subtitle,
   renders,
+  tone,
   badgeTestId,
   children,
 }: {
   title: string;
   subtitle: string;
   renders: number;
+  tone: "good" | "bad";
   badgeTestId: string;
   children: ReactNode;
 }) {
@@ -184,7 +188,7 @@ function Panel({
     <div className="ri-panel">
       <div className="ri-panel-head">
         <strong>{title}</strong>
-        <span className="ri-badge" data-testid={badgeTestId}>
+        <span className={`ri-badge ri-${tone}`} data-testid={badgeTestId}>
           {renders.toLocaleString()} cell re-renders
         </span>
       </div>
@@ -216,8 +220,36 @@ export function RenderInspector() {
 
   const [gen, setGen] = useState(0);
   const [running, setRunning] = useState(false);
+  const [raf, setRaf] = useState(false);
   const [speed, setSpeed] = useState(6);
   const [pulse, setPulse] = useState(true);
+  // Which backend(s) the run loop drives. Isolate one to measure its true
+  // sustained FPS without the other contending for the same frame budget.
+  const [active, setActive] = useState<"both" | "rr" | "ctx">("both");
+  const runRR = active !== "ctx";
+  const runCtx = active !== "rr";
+
+  // Per-board render time, measured independently so the slow Context board
+  // doesn't just gate one shared frame number. (React fires onRender only in
+  // dev / profiling builds — production reads 0, shown as "—".)
+  const rrProf = useRef({ ms: 0, commits: 0 });
+  const ctxProf = useRef({ ms: 0, commits: 0 });
+  const fps = useRef({ frames: 0, since: 0, value: 0 });
+
+  const onRRRender = useCallback<ProfilerOnRenderCallback>(
+    (_id, _p, actual) => {
+      rrProf.current.ms += actual;
+      rrProf.current.commits += 1;
+    },
+    [],
+  );
+  const onCtxRender = useCallback<ProfilerOnRenderCallback>(
+    (_id, _p, actual) => {
+      ctxProf.current.ms += actual;
+      ctxProf.current.commits += 1;
+    },
+    [],
+  );
 
   const paint = useCallback(
     (i: number) => {
@@ -228,10 +260,10 @@ export function RenderInspector() {
   );
 
   const step = useCallback(() => {
-    rrStore.actions.tick();
-    ctxDispatch({ type: "tick" });
+    if (active !== "ctx") rrStore.actions.tick();
+    if (active !== "rr") ctxDispatch({ type: "tick" });
     setGen((g) => g + 1);
-  }, [rrStore]);
+  }, [rrStore, active]);
 
   const randomize = useCallback(() => {
     const board = randomBoard(0.3, Math.random);
@@ -251,15 +283,46 @@ export function RenderInspector() {
     rrStats.current.renders = 0;
     ctxStats.current.renders = 0;
     rrRc.current.count = 0;
+    rrProf.current = { ms: 0, commits: 0 };
+    ctxProf.current = { ms: 0, commits: 0 };
+    fps.current = { frames: 0, since: 0, value: 0 };
     force();
   }, []);
 
-  // run loop
+  // fixed-rate run loop (Play)
   useEffect(() => {
-    if (!running) return;
+    if (!running || raf) return;
     const id = setInterval(step, Math.max(33, Math.round(1000 / speed)));
     return () => clearInterval(id);
-  }, [running, speed, step]);
+  }, [running, raf, speed, step]);
+
+  // max-rate run loop (rAF) — ticks as fast as the frame budget allows
+  useEffect(() => {
+    if (!raf) return;
+    let id = 0;
+    const loop = (t: number) => {
+      const f = fps.current;
+      if (f.since === 0) f.since = t;
+      f.frames += 1;
+      if (t - f.since >= 400) {
+        f.value = (f.frames * 1000) / (t - f.since);
+        f.frames = 0;
+        f.since = t;
+      }
+      if (active !== "ctx") rrStore.actions.tick();
+      if (active !== "rr") ctxDispatch({ type: "tick" });
+      setGen((g) => g + 1);
+      id = requestAnimationFrame(loop);
+    };
+    id = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(id);
+  }, [raf, rrStore, active]);
+
+  // measurements are only meaningful within one run mode — reset on change
+  // biome-ignore lint/correctness/useExhaustiveDependencies: resetStats is stable
+  useEffect(() => {
+    resetStats();
+  }, [active, raf]);
 
   // seed a board on mount
   useEffect(() => {
@@ -269,100 +332,194 @@ export function RenderInspector() {
   const rrPop = rrStore.$derived.population.peek();
   const ctxPop = population(ctxBoard);
 
+  // Only report a backend's timing while it's actually being driven — a paused
+  // board's last (near-zero) commit would otherwise divide into a junk FPS.
+  const rrMs =
+    runRR && rrProf.current.commits
+      ? rrProf.current.ms / rrProf.current.commits
+      : 0;
+  const ctxMs =
+    runCtx && ctxProf.current.commits
+      ? ctxProf.current.ms / ctxProf.current.commits
+      : 0;
+  const rrFps = rrMs ? Math.round(1000 / rrMs) : 0;
+  const ctxFps = ctxMs ? Math.round(1000 / ctxMs) : 0;
+
   return (
     <div className="ri not-prose">
       <div className="ri-controls">
-        <button
-          type="button"
-          className="ri-btn ri-primary"
-          onClick={() => setRunning((r) => !r)}
-        >
-          {running ? "⏸ Pause" : "▶ Play"}
-        </button>
-        <button
-          type="button"
-          className="ri-btn"
-          onClick={step}
-          disabled={running}
-        >
-          ⏭ Step
-        </button>
-        <button type="button" className="ri-btn" onClick={randomize}>
-          🎲 Randomize
-        </button>
-        <button type="button" className="ri-btn" onClick={clear}>
-          ✕ Clear
-        </button>
-        <button type="button" className="ri-btn" onClick={resetStats}>
-          ↺ Reset counts
-        </button>
-        <label className="ri-field">
-          Speed
-          <input
-            type="range"
-            min={1}
-            max={15}
-            value={speed}
-            onChange={(e) => setSpeed(Number(e.target.value))}
-          />
-          <span className="ri-mono">{speed}/s</span>
-        </label>
-        <label className="ri-field">
-          <input
-            type="checkbox"
-            checked={pulse}
-            onChange={(e) => setPulse(e.target.checked)}
-          />
-          Render pulse
-        </label>
+        <span className="ri-group">
+          <button
+            type="button"
+            className="ri-btn ri-primary"
+            onClick={() => setRunning((r) => !r)}
+            disabled={raf}
+          >
+            {running ? "⏸ Pause" : "▶ Play"}
+          </button>
+          <button
+            type="button"
+            className={raf ? "ri-btn ri-primary" : "ri-btn"}
+            onClick={() => setRaf((v) => !v)}
+            disabled={running}
+          >
+            {raf ? "⏹ Stop max" : "⚡ Max (rAF)"}
+          </button>
+          <button
+            type="button"
+            className="ri-btn"
+            onClick={step}
+            disabled={running || raf}
+          >
+            ⏭ Step
+          </button>
+        </span>
+
+        <span className="ri-group">
+          <button type="button" className="ri-btn" onClick={randomize}>
+            🎲 Randomize
+          </button>
+          <button type="button" className="ri-btn" onClick={clear}>
+            ✕ Clear
+          </button>
+          <button type="button" className="ri-btn" onClick={resetStats}>
+            ↺ Reset counts
+          </button>
+        </span>
+
+        <span className="ri-seg">
+          {(["both", "rr", "ctx"] as const).map((m) => (
+            <button
+              key={m}
+              type="button"
+              className={active === m ? "ri-btn ri-on-seg" : "ri-btn"}
+              onClick={() => setActive(m)}
+            >
+              {m === "both" ? "Both" : m === "rr" ? "rr only" : "ctx only"}
+            </button>
+          ))}
+        </span>
+
+        <span className="ri-group">
+          <label className="ri-field">
+            Speed
+            <input
+              type="range"
+              min={1}
+              max={15}
+              value={speed}
+              onChange={(e) => setSpeed(Number(e.target.value))}
+            />
+            <span className="ri-mono">{speed}/s</span>
+          </label>
+          <label className="ri-field">
+            <input
+              type="checkbox"
+              checked={pulse}
+              onChange={(e) => setPulse(e.target.checked)}
+            />
+            Render pulse
+          </label>
+        </span>
       </div>
+      <p className="ri-draw-hint">✎ Drag on either grid to draw cells.</p>
 
       <div className="ri-boards">
-        <Panel
-          title="re-reduced"
-          subtitle="one signal per cell — only flipped cells re-render"
-          renders={rrStats.current.renders}
-          badgeTestId="rr-renders"
-        >
-          <RRBoard
-            store={rrStore}
-            stats={rrStats.current}
-            onPaint={paint}
-            pulse={pulse}
-          />
-        </Panel>
+        <div className={runRR ? "ri-wrap" : "ri-wrap ri-idle"}>
+          <Panel
+            title="re-reduced"
+            subtitle="one signal per cell — only flipped cells re-render"
+            renders={rrStats.current.renders}
+            tone="good"
+            badgeTestId="rr-renders"
+          >
+            <Profiler id="rr" onRender={onRRRender}>
+              <RRBoard
+                store={rrStore}
+                stats={rrStats.current}
+                onPaint={paint}
+                pulse={pulse}
+              />
+            </Profiler>
+          </Panel>
+        </div>
 
-        <Panel
-          title="useReducer + Context"
-          subtitle="one state object — every cell re-renders each tick"
-          renders={ctxStats.current.renders}
-          badgeTestId="ctx-renders"
-        >
-          <LifeCtx.Provider value={ctxBoard}>
-            <CtxBoard stats={ctxStats.current} onPaint={paint} pulse={pulse} />
-          </LifeCtx.Provider>
-        </Panel>
+        <div className={runCtx ? "ri-wrap" : "ri-wrap ri-idle"}>
+          <Panel
+            title="useReducer + Context"
+            subtitle="one state object — every cell re-renders each tick"
+            renders={ctxStats.current.renders}
+            tone="bad"
+            badgeTestId="ctx-renders"
+          >
+            <Profiler id="ctx" onRender={onCtxRender}>
+              <LifeCtx.Provider value={ctxBoard}>
+                <CtxBoard
+                  stats={ctxStats.current}
+                  onPaint={paint}
+                  pulse={pulse}
+                />
+              </LifeCtx.Provider>
+            </Profiler>
+          </Panel>
+        </div>
       </div>
 
       <dl className="ri-stats">
-        <div>
-          <dt>Generation</dt>
-          <dd className="ri-mono">{gen}</dd>
-        </div>
-        <div>
-          <dt>Population</dt>
-          <dd className="ri-mono">
-            {rrPop} / {ctxPop}
-          </dd>
-        </div>
-        <div>
+        <div className="ri-feat">
           <dt>
-            re-render ratio <span className="ri-dim">(context ÷ rr)</span>
+            cell re-renders{" "}
+            <span className="ri-dim">(Context vs re-reduced)</span>
           </dt>
           <dd className="ri-mono">
             {rrStats.current.renders > 0
               ? `${(ctxStats.current.renders / rrStats.current.renders).toFixed(1)}×`
               : "—"}
+          </dd>
+          <dt className="ri-dim">
+            fewer with re-reduced ·{" "}
+            <span className="ri-rr">
+              {rrStats.current.renders.toLocaleString()}
+            </span>{" "}
+            vs{" "}
+            <span className="ri-ctx">
+              {ctxStats.current.renders.toLocaleString()}
+            </span>
+          </dt>
+        </div>
+        <div className="ri-wide">
+          <dt>
+            renders / sec <span className="ri-dim">(per backend)</span>
+          </dt>
+          <dd className="ri-mono">
+            <span className="ri-rr">{rrFps || "—"}</span> /{" "}
+            <span className="ri-ctx">{ctxFps || "—"}</span>
+          </dd>
+        </div>
+        <div className="ri-wide">
+          <dt>
+            render time / tick <span className="ri-dim">(ms · rr / ctx)</span>
+          </dt>
+          <dd className="ri-mono">
+            <span className="ri-rr">{rrMs ? rrMs.toFixed(2) : "—"}</span> /{" "}
+            <span className="ri-ctx">{ctxMs ? ctxMs.toFixed(2) : "—"}</span>
+          </dd>
+        </div>
+        <div>
+          <dt>
+            loop FPS <span className="ri-dim">(rAF, {active})</span>
+          </dt>
+          <dd className="ri-mono">
+            {raf ? Math.round(fps.current.value) : "—"}
+          </dd>
+        </div>
+        <div>
+          <dt>
+            population <span className="ri-dim">(rr / ctx)</span>
+          </dt>
+          <dd className="ri-mono">
+            <span className="ri-rr">{rrPop}</span> /{" "}
+            <span className="ri-ctx">{ctxPop}</span>
           </dd>
         </div>
         <div>
@@ -372,15 +529,38 @@ export function RenderInspector() {
           </dt>
           <dd className="ri-mono">{rrRc.current.count}</dd>
         </div>
+        <div>
+          <dt>Generation</dt>
+          <dd className="ri-mono">{gen}</dd>
+        </div>
       </dl>
 
+      {!raf && rrFps === 0 && ctxFps === 0 && (
+        <p className="ri-hint">
+          Timing populates once it runs. For a clean per-backend FPS, switch to{" "}
+          <strong>rr only</strong> / <strong>ctx only</strong> and hit{" "}
+          <strong>⚡ Max (rAF)</strong> so the other board isn't sharing the
+          frame.
+        </p>
+      )}
+
       <p className="ri-note">
-        Draw with the mouse on either grid. Both backends share the same board
-        and controls — the <em>only</em> difference is how each subscribes.
-        Watch the pulse: re-reduced lights up just the cells that flipped;
-        Context strobes the whole grid every tick. The re-reduced tick is still
-        O(cells) in JS (snapshot + diff — see the benchmarks), but it avoids the
-        DOM commit that makes the Context board jank at speed.
+        Both backends share the same board and controls — the <em>only</em>{" "}
+        difference is how each subscribes. Watch the pulse: re-reduced lights up
+        just the cells that flipped; Context strobes the whole grid every tick.
+        The re-reduced tick is still O(cells) in JS (snapshot + diff — see the
+        benchmarks), but it avoids the DOM commit that makes the Context board
+        jank at speed.
+      </p>
+      <p className="ri-note">
+        <strong>Reading the FPS fairly.</strong> <em>render ms / tick</em> is
+        per-backend and stays clean even with both running — React renders each
+        board's subtree sequentially and the <code>Profiler</code> times each on
+        its own. <em>loop FPS</em> is the shared frame budget, so it reflects
+        whatever is active: to read a backend's <em>true</em> sustained FPS,
+        switch <em>Both → rr only / ctx only</em> so the other isn't contending.
+        (Render timing needs React's dev/profiling build; a production bundle
+        shows “—”.)
       </p>
     </div>
   );
