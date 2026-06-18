@@ -1,0 +1,9 @@
+# Pre-commit: auto-fix staged files with Biome so formatting/lint never reaches
+# CI (`bun run check` runs `biome check .` with no --write and fails on diffs).
+# stage_fixed re-stages whatever Biome rewrites.
+pre-commit:
+  jobs:
+    - name: biome
+      glob: "*.{js,jsx,ts,tsx,json,jsonc,mjs,cjs}"
+      run: bunx biome check --write --no-errors-on-unmatched {staged_files}
+      stage_fixed: true

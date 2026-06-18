@@ -1,0 +1,6 @@
+# Render-count specs (test/render-count.spec.tsx) need DOM globals. The root
+# bunfig.toml preloads happy-dom for `bun test` from the repo root, but a
+# standalone `bun test` in this package (or `bun run --filter … test`) runs in
+# this dir and misses it. Re-register the same preload here.
+[test]
+preload = ["../packages/react/test/happydom.ts"]

@@ -6,6 +6,9 @@
   "description": "Benchmarks: re-reduced vs Zustand vs useReducer. Not published.",
   "scripts": {
     "bench": "bun run src/throughput.ts",
+    "bench:scaling": "bun run src/scaling.ts",
+    "bench:derive": "bun run src/derive.ts",
+    "bench:all": "bun run src/throughput.ts && bun run src/scaling.ts && bun run src/derive.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "bun test"
   },
