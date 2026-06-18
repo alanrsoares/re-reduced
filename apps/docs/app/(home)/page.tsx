@@ -1,3 +1,4 @@
+import { DynamicCodeBlock } from "fumadocs-ui/components/dynamic-codeblock";
 import { ArrowRight, Layers, ShieldCheck, Workflow, Zap } from "lucide-react";
 import Link from "next/link";
 import { gitConfig } from "@/lib/shared";
@@ -77,19 +78,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* code sample */}
-      <section className="w-full max-w-3xl pb-20">
-        <div className="overflow-hidden rounded-xl border border-fd-border bg-fd-card shadow-sm">
-          <div className="flex items-center gap-1.5 border-b border-fd-border px-4 py-3">
-            <span className="size-3 rounded-full bg-red-400/70" />
-            <span className="size-3 rounded-full bg-yellow-400/70" />
-            <span className="size-3 rounded-full bg-green-400/70" />
-            <span className="ml-2 text-xs text-fd-muted-foreground">counter.ts</span>
-          </div>
-          <pre className="overflow-x-auto p-4 text-sm leading-relaxed">
-            <code className="font-mono text-fd-foreground">{SNIPPET}</code>
-          </pre>
-        </div>
+      {/* code sample — shiki-highlighted via fumadocs */}
+      <section className="w-full max-w-3xl pb-20 text-left">
+        <DynamicCodeBlock lang="ts" code={SNIPPET} />
       </section>
 
       {/* features */}
