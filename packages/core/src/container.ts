@@ -94,6 +94,8 @@ export interface Store<S, R, D extends Record<string, () => unknown>> {
 	readonly $state: StateSignals<S>;
 	readonly $derived: DerivedSignals<D>;
 	readonly actions: Actions<R>;
+	/** True once destroy() has run. Adapters use this to recover under StrictMode. */
+	readonly destroyed: boolean;
 	getState(): S;
 	select<T>(
 		sel: (s: StateSignals<S>, d: DerivedSignals<D>) => T,
@@ -181,16 +183,22 @@ export function createContainer<
 			$derived[key] = computed(builders[key]);
 	}
 
+	let destroyed = false;
 	const api: Store<S, R, D> = {
 		$state: $state as StateSignals<S>,
 		$derived: $derived as DerivedSignals<D>,
 		actions: actions as unknown as Actions<R>,
+		get destroyed() {
+			return destroyed;
+		},
 		getState: snapshot,
 		select: (sel) =>
 			computed(() =>
 				sel($state as StateSignals<S>, $derived as DerivedSignals<D>),
 			),
 		destroy: () => {
+			if (destroyed) return; // idempotent
+			destroyed = true;
 			controller.abort();
 			for (const fn of cleanups.splice(0)) fn();
 			actionListeners.clear();

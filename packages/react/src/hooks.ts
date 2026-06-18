@@ -21,7 +21,14 @@ export interface UseContainerOptions<S, R, I extends { kind: string }> {
 	init?: Partial<S>;
 }
 
-/** Create a Store once for this component; dispose on unmount. */
+/**
+ * Create a Store once for this component; dispose on unmount.
+ *
+ * StrictMode-safe: the dev mount→unmount→mount cycle destroys the store on the
+ * simulated unmount, so the mount-only effect revives it (and re-renders with
+ * the fresh one) if it sees a destroyed store. Empty deps avoid a destroy/revive
+ * loop. In production this runs once and never revives.
+ */
 export function useContainer<
 	S extends Record<string, unknown>,
 	R extends Record<string, ActionSpec<S, unknown>>,
@@ -31,8 +38,18 @@ export function useContainer<
 	def: ContainerDef<S, R, D, I>,
 	opts?: UseContainerOptions<S, R, I>,
 ): Store<S, R, D> {
-	const [store] = useState(() => createContainer(def, opts));
-	useEffect(() => () => store.destroy(), [store]);
+	const [store, setStore] = useState(() => createContainer(def, opts));
+	const optsRef = useRef(opts);
+	optsRef.current = opts;
+	// biome-ignore lint/correctness/useExhaustiveDependencies: mount-only; revives a StrictMode-destroyed store
+	useEffect(() => {
+		let current = store;
+		if (current.destroyed) {
+			current = createContainer(def, optsRef.current);
+			setStore(current);
+		}
+		return () => current.destroy();
+	}, []);
 	return store;
 }
 
