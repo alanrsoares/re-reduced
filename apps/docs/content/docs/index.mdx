@@ -18,7 +18,7 @@ server state to your data layer (TanStack Query, etc.) through adapters.
   the renderer binding is the only thing that differs.
 
 ```ts
-const counter = defineContainer()("counter", {
+const counter = defineContainer("counter", {
   state: { count: 0 },
   actions: (on) => ({
     increment: on((s) => ({ count: s.count + 1 })),

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import type { ReadSignal } from "@re-reduced/signals";
 import { createContainer, defineContainer } from "../src/container";
-import { type BuiltinIntent, storageSet, timeout } from "../src/intents";
+import { storageSet, timeout } from "../src/intents";
 import {
   makeStorageInterpreter,
   type StorageBackend,
@@ -41,7 +41,7 @@ const makeApp = () => {
       this.store.set(k, v);
     },
   };
-  const def = defineContainer<BuiltinIntent>()("counter", {
+  const def = defineContainer("counter", {
     state: { count: 0, filter: "all" as Filter, label: "" },
     actions: (on) => ({
       inc: on((s) => ({ ...s, count: s.count + 1 })),
@@ -52,23 +52,22 @@ const makeApp = () => {
     derive: ($) => ({
       doubled: () => $.count.value * 2,
     }),
-    effects: (fx) => {
+    effects: (fx) => [
       fx.onChange(
         (s) => s.filter.value,
         (filter) => storageSet("filter", filter),
-      );
+      ),
       fx.onEnter(
         (s) => s.count.value >= 3,
         () => storageSet("milestone", true),
-      );
+      ),
       fx.onAction("ping", (_p, { actions }) =>
         timeout(15, () => actions.pinged()),
-      );
-    },
+      ),
+    ],
   });
   const store = createContainer(def, {
     interpreters: {
-      query: () => {},
       timeout: timeoutInterpreter,
       storageSet: makeStorageInterpreter(backend),
     },

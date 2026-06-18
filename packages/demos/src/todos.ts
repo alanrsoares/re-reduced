@@ -1,8 +1,5 @@
-// NOTE: this file is byte-for-byte identical to the React example's container.
-// The Container Definition is framework-agnostic — only the renderer binding
-// differs. That is the whole multi-renderer thesis.
-import { defineContainer, type QueryIntent, query } from "@re-reduced/core";
-import { api } from "./api";
+import type { QueryClientLike } from "@re-reduced/adapter-kit";
+import { defineContainer, query } from "@re-reduced/core";
 
 export type Todo = { id: string; title: string; done: boolean };
 export type Filter = "all" | "active" | "done";
@@ -14,7 +11,27 @@ const makeId = () => {
   return `t${nextId}`;
 };
 
-export const todos = defineContainer<QueryIntent>()("todos", {
+const SEED: Todo[] = [
+  { id: "seed-1", title: "Learn re-reduced", done: true },
+  { id: "seed-2", title: "Build something", done: false },
+];
+
+export const api = {
+  list: (): Promise<Todo[]> => Promise.resolve(SEED),
+};
+
+/** Minimal QueryClient stub; in a real app, pass your TanStack QueryClient. */
+export const queryClient: QueryClientLike = {
+  fetchQuery: ({ queryFn }) =>
+    queryFn({ signal: new AbortController().signal }),
+};
+
+/**
+ * The one shared TODO container. Imported unchanged by the React example, the
+ * Preact example, and the docs live demo — the multi-renderer thesis, with a
+ * single source of truth.
+ */
+export const todos = defineContainer("todos", {
   state: {
     draft: "",
     filter: "all" as Filter,
@@ -67,7 +84,7 @@ export const todos = defineContainer<QueryIntent>()("todos", {
     activeCount: () => $.items.value.filter((t) => !t.done).length,
     canSubmit: () => $.draft.value.trim().length > 0,
   }),
-  effects: (fx) => {
+  effects: (fx) => [
     fx.onAction("load", (_payload, { actions }) =>
       query<Todo[]>({
         key: ["todos"],
@@ -75,6 +92,6 @@ export const todos = defineContainer<QueryIntent>()("todos", {
         onData: (items) => actions.loaded(items),
         onError: (error) => actions.loadFailed(String(error)),
       }),
-    );
-  },
+    ),
+  ],
 });

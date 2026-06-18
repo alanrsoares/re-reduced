@@ -17,7 +17,7 @@ each list re-renders only when its slice changes.
 Framework-agnostic — pure state, actions, and derivations:
 
 ```ts
-const todos = defineContainer()("todos", {
+const todos = defineContainer("todos", {
   state: { draft: "", seq: 2, filter: "all", items: [/* … */] },
   actions: (on) => ({
     draftChanged: on<string>((s, draft) => ({ ...s, draft })),

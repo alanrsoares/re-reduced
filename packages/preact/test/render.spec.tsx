@@ -4,7 +4,7 @@ import { defineContainer } from "@re-reduced/core";
 import { cleanup, fireEvent, render } from "@testing-library/preact";
 import { createContainerContext, useSelect } from "../src";
 
-const todos = defineContainer()("todos", {
+const todos = defineContainer("todos", {
   state: { draft: "", items: [] as string[] },
   actions: (on) => ({
     draftChanged: on<string>((s, draft) => ({ ...s, draft })),

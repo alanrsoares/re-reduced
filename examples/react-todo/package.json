@@ -10,9 +10,7 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@re-reduced/adapter-kit": "workspace:*",
-    "@re-reduced/core": "workspace:*",
-    "@re-reduced/react": "workspace:*",
+    "@re-reduced/demos": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

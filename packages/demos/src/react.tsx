@@ -1,16 +1,15 @@
-/** @jsxImportSource preact */
-import type { Filter } from "@re-reduced/demos";
-import { useSelect } from "@re-reduced/preact";
-import { useEffect } from "preact/hooks";
-import { useTodos } from "./useTodos";
+import { makeQueryInterpreter } from "@re-reduced/adapter-kit";
+import { useContainer, useSelect } from "@re-reduced/react";
+import { type FormEvent, useEffect } from "react";
+import { type Filter, queryClient, todos } from "./todos";
 
 const FILTERS: Filter[] = ["all", "active", "done"];
 
-export function App() {
-  const store = useTodos();
-  // useSelect reads the signal's value → @preact/signals subscribes this
-  // component fine-grainedly. (For zero-VDOM updates you can also render a
-  // signal directly in JSX, e.g. {store.$derived.activeCount}.)
+/** Self-contained React TODO — shared by the React example app and the docs. */
+export function TodoApp() {
+  const store = useContainer(todos, {
+    interpreters: { query: makeQueryInterpreter(queryClient) },
+  });
   const draft = useSelect(store, (s) => s.draft.value);
   const filter = useSelect(store, (s) => s.filter.value);
   const status = useSelect(store, (s) => s.status.value);
@@ -23,24 +22,22 @@ export function App() {
     store.actions.load();
   }, [store]);
 
+  const onSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    store.actions.submit();
+  };
+
   return (
-    <main className="app">
+    <section className="app">
       <h1>todos</h1>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          store.actions.submit();
-        }}
-      >
+      <form onSubmit={onSubmit}>
         <input
           data-testid="draft"
-          class={error ? "draft error" : "draft"}
+          className={error ? "draft error" : "draft"}
           placeholder="What needs to be done?"
           value={draft}
-          onInput={(e) =>
-            store.actions.draftChanged((e.target as HTMLInputElement).value)
-          }
+          onChange={(e) => store.actions.draftChanged(e.target.value)}
         />
         <button type="submit" data-testid="add" disabled={!canSubmit}>
           Add
@@ -48,15 +45,15 @@ export function App() {
       </form>
 
       {error && (
-        <p class="banner" data-testid="error">
+        <p className="banner" data-testid="error">
           {error}
         </p>
       )}
       {status === "loading" && <p>Loading…</p>}
 
-      <ul class="list">
+      <ul className="list">
         {visible.map((todo) => (
-          <li key={todo.id} class={todo.done ? "done" : undefined}>
+          <li key={todo.id} className={todo.done ? "done" : undefined}>
             <input
               type="checkbox"
               checked={todo.done}
@@ -65,7 +62,7 @@ export function App() {
             <span>{todo.title}</span>
             <button
               type="button"
-              class="destroy"
+              className="destroy"
               onClick={() => store.actions.removed({ id: todo.id })}
             >
               ×
@@ -74,15 +71,15 @@ export function App() {
         ))}
       </ul>
 
-      <footer class="footer">
+      <footer className="footer">
         <span data-testid="count">{activeCount} left</span>
-        <span class="filters">
+        <span className="filters">
           {FILTERS.map((f) => (
             <button
               type="button"
               key={f}
               data-testid={`filter-${f}`}
-              class={f === filter ? "selected" : undefined}
+              className={f === filter ? "selected" : undefined}
               onClick={() => store.actions.filterChanged(f)}
             >
               {f}
@@ -90,6 +87,6 @@ export function App() {
           ))}
         </span>
       </footer>
-    </main>
+    </section>
   );
 }

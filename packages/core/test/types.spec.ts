@@ -10,7 +10,7 @@ import type { BuiltinIntent } from "../src/intents";
 
 type Filter = "all" | "active" | "done";
 
-const def = defineContainer<BuiltinIntent>()("todos", {
+const def = defineContainer("todos", {
   state: { draft: "", filter: "all" as Filter, count: 0 },
   actions: (on) => ({
     draftChanged: on<string>((s, draft) => ({ ...s, draft })),
@@ -24,9 +24,8 @@ type A = { loaded: (n: number) => void };
 
 // Compile-time only (uncalled): tsc enforces these; bun never runs them.
 function _typeAssertions() {
-  const c = createContainer(def, {
-    interpreters: { query: () => {}, timeout: () => {}, storageSet: () => {} },
-  });
+  // no effects → intent union is `never`, so no interpreters are required
+  const c = createContainer(def);
 
   expectType<TypeEqual<typeof c.$state.draft, ReadSignal<string>>>(true);
   expectType<TypeEqual<typeof c.$state.filter, ReadSignal<Filter>>>(true);

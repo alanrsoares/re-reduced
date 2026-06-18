@@ -5,7 +5,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!**/.claude", "!**/dist", "!apps/docs/**"]
+    "includes": ["**", "!**/.claude", "!**/dist", "!apps/docs"]
   },
   "linter": {
     "enabled": true

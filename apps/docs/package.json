@@ -9,7 +9,9 @@
     "types:check": "fumadocs-mdx && next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@re-reduced/adapter-kit": "workspace:*",
     "@re-reduced/core": "workspace:*",
+    "@re-reduced/demos": "workspace:*",
     "@re-reduced/react": "workspace:*",
     "fumadocs-core": "^16.10.4",
     "fumadocs-mdx": "^15.0.12",

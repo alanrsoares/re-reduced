@@ -23,7 +23,7 @@ derivations. No React, no I/O.
 ```ts title="counter.container.ts"
 import { defineContainer } from "@re-reduced/react";
 
-export const counter = defineContainer()("counter", {
+export const counter = defineContainer("counter", {
   state: { count: 0 },
   actions: (on) => ({
     increment: on((s) => ({ count: s.count + 1 })),
@@ -36,9 +36,10 @@ export const counter = defineContainer()("counter", {
 });
 ```
 
-`defineContainer<Intent>()` is curried: the optional first call fixes the
-effect-intent union (see [Effects](/docs/effects)); the second call infers
-state, actions, and derivations from the body.
+`defineContainer(name, def)` is a single call. State, actions, and derivations
+are inferred from the body; the effect-intent union is inferred from the
+reactions the `effects` block returns (see [Effects](/docs/effects)) — no type
+arguments needed.
 
 ## Use it in a component
 

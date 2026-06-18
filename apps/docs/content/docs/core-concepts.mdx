@@ -10,7 +10,7 @@ pure functions. A **Store** (`createContainer`, or `useContainer` in a
 component) is a live, signal-backed instance of that blueprint.
 
 ```ts
-const def = defineContainer()("todos", { state: { /* ... */ }, actions: (on) => ({}) });
+const def = defineContainer("todos", { state: { /* ... */ }, actions: (on) => ({}) });
 const store = createContainer(def); // live Store
 ```
 

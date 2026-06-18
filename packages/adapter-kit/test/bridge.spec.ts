@@ -1,13 +1,7 @@
 import { describe, expect, it } from "bun:test";
-import {
-  createContainer,
-  defineContainer,
-  type QueryIntent,
-  query,
-} from "@re-reduced/core";
+import { createContainer, defineContainer, query } from "@re-reduced/core";
 import {
   type MutationClientLike,
-  type MutationIntent,
   makeMutationInterpreter,
   makeQueryInterpreter,
   mutate,
@@ -17,7 +11,7 @@ import {
 const tick = (ms = 0) => new Promise((r) => setTimeout(r, ms));
 
 const makeApp = () =>
-  defineContainer<QueryIntent | MutationIntent>()("data", {
+  defineContainer("data", {
     // SSOT: store a count + a flag — never the fetched list itself.
     state: { count: 0, saved: false },
     actions: (on) => ({
@@ -26,22 +20,22 @@ const makeApp = () =>
       save: on((s) => s),
       markSaved: on((s) => ({ ...s, saved: true })),
     }),
-    effects: (fx) => {
+    effects: (fx) => [
       fx.onAction("load", (_p, { actions }) =>
         query<number[]>({
           key: ["todos"],
           run: () => Promise.resolve([1, 2, 3]),
           onData: (rows) => actions.loaded(rows.length),
         }),
-      );
+      ),
       fx.onAction("save", (_p, { actions }) =>
         mutate({
           run: () => Promise.resolve("ok"),
           onSuccess: () => actions.markSaved(),
           invalidates: [["todos"]],
         }),
-      );
-    },
+      ),
+    ],
   });
 
 describe("@re-reduced/adapter-kit — query/mutate bridge", () => {

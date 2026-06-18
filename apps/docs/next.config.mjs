@@ -10,6 +10,8 @@ const config = {
     "@re-reduced/core",
     "@re-reduced/react",
     "@re-reduced/signals",
+    "@re-reduced/adapter-kit",
+    "@re-reduced/demos",
   ],
 };
 

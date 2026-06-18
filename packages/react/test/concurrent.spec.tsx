@@ -10,7 +10,7 @@ import {
 import { Suspense, use, useTransition } from "react";
 import { createContainerContext, useSelect } from "../src";
 
-const counter = defineContainer()("c", {
+const counter = defineContainer("c", {
   state: { n: 0 },
   actions: (on) => ({ inc: on((s) => ({ ...s, n: s.n + 1 })) }),
 });

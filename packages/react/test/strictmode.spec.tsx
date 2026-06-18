@@ -6,14 +6,12 @@ import { createContainerContext, useSelect } from "../src";
 
 let interpreterCalls = 0;
 
-const def = defineContainer<{ kind: "ping" }>()("sm", {
+const def = defineContainer("sm", {
   state: { n: 0 },
   actions: (on) => ({
     trigger: on((s) => ({ ...s, n: s.n + 1 })),
   }),
-  effects: (fx) => {
-    fx.onAction("trigger", () => ({ kind: "ping" as const }));
-  },
+  effects: (fx) => [fx.onAction("trigger", () => ({ kind: "ping" as const }))],
 });
 
 const Ctx = createContainerContext(def, {

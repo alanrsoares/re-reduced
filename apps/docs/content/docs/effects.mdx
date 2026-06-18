@@ -11,11 +11,13 @@ action.
 
 ## Reactions
 
-The `effects` block reacts to committed actions or state changes and returns
-intents:
+The `effects` block **returns an array of reactions** — each reacts to a
+committed action or a state change and produces an intent. Returning them (vs
+registering imperatively) is what lets `defineContainer` infer the container's
+intent union, so you never write a type argument:
 
 ```ts
-effects: (fx) => {
+effects: (fx) => [
   // when an action is dispatched
   fx.onAction("load", (_payload, { actions }) =>
     query<Todo[]>({
@@ -23,18 +25,20 @@ effects: (fx) => {
       run: () => api.list(),
       onData: (items) => actions.loaded(items),
     }),
-  );
+  ),
 
   // when a derived slice changes
-  fx.onChange((s) => s.filter.value, (filter) => storageSet("filter", filter));
+  fx.onChange((s) => s.filter.value, (filter) => storageSet("filter", filter)),
 
   // when a predicate transitions into true
-  fx.onEnter((s) => s.items.value.length >= 10, ({ actions }) => actions.warn());
-}
+  fx.onEnter((s) => s.items.value.length >= 10, ({ actions }) => actions.warn()),
+]
 ```
 
 Reactions observe **committed** state (ADR-0005): they fire synchronously after
-the transition, never returning state themselves.
+the transition, never returning state themselves. The intent union (here
+`QueryIntent | StorageSetIntent | …`) is inferred from these returns and drives
+the typed interpreter coverage below.
 
 ## Intents & interpreters
 
