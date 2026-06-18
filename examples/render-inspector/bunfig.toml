@@ -1,0 +1,5 @@
+# DOM globals for the render test. The root bunfig preloads happy-dom for
+# `bun test` from the repo root, but a standalone run in this package (or
+# --filter) misses it — re-register here. (Same fix as bench/bunfig.toml.)
+[test]
+preload = ["../../packages/react/test/happydom.ts"]
