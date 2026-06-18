@@ -18,21 +18,31 @@ Framework-agnostic — pure state, actions, and derivations:
 
 ```ts
 const todos = defineContainer("todos", {
-  state: { draft: "", seq: 2, filter: "all", items: [/* … */] },
+  state: { draft: "", filter: "all" as Filter, items: [] as Todo[], error: null as string | null },
   actions: (on) => ({
-    draftChanged: on<string>((s, draft) => ({ ...s, draft })),
-    add: on((s) =>
-      s.draft.trim() === ""
-        ? s
-        : { ...s, seq: s.seq + 1, draft: "", items: [{ id: s.seq + 1, title: s.draft.trim(), done: false }, ...s.items] }),
-    toggle: on<number>((s, id) => ({ ...s, items: s.items.map((t) => (t.id === id ? { ...t, done: !t.done } : t)) })),
-    remove: on<number>((s, id) => ({ ...s, items: s.items.filter((t) => t.id !== id) })),
+    draftChanged: on<string>((s, draft) => ({ ...s, draft, error: null })),
     filterChanged: on<Filter>((s, filter) => ({ ...s, filter })),
+    submit: on((s) =>
+      s.draft.trim() === ""
+        ? { ...s, error: "Title can't be empty" }
+        : { ...s, draft: "", items: [{ id: makeId(), title: s.draft.trim(), done: false }, ...s.items] }),
+    toggled: on<{ id: string }>((s, { id }) => ({
+      ...s,
+      items: s.items.map((t) => (t.id === id ? { ...t, done: !t.done } : t)),
+    })),
+    removed: on<{ id: string }>((s, { id }) => ({ ...s, items: s.items.filter((t) => t.id !== id) })),
+    loaded: on<Todo[]>((s, items) => ({ ...s, items })),
   }),
   derive: ($) => ({
-    visible: () => $.items.value.filter(byFilter($.filter.value)),
+    visible: () => {
+      const f = $.filter.value;
+      return $.items.value.filter((t) => (f === "active" ? !t.done : f === "done" ? t.done : true));
+    },
     activeCount: () => $.items.value.filter((t) => !t.done).length,
+    canSubmit: () => $.draft.value.trim().length > 0,
   }),
+  // `load` fetches via the query intent; the result re-enters as `loaded`
+  effects: (fx) => [/* fx.onAction("load", … query(...)) */],
 });
 ```
 
