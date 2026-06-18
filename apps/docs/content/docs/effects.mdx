@@ -1,0 +1,69 @@
+---
+title: Effects & intents
+description: Reactions, effect intents, and the interpreter registry.
+---
+
+Side-effects are **first-class but declarative**. A container declares effect
+*intent* — pure descriptors — in a `effects` reactions block. The Store doesn't
+execute them; a renderer **adapter** supplies interpreters that do. This keeps
+the container pure and unit-testable, and the result of any I/O re-enters as an
+action.
+
+## Reactions
+
+The `effects` block reacts to committed actions or state changes and returns
+intents:
+
+```ts
+effects: (fx) => {
+  // when an action is dispatched
+  fx.onAction("load", (_payload, { actions }) =>
+    query<Todo[]>({
+      key: ["todos"],
+      run: () => api.list(),
+      onData: (items) => actions.loaded(items),
+    }),
+  );
+
+  // when a derived slice changes
+  fx.onChange((s) => s.filter.value, (filter) => storageSet("filter", filter));
+
+  // when a predicate transitions into true
+  fx.onEnter((s) => s.items.value.length >= 10, ({ actions }) => actions.warn());
+}
+```
+
+Reactions observe **committed** state (ADR-0005): they fire synchronously after
+the transition, never returning state themselves.
+
+## Intents & interpreters
+
+Intents are tagged unions. The Store routes each by `kind` to a registered
+interpreter. Core ships `timeout`, `interval`, and `storage` interpreters;
+renderer adapters ship the `query`/`mutate` bridge to your data layer.
+
+```ts
+import { makeQueryInterpreter } from "@re-reduced/adapter-kit";
+
+const store = useContainer(todos, {
+  interpreters: {
+    query: makeQueryInterpreter(queryClient), // bridges to TanStack QueryClient
+  },
+});
+```
+
+The registry is **typed**: you must supply an interpreter for every intent kind
+the container can emit, and each interpreter receives its narrowed intent type.
+A missing interpreter is a compile error.
+
+## Single source of truth
+
+Intents trigger I/O and feed results back as actions; they do **not** mirror the
+query cache into container state for plain rendering. Render lists straight from
+your query library, and keep only UI/transition state in the container. Use the
+`query` intent for the narrow case where fetched data gates a transition.
+
+## Lifecycle
+
+Every interpreter receives an `AbortSignal` tied to Store disposal, and may
+return a cleanup. On unmount the Store aborts in-flight work and clears timers.

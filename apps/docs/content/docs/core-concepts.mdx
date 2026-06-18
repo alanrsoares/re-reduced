@@ -1,0 +1,73 @@
+---
+title: Core concepts
+description: Containers, state, actions, derivations, and the signal-backed store.
+---
+
+## Container Definition vs Store
+
+A **Container Definition** (`defineContainer`) is a blueprint: pure data and
+pure functions. A **Store** (`createContainer`, or `useContainer` in a
+component) is a live, signal-backed instance of that blueprint.
+
+```ts
+const def = defineContainer()("todos", { state: { /* ... */ }, actions: (on) => ({}) });
+const store = createContainer(def); // live Store
+```
+
+## State is per-field signals
+
+The Store holds **one signal per top-level state key**. You author transitions
+immutably as usual; on dispatch the Store shallow-diffs the returned object and
+writes only the keys that changed. A reader of one field re-renders only when
+that field changes — granularity is structural, not selector-discipline.
+
+```ts
+store.$state.draft; // ReadSignal<string>
+store.getState();   // glitch-free snapshot
+```
+
+## Actions are pure transitions
+
+Actions are `(state, payload) => state`. The `on` builder captures the payload
+type; an action whose handler ignores the payload is nullary.
+
+```ts
+actions: (on) => ({
+  filterChanged: on<Filter>((s, filter) => ({ ...s, filter })),
+  clear: on((s) => ({ ...s, items: [] })),
+})
+
+store.actions.filterChanged("done"); // typed
+store.actions.clear();                // nullary
+```
+
+Transitions **never throw and never return a `Result`**. Model a fallible
+transition by writing a discriminated-union error field into state, and expose
+validity as a derivation the view reads before dispatching:
+
+```ts
+submit: on((s) =>
+  s.draft.trim() === "" ? { ...s, error: "empty" } : { ...s, error: null, /* ... */ })
+```
+
+## Derivations
+
+`derive` builds **auto-tracked computed** values. A derivation recomputes only
+when the signals it reads change, and a reader bails out when its value is
+unchanged.
+
+```ts
+derive: ($) => ({
+  activeCount: () => $.items.value.filter((t) => !t.done).length,
+  canSubmit: () => $.draft.value.trim().length > 0,
+})
+
+useSelect(store, (_s, d) => d.canSubmit.value);
+```
+
+## Selecting
+
+`useSelect(store, (state, derived) => T)` returns the selected value and
+subscribes the component to it. Return primitives or stable references — a
+selector that builds a fresh object every call defeats the bail-out, exactly
+like Redux/Zustand selectors.

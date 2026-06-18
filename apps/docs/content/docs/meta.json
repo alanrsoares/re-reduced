@@ -1,0 +1,12 @@
+{
+  "title": "re-reduced",
+  "pages": [
+    "index",
+    "getting-started",
+    "core-concepts",
+    "effects",
+    "react",
+    "preact",
+    "migration"
+  ]
+}

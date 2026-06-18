@@ -1,0 +1,43 @@
+---
+title: re-reduced
+description: A typed, functional, signal-backed state-machine + effect container for component-scoped logic.
+---
+
+**re-reduced** is a tiny, type-first state container for React and Preact. It owns
+your component's **state transitions** and **effect intent** — and delegates
+server state to your data layer (TanStack Query, etc.) through adapters.
+
+- **Signal-backed, fine-grained.** State lives in per-field signals. A component
+  re-renders only when the slice it reads actually changes — no selector
+  discipline required.
+- **Typed to the bone.** Action payloads, derivations, and effect interpreters
+  are fully inferred, with zero `any` in your app code.
+- **Effects as data.** Side-effects are declared as intents and interpreted by
+  the renderer adapter, so the core stays pure and unit-testable.
+- **Multi-renderer.** The same container definition runs under React and Preact;
+  the renderer binding is the only thing that differs.
+
+```ts
+const counter = defineContainer()("counter", {
+  state: { count: 0 },
+  actions: (on) => ({
+    increment: on((s) => ({ count: s.count + 1 })),
+    add: on<number>((s, n) => ({ count: s.count + n })),
+  }),
+});
+
+// in a component
+const store = useContainer(counter);
+const count = useSelect(store, (s) => s.count.value);
+store.actions.add(5);
+```
+
+<Cards>
+  <Card title="Getting started" href="/docs/getting-started" />
+  <Card title="Core concepts" href="/docs/core-concepts" />
+  <Card title="Effects & intents" href="/docs/effects" />
+  <Card title="Migrating from v1" href="/docs/migration" />
+</Cards>
+
+> re-reduced v1 (the Redux/redux-saga helper) is frozen and still published as
+> `re-reduced@2`. v2 is a ground-up rewrite under the `@re-reduced/*` scope.

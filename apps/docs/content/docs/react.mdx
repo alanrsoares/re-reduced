@@ -1,0 +1,52 @@
+---
+title: React
+description: The @re-reduced/react bindings.
+---
+
+`@re-reduced/react` re-exports the core and adds the React bindings. It targets
+React 18+ (it's built on `useSyncExternalStore`).
+
+## Hooks
+
+```tsx
+import {
+  useContainer,
+  useSelect,
+  useWatch,
+  createContainerContext,
+} from "@re-reduced/react";
+```
+
+- **`useContainer(def, opts?)`** — creates a Store once for the component and
+  disposes it on unmount. `opts.interpreters` registers effect interpreters;
+  `opts.init` shallow-merges initial state at construction. StrictMode-safe.
+- **`useSelect(store, selector)`** — subscribes via `useSyncExternalStore` to a
+  computed selector; re-renders only when the selected value changes.
+- **`useWatch(store, selector, effect)`** — runs an effect when a derived slice
+  changes.
+- **`createContainerContext(def, opts?)`** — returns `{ Provider, use }` to lift
+  a Store to a subtree; reads still bail out via signals.
+
+## Server data
+
+Keep server state in your query library; bridge fetches via the query
+interpreter only when they participate in a transition.
+
+```tsx
+import { makeQueryInterpreter } from "@re-reduced/adapter-kit";
+import { useQueryClient } from "@tanstack/react-query";
+
+function useTodos() {
+  const queryClient = useQueryClient();
+  return useContainer(todos, {
+    interpreters: { query: makeQueryInterpreter(queryClient) },
+  });
+}
+```
+
+## Concurrency
+
+`useSelect` is tearing-safe under transitions (it's `useSyncExternalStore`), and
+the Store is independent of React's render lifecycle, so it stays alive and
+functional across Suspense boundaries. A full runnable app lives in
+`examples/react-todo`.

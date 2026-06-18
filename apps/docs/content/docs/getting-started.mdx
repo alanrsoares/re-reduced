@@ -1,0 +1,80 @@
+---
+title: Getting started
+description: Install re-reduced and wire your first container.
+---
+
+## Install
+
+Pick the renderer package — it re-exports the core, so it's the only dependency
+you need to import from.
+
+```bash
+# React
+bun add @re-reduced/react @preact/signals-core
+# Preact
+bun add @re-reduced/preact @preact/signals-core @preact/signals
+```
+
+## Define a container
+
+A **container definition** is framework-agnostic — pure state, actions, and
+derivations. No React, no I/O.
+
+```ts title="counter.container.ts"
+import { defineContainer } from "@re-reduced/react";
+
+export const counter = defineContainer()("counter", {
+  state: { count: 0 },
+  actions: (on) => ({
+    increment: on((s) => ({ count: s.count + 1 })),
+    add: on<number>((s, n) => ({ count: s.count + n })),
+    reset: on(() => ({ count: 0 })),
+  }),
+  derive: ($) => ({
+    isEven: () => $.count.value % 2 === 0,
+  }),
+});
+```
+
+`defineContainer<Intent>()` is curried: the optional first call fixes the
+effect-intent union (see [Effects](/docs/effects)); the second call infers
+state, actions, and derivations from the body.
+
+## Use it in a component
+
+```tsx title="Counter.tsx"
+import { useContainer, useSelect } from "@re-reduced/react";
+import { counter } from "./counter.container";
+
+export function Counter() {
+  const store = useContainer(counter);
+  const count = useSelect(store, (s) => s.count.value);
+  const isEven = useSelect(store, (_s, d) => d.isEven.value);
+
+  return (
+    <div>
+      <span>{count} {isEven ? "(even)" : "(odd)"}</span>
+      <button type="button" onClick={() => store.actions.add(1)}>+1</button>
+      <button type="button" onClick={store.actions.reset}>reset</button>
+    </div>
+  );
+}
+```
+
+- `useContainer(def)` creates a **Store** scoped to this component and disposes
+  it on unmount. `store.actions` are referentially stable.
+- `useSelect(store, selector)` subscribes to a derived slice and re-renders the
+  component **only when that value changes**.
+
+## Share across a subtree
+
+```tsx
+const CounterCtx = createContainerContext(counter);
+
+<CounterCtx.Provider init={{ count: 10 }}>
+  <Counter /> {/* const store = CounterCtx.use() */}
+</CounterCtx.Provider>;
+```
+
+`init` is applied at construction and is **not** reactive — to reset, dispatch
+an action.
