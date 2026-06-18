@@ -1,0 +1,283 @@
+/*
+ * Colors resolve from fumadocs tokens when present (so the demo follows the
+ * docs light/dark toggle automatically), and fall back to literals + a
+ * prefers-color-scheme override for the standalone Vite example.
+ */
+.ri {
+  --ri-border: var(--color-fd-border, #d4d4d8);
+  --ri-bg: var(--color-fd-card, #fafafa);
+  --ri-cell: var(--color-fd-muted, #e7e7ea);
+  /* fixed, legible accent (NOT fd-primary — that's near-white in dark) */
+  --ri-on: #2563eb;
+  --ri-text: var(--color-fd-foreground, #18181b);
+  --ri-dim: var(--color-fd-muted-foreground, #71717a);
+  --ri-pulse: #f59e0b;
+  --ri-good: #16a34a;
+  --ri-bad: #e11d48;
+  max-width: 100%;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: var(--ri-text);
+}
+
+/* dark fallbacks for the example app (no fumadocs tokens, no theme class) */
+@media (prefers-color-scheme: dark) {
+  .ri {
+    --ri-border: var(--color-fd-border, #3f3f46);
+    --ri-bg: var(--color-fd-card, #18181b);
+    --ri-cell: var(--color-fd-muted, #27272a);
+    --ri-on: #3b82f6;
+    --ri-text: var(--color-fd-foreground, #f4f4f5);
+    --ri-dim: var(--color-fd-muted-foreground, #a1a1aa);
+    --ri-good: #22c55e;
+    --ri-bad: #fb7185;
+  }
+}
+
+.ri-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 0.4rem;
+}
+.ri-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ri-btn {
+  border: 1px solid var(--ri-border);
+  background: var(--ri-bg);
+  color: var(--ri-text);
+  border-radius: 8px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.ri-btn:hover {
+  border-color: var(--ri-on);
+}
+.ri-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.ri-primary {
+  background: var(--ri-on);
+  border-color: var(--ri-on);
+  color: #fff;
+}
+.ri-primary:hover {
+  filter: brightness(1.08);
+  border-color: var(--ri-on);
+}
+
+.ri-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--ri-dim);
+}
+
+.ri-seg {
+  display: inline-flex;
+}
+.ri-seg .ri-btn {
+  border-radius: 0;
+  border-left-width: 0;
+}
+.ri-seg .ri-btn:first-child {
+  border-radius: 8px 0 0 8px;
+  border-left-width: 1px;
+}
+.ri-seg .ri-btn:last-child {
+  border-radius: 0 8px 8px 0;
+}
+.ri-on-seg {
+  background: var(--ri-on);
+  border-color: var(--ri-on);
+  color: #fff;
+  font-weight: 600;
+}
+
+.ri-draw-hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  color: var(--ri-dim);
+}
+
+.ri-boards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  min-width: 0;
+}
+@media (max-width: 720px) {
+  .ri-boards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ri-wrap {
+  min-width: 0;
+  transition: opacity 0.2s;
+}
+.ri-idle {
+  opacity: 0.4;
+}
+
+.ri-panel {
+  min-width: 0;
+  border: 1px solid var(--ri-border);
+  border-radius: 12px;
+  padding: 0.75rem;
+  background: var(--ri-bg);
+}
+.ri-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.15rem 0.5rem;
+}
+.ri-badge {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ri-dim);
+}
+.ri-badge.ri-good {
+  color: var(--ri-good);
+}
+.ri-badge.ri-bad {
+  color: var(--ri-bad);
+}
+.ri-sub {
+  margin: 0.15rem 0 0.6rem;
+  font-size: 0.75rem;
+  color: var(--ri-dim);
+}
+
+.ri-grid {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+  touch-action: none;
+  user-select: none;
+  cursor: crosshair;
+}
+
+.ri-cell {
+  position: relative;
+  aspect-ratio: 1;
+  background: var(--ri-cell);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.ri-cell.ri-on {
+  background: var(--ri-on);
+}
+
+.ri-pulse {
+  position: absolute;
+  inset: 0;
+  background: var(--ri-pulse);
+  animation: ri-fade 0.45s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes ri-fade {
+  from {
+    opacity: 0.85;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ri-pulse {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+.ri-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 0.6rem;
+  margin: 0.9rem 0 0;
+}
+.ri-stats > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+  border: 1px solid var(--ri-border);
+  border-radius: 12px;
+  padding: 0.7rem 0.8rem;
+  background: var(--ri-bg);
+}
+/* bento accents: the punchline spans 2×2, the perf pairs span 2 wide */
+.ri-feat {
+  grid-column: span 2;
+  grid-row: span 2;
+  background: color-mix(in srgb, var(--ri-on) 8%, var(--ri-bg));
+  border-color: color-mix(in srgb, var(--ri-on) 35%, var(--ri-border));
+}
+.ri-wide {
+  grid-column: span 2;
+}
+.ri-stats dt {
+  font-size: 0.72rem;
+  color: var(--ri-dim);
+  margin: 0;
+}
+.ri-stats dd {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.ri-feat dt {
+  font-size: 0.8rem;
+}
+.ri-feat dd {
+  font-size: 2.4rem;
+  line-height: 1.1;
+}
+@media (max-width: 720px) {
+  .ri-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .ri-feat {
+    grid-row: span 1;
+  }
+}
+.ri-mono {
+  font-variant-numeric: tabular-nums;
+  font-family: ui-monospace, "SF Mono", monospace;
+}
+.ri-dim {
+  color: var(--ri-dim);
+  font-weight: 400;
+}
+.ri-rr {
+  color: var(--ri-good);
+}
+.ri-ctx {
+  color: var(--ri-bad);
+}
+
+.ri-hint {
+  margin: 0.6rem 0 0;
+  font-size: 0.78rem;
+  color: var(--ri-dim);
+}
+
+.ri-note {
+  margin: 0.9rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--ri-dim);
+}

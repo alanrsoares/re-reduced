@@ -91,6 +91,22 @@
         "vite": "^6.0.0",
       },
     },
+    "examples/render-inspector": {
+      "name": "@re-reduced/example-render-inspector",
+      "version": "0.0.0",
+      "dependencies": {
+        "@re-reduced/demos": "workspace:*",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+      },
+      "devDependencies": {
+        "@testing-library/react": "^16.1.0",
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0",
+        "@vitejs/plugin-react": "^4.3.4",
+        "vite": "^6.0.0",
+      },
+    },
     "packages/adapter-kit": {
       "name": "@re-reduced/adapter-kit",
       "version": "0.1.0",
@@ -608,6 +624,8 @@
     "@re-reduced/example-preact-todo": ["@re-reduced/example-preact-todo@workspace:examples/preact-todo"],
 
     "@re-reduced/example-react-todo": ["@re-reduced/example-react-todo@workspace:examples/react-todo"],
+
+    "@re-reduced/example-render-inspector": ["@re-reduced/example-render-inspector@workspace:examples/render-inspector"],
 
     "@re-reduced/preact": ["@re-reduced/preact@workspace:packages/preact"],
 
