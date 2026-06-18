@@ -5,8 +5,10 @@
     "getting-started",
     "core-concepts",
     "effects",
+    "testing",
     "react",
     "preact",
+    "examples",
     "migration"
   ]
 }

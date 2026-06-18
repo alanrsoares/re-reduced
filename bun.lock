@@ -14,6 +14,8 @@
       "name": "@re-reduced/docs",
       "version": "0.0.0",
       "dependencies": {
+        "@re-reduced/core": "workspace:*",
+        "@re-reduced/react": "workspace:*",
         "fumadocs-core": "^16.10.4",
         "fumadocs-mdx": "^15.0.12",
         "fumadocs-ui": "^16.10.4",

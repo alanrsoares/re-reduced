@@ -5,6 +5,12 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
+  // workspace packages ship TypeScript source (dev), so Next must transpile them
+  transpilePackages: [
+    "@re-reduced/core",
+    "@re-reduced/react",
+    "@re-reduced/signals",
+  ],
 };
 
 export default withMDX(config);
