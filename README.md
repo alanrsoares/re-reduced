@@ -48,8 +48,8 @@ function Counter() {
 }
 ```
 
-→ Full docs: **[getting started](https://github.com/alanrsoares/re-reduced)** ·
-run them with `bun run --filter @re-reduced/docs dev`.
+→ Full docs: **<https://alanrsoares.github.io/re-reduced/>** ·
+run locally with `bun run --filter @re-reduced/docs dev`.
 
 ## Packages
 
