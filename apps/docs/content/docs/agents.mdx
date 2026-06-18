@@ -1,0 +1,54 @@
+---
+title: Agents & LLMs
+description: Machine-readable docs and a Claude Code skill for coding agents.
+---
+
+re-reduced ships first-class context for coding agents — so an LLM writing
+re-reduced code gets the API and the gotchas, not a guess.
+
+## LLM-readable docs
+
+This site serves the standard [llms.txt](https://llmstxt.org/) endpoints, plus a
+Markdown copy of every page:
+
+| URL | What |
+| --- | --- |
+| [`/llms.txt`](/llms.txt) | Index of every page (titles, descriptions, links) |
+| [`/llms-full.txt`](/llms-full.txt) | The entire docs as one Markdown document |
+| `/llms.mdx/docs/<page>/content.md` | A single page as raw Markdown |
+
+Every doc page also has a **Copy Markdown** button in its header. Point your
+agent at `/llms-full.txt` for the whole corpus, or `/llms.txt` to let it fetch
+pages on demand.
+
+## Claude Code skill
+
+A [Claude Code skill](https://docs.claude.com/en/docs/claude-code/skills) teaches
+an agent the container API, the single-call `defineContainer`, the SSOT
+discipline, and the one footgun TypeScript can't catch (unstable selectors).
+
+<Steps>
+<Step>
+Install the skill into your project:
+
+```bash
+mkdir -p .claude/skills/re-reduced
+curl -fsSL https://raw.githubusercontent.com/alanrsoares/re-reduced/main/skills/re-reduced/SKILL.md \
+  -o .claude/skills/re-reduced/SKILL.md
+```
+</Step>
+<Step>
+Claude Code auto-discovers it. The skill triggers whenever the agent sees
+`defineContainer`, `useSelect`, an effect intent, or any `@re-reduced/*` import.
+</Step>
+</Steps>
+
+The skill source lives at
+[`skills/re-reduced/SKILL.md`](https://github.com/alanrsoares/re-reduced/blob/main/skills/re-reduced/SKILL.md).
+
+## Lint the type-blind mistakes
+
+Pair the skill with [`@re-reduced/biome-plugin`](/docs/testing) — its
+`no-unstable-selector` rule catches the fresh-object-in-selector footgun that
+type-checks but kills the render bail-out, so agent-written code gets caught at
+lint time too.

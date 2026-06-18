@@ -10,6 +10,7 @@
     "preact",
     "examples",
     "benchmarks",
+    "agents",
     "migration"
   ]
 }
