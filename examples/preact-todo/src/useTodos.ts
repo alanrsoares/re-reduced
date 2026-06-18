@@ -4,7 +4,7 @@ import { queryClient } from "./api";
 import { todos } from "./todos.container";
 
 export function useTodos() {
-	return useContainer(todos, {
-		interpreters: { query: makeQueryInterpreter(queryClient) },
-	});
+  return useContainer(todos, {
+    interpreters: { query: makeQueryInterpreter(queryClient) },
+  });
 }

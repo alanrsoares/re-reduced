@@ -9,24 +9,24 @@
 import type { InterpCtx, QueryIntent } from "@re-reduced/core";
 
 export interface QueryClientLike {
-	fetchQuery(opts: {
-		queryKey: readonly unknown[];
-		queryFn: (ctx: { signal: AbortSignal }) => Promise<unknown>;
-	}): Promise<unknown>;
+  fetchQuery(opts: {
+    queryKey: readonly unknown[];
+    queryFn: (ctx: { signal: AbortSignal }) => Promise<unknown>;
+  }): Promise<unknown>;
 }
 
 export const makeQueryInterpreter =
-	<A>(client: QueryClientLike) =>
-	(intent: QueryIntent, { signal }: InterpCtx<A>): void => {
-		client
-			.fetchQuery({
-				queryKey: intent.key,
-				queryFn: ({ signal: s }) => intent.run(s),
-			})
-			.then((data) => {
-				if (!signal.aborted) intent.onData(data); // result re-enters as an action (SSOT)
-			})
-			.catch((error) => {
-				if (!signal.aborted) intent.onError?.(error);
-			});
-	};
+  <A>(client: QueryClientLike) =>
+  (intent: QueryIntent, { signal }: InterpCtx<A>): void => {
+    client
+      .fetchQuery({
+        queryKey: intent.key,
+        queryFn: ({ signal: s }) => intent.run(s),
+      })
+      .then((data) => {
+        if (!signal.aborted) intent.onData(data); // result re-enters as an action (SSOT)
+      })
+      .catch((error) => {
+        if (!signal.aborted) intent.onError?.(error);
+      });
+  };

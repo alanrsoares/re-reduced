@@ -8,15 +8,15 @@ import reducer from "./reducers";
 const store = createStore(reducer);
 
 export default () => (
-	<Provider store={store}>
-		{/* use redux connect HOC */}
-		<span>Using connectWithActions HOC:</span>
-		<App />
+  <Provider store={store}>
+    {/* use redux connect HOC */}
+    <span>Using connectWithActions HOC:</span>
+    <App />
 
-		<br />
+    <br />
 
-		{/* use hook */}
-		<span>Using hooks:</span>
-		<AppWithHook />
-	</Provider>
+    {/* use hook */}
+    <span>Using hooks:</span>
+    <AppWithHook />
+  </Provider>
 );

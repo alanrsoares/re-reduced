@@ -8,7 +8,9 @@ node_modules
 dist/
 es/
 coverage/
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 .docz/
 .size-snapshot.json
 

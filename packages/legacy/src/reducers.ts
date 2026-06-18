@@ -2,12 +2,12 @@ import { merge, mergeAll } from "ramda";
 import type { AnyAction, Reducer } from "redux";
 
 import type {
-	ActionCreator,
-	ActionFolder,
-	ActionReducer,
-	ActionReducerMap,
-	PartialActionFolder,
-	PartialActionReducer,
+  ActionCreator,
+  ActionFolder,
+  ActionReducer,
+  ActionReducerMap,
+  PartialActionFolder,
+  PartialActionReducer,
 } from "./core";
 
 /**
@@ -17,22 +17,22 @@ import type {
  * @param initialState
  */
 export function createReducer<TState>(
-	handlers: ActionReducerMap<TState> | ActionReducerMap<TState>[],
-	initialState: TState,
+  handlers: ActionReducerMap<TState> | ActionReducerMap<TState>[],
+  initialState: TState,
 ): Reducer<TState> {
-	const $handlers = Array.isArray(handlers)
-		? (mergeAll(handlers) as ActionReducerMap<TState>)
-		: handlers;
+  const $handlers = Array.isArray(handlers)
+    ? (mergeAll(handlers) as ActionReducerMap<TState>)
+    : handlers;
 
-	return (state = initialState, action) => {
-		const actionReducer = $handlers[action.type];
+  return (state = initialState, action) => {
+    const actionReducer = $handlers[action.type];
 
-		if (typeof actionReducer === "function") {
-			return actionReducer(state, action.payload);
-		}
+    if (typeof actionReducer === "function") {
+      return actionReducer(state, action.payload);
+    }
 
-		return state;
-	};
+    return state;
+  };
 }
 
 /**
@@ -41,13 +41,13 @@ export function createReducer<TState>(
  * @param reducers
  */
 export function composeReducers<TState>(
-	...reducers: Reducer<TState>[]
+  ...reducers: Reducer<TState>[]
 ): Reducer<TState, AnyAction> {
-	return (<TAction extends AnyAction>(state: TState, action: TAction) =>
-		reducers.reduce(
-			(nextState, reducer) => reducer(nextState, action),
-			state,
-		)) as Reducer<TState, AnyAction>;
+  return (<TAction extends AnyAction>(state: TState, action: TAction) =>
+    reducers.reduce(
+      (nextState, reducer) => reducer(nextState, action),
+      state,
+    )) as Reducer<TState, AnyAction>;
 }
 
 /**
@@ -57,10 +57,10 @@ export function composeReducers<TState>(
 export const handleActions = createReducer;
 
 export type InferPayload<T> = T extends ActionCreator<infer U>[]
-	? U
-	: T extends ActionCreator<infer P>
-		? P
-		: never;
+  ? U
+  : T extends ActionCreator<infer P>
+    ? P
+    : never;
 
 /**
  * Registers a reducer handler for one or many actions
@@ -69,19 +69,19 @@ export type InferPayload<T> = T extends ActionCreator<infer U>[]
  * @param reducer
  */
 export function reduce<
-	TState,
-	TActions extends ActionCreator<any> | ActionCreator<any>[],
+  TState,
+  TActions extends ActionCreator<any> | ActionCreator<any>[],
 >(
-	actions: TActions,
-	reducer: ActionReducer<TState, InferPayload<TActions>>,
+  actions: TActions,
+  reducer: ActionReducer<TState, InferPayload<TActions>>,
 ): ActionReducerMap<TState> {
-	return Array.isArray(actions)
-		? actions.reduce(
-				(acc: ActionReducerMap<TState>, action: ActionCreator<any>) =>
-					merge(acc, action.reduce(reducer)),
-				{},
-			)
-		: (actions as ActionCreator<InferPayload<TActions>>).reduce(reducer);
+  return Array.isArray(actions)
+    ? actions.reduce(
+        (acc: ActionReducerMap<TState>, action: ActionCreator<any>) =>
+          merge(acc, action.reduce(reducer)),
+        {},
+      )
+    : (actions as ActionCreator<InferPayload<TActions>>).reduce(reducer);
 }
 
 /**
@@ -91,19 +91,19 @@ export function reduce<
  * @param reducer
  */
 export function reduceP<
-	TState,
-	TActions extends ActionCreator<any> | ActionCreator<any>[],
+  TState,
+  TActions extends ActionCreator<any> | ActionCreator<any>[],
 >(
-	actions: TActions,
-	reducer: PartialActionReducer<TState, InferPayload<TActions>>,
+  actions: TActions,
+  reducer: PartialActionReducer<TState, InferPayload<TActions>>,
 ): ActionReducerMap<TState> {
-	return Array.isArray(actions)
-		? actions.reduce(
-				(acc: ActionReducerMap<TState>, action: ActionCreator<any>) =>
-					merge(acc, action.reduceP(reducer)),
-				{},
-			)
-		: (actions as ActionCreator<InferPayload<TActions>>).reduceP(reducer);
+  return Array.isArray(actions)
+    ? actions.reduce(
+        (acc: ActionReducerMap<TState>, action: ActionCreator<any>) =>
+          merge(acc, action.reduceP(reducer)),
+        {},
+      )
+    : (actions as ActionCreator<InferPayload<TActions>>).reduceP(reducer);
 }
 
 /**
@@ -113,18 +113,18 @@ export function reduceP<
  * @param reducer
  */
 export function fold<
-	TState,
-	TActions extends ActionCreator<any> | ActionCreator<any>[],
+  TState,
+  TActions extends ActionCreator<any> | ActionCreator<any>[],
 >(
-	actions: TActions,
-	reducer: ActionFolder<TState, InferPayload<TActions>>,
+  actions: TActions,
+  reducer: ActionFolder<TState, InferPayload<TActions>>,
 ): ActionReducerMap<TState> {
-	return Array.isArray(actions)
-		? actions.reduce<ActionReducerMap<TState>>(
-				(acc, action: ActionCreator<any>) => merge(acc, action.fold(reducer)),
-				{},
-			)
-		: (actions as ActionCreator<InferPayload<TActions>>).fold(reducer);
+  return Array.isArray(actions)
+    ? actions.reduce<ActionReducerMap<TState>>(
+        (acc, action: ActionCreator<any>) => merge(acc, action.fold(reducer)),
+        {},
+      )
+    : (actions as ActionCreator<InferPayload<TActions>>).fold(reducer);
 }
 
 /**
@@ -137,18 +137,18 @@ export function fold<
  * @param reducer - a `PartialActionFolder`: TPayload -> TState -> TState
  */
 export function foldP<
-	TState,
-	TActions extends ActionCreator<any> | ActionCreator<any>[],
+  TState,
+  TActions extends ActionCreator<any> | ActionCreator<any>[],
 >(
-	actions: TActions,
-	reducer: PartialActionFolder<TState, InferPayload<TActions>>,
+  actions: TActions,
+  reducer: PartialActionFolder<TState, InferPayload<TActions>>,
 ): ActionReducerMap<TState> {
-	return Array.isArray(actions)
-		? actions.reduce<ActionReducerMap<TState>>(
-				(acc, action: ActionCreator<any>) => merge(acc, action.foldP(reducer)),
-				{},
-			)
-		: (actions as ActionCreator<InferPayload<TActions>>).foldP(reducer);
+  return Array.isArray(actions)
+    ? actions.reduce<ActionReducerMap<TState>>(
+        (acc, action: ActionCreator<any>) => merge(acc, action.foldP(reducer)),
+        {},
+      )
+    : (actions as ActionCreator<InferPayload<TActions>>).foldP(reducer);
 }
 
 /**
