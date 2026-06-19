@@ -70,24 +70,7 @@ export const counter = defineContainer("counter", {
 
 ### Use it in a component
 
-```tsx title="Counter.tsx"
-import { useContainer, useSelect } from "@re-reduced/react";
-import { counter } from "./counter.container";
-
-export function Counter() {
-  const store = useContainer(counter);
-  const count = useSelect(store, (s) => s.count.value);
-  const isEven = useSelect(store, (_s, d) => d.isEven.value);
-
-  return (
-    <div>
-      <span>{count} {isEven ? "(even)" : "(odd)"}</span>
-      <button type="button" onClick={() => store.actions.add(1)}>+1</button>
-      <button type="button" onClick={store.actions.reset}>reset</button>
-    </div>
-  );
-}
-```
+<Snippet id="counter-component" lang="tsx" />
 
 - `useContainer(def)` creates a **Store** scoped to this component and disposes
   it on unmount. `store.actions` are referentially stable.

@@ -9,9 +9,15 @@ import { twoslashCompilerOptions } from "@/lib/twoslash";
  * source) with hover lenses — for use outside MDX, e.g. the landing page. The
  * input is the `twoslash` form from lib/snippets.generated.ts.
  */
-export async function TwoslashSnippet({ code }: { code: string }) {
+export async function TwoslashSnippet({
+  code,
+  lang = "ts",
+}: {
+  code: string;
+  lang?: "ts" | "tsx";
+}) {
   return highlight(code, {
-    lang: "ts",
+    lang,
     themes: { light: "github-light", dark: "github-dark" },
     // emit both themes as CSS variables so it follows the .dark class instead of
     // baking only the first (light) theme.
