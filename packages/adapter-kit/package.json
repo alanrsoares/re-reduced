@@ -1,6 +1,6 @@
 {
   "name": "@re-reduced/adapter-kit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Renderer-agnostic effect interpreters (query/mutate bridge) for re-reduced.",
   "type": "module",
   "main": "./src/index.ts",
