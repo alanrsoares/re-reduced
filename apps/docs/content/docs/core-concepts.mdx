@@ -35,18 +35,24 @@ store.getState();   // glitch-free snapshot
 
 ## Actions are pure transitions
 
-Actions are `(state, payload) => state`. The `on` builder captures the payload
-type; an action whose handler ignores the payload is nullary.
+Actions are `(state, payload) => Partial<state>`. A handler returns **only the
+keys it changes** — they're merged into state, so there's no `...s` spread. The
+`on` builder captures the payload type; an action whose handler ignores the
+payload is nullary. `state` is read-only.
 
 ```ts
 actions: (on) => ({
-  filterChanged: on<Filter>((s, filter) => ({ ...s, filter })),
-  clear: on((s) => ({ ...s, items: [] })),
+  filterChanged: on<Filter>((_s, filter) => ({ filter })),
+  clear: on(() => ({ items: [] })),
 })
 
 store.actions.filterChanged("done"); // typed
 store.actions.clear();                // nullary
 ```
+
+Returning a subset merges; only changed signals are written, so dispatch stays
+**O(changed keys)** regardless of how many fields the container has (see the
+[benchmarks](/docs/benchmarks)). A spread still works — it's just unnecessary.
 
 Transitions **never throw and never return a `Result`**. Model a fallible
 transition by writing a discriminated-union error field into state, and expose
@@ -54,7 +60,7 @@ validity as a derivation the view reads before dispatching:
 
 ```ts
 submit: on((s) =>
-  s.draft.trim() === "" ? { ...s, error: "empty" } : { ...s, error: null, /* ... */ })
+  s.draft.trim() === "" ? { error: "empty" } : { error: null, /* ... */ })
 ```
 
 ## Derivations

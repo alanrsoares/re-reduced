@@ -34,7 +34,8 @@ summary(() => {
       const store = createContainer(
         defineContainer(`c${n}`, {
           state: mkState(n),
-          actions: (on) => ({ inc: on((s) => ({ ...s, f0: s.f0 + 1 })) }),
+          // partial return — change one key, the rest are untouched (ADR-0010)
+          actions: (on) => ({ inc: on((s) => ({ f0: s.f0 + 1 })) }),
         }),
       );
       yield () => {

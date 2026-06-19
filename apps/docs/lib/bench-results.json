@@ -14,69 +14,69 @@
   "throughput": [
     {
       "label": "plain reducer",
-      "ns": 2.3
+      "ns": 2.4
     },
     {
       "label": "re-reduced",
-      "ns": 43.2
+      "ns": 33.5
     },
     {
       "label": "zustand",
-      "ns": 53.1
+      "ns": 56.5
     }
   ],
   "scaling": [
     {
       "fields": 1,
-      "reReduced": 54,
-      "zustand": 41.7
+      "reReduced": 35.4,
+      "zustand": 45.4
     },
     {
       "fields": 4,
-      "reReduced": 93.5,
-      "zustand": 62.6
+      "reReduced": 37.1,
+      "zustand": 59.6
     },
     {
       "fields": 16,
-      "reReduced": 334,
+      "reReduced": 37.2,
       "zustand": 139
     },
     {
       "fields": 64,
-      "reReduced": 982,
-      "zustand": 576
+      "reReduced": 35.5,
+      "zustand": 583
     }
   ],
   "derive": [
     {
       "work": 1,
-      "memoized": 10.6,
-      "recompute": 6.9
+      "memoized": 11.1,
+      "recompute": 7.3
     },
     {
       "work": 4,
-      "memoized": 11.5,
-      "recompute": 13.6
+      "memoized": 12.3,
+      "recompute": 14.2
     },
     {
       "work": 16,
-      "memoized": 11.2,
-      "recompute": 44.5
+      "memoized": 11.8,
+      "recompute": 47.7
     },
     {
       "work": 64,
-      "memoized": 11.1,
-      "recompute": 213
+      "memoized": 11.8,
+      "recompute": 228
     },
     {
       "work": 256,
-      "memoized": 11.1,
-      "recompute": 891
+      "memoized": 11.8,
+      "recompute": 963
     },
     {
       "work": 1024,
-      "memoized": 11.2,
-      "recompute": 3582
+      "memoized": 11.7,
+      "recompute": 3863
     }
   ]
 }
