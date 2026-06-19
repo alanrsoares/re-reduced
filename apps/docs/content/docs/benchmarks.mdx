@@ -51,20 +51,23 @@ rates it's far below the noise floor.
 
 ### How dispatch scales with state size
 
-Each dispatch snapshots current state (to hand the reducer a plain object) and
-shallow-diffs the result, so cost grows with field count:
+A handler returns only the keys it changes; the store writes exactly those
+signals and keeps a plain-object mirror in lockstep, so it never peeks the whole
+container per dispatch ([ADR-0010](https://github.com/alanrsoares/re-reduced/blob/main/docs/adr/0010-action-handlers-merge-returned-keys.md)).
+Bumping **one** field in an `N`-field container:
 
 <BenchScaling />
 
-re-reduced dispatch is **O(fields)**; Zustand stays near-flat because it holds a
-single state object and merges shallow patches without a per-field diff. This is
-a deliberate tradeoff, not a missing optimisation: pure `(state) => state`
-reducers (you spread the old state) plus per-field signals (what enables the
-render bail-out above) together mean each dispatch materialises the whole state.
-We tried a lazy-proxy state to dodge the snapshot — it made the common spread
-reducer **~7× slower**, because spreading enumerates every field through the
-proxy traps. The snapshot is the cheaper path. Reach for re-reduced for the
-render granularity, not to win a dispatch microbenchmark.
+re-reduced dispatch is **O(changed keys)** — flat regardless of container size.
+Zustand grows with field count here because each `set` allocates a fresh merged
+state object. The cost is to write a one-field handler as `(s) => ({ count:
+s.count + 1 })` — no spread; the returned keys are merged.
+
+> Earlier this curve ran the other way: handlers were typed to return the full
+> state, forcing a `...s` spread and an O(fields) snapshot + diff every dispatch.
+> The mirror plus partial returns removed both — without a lazy proxy (that was
+> tried and abandoned at ~7× slower, since spreads enumerate every field through
+> the proxy traps).
 
 ## Derivation reads
 
@@ -83,8 +86,8 @@ read far more often than its inputs change; skip it for trivial scalar math.
 
 - **Renders:** fine-grained by construction, on par with Zustand, ahead of
   Context-based reducers.
-- **Dispatch:** Zustand-class at small state; scales **O(fields)** because each
-  dispatch snapshots + diffs the whole state — the deliberate price of pure
-  reducers over per-field signals. Still nanoseconds at realistic sizes.
+- **Dispatch:** **O(changed keys)** — flat regardless of container size, because
+  handlers return only what changed and the store writes just those signals.
+  Zustand-class (or ahead) at small state; pulls ahead as the container grows.
 - **Derivations:** memoized — a large win above the crossover, a small loss
   below it. Use `derive` for non-trivial computed values read repeatedly.

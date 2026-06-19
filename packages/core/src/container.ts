@@ -23,10 +23,15 @@ import {
 // ── action registry ──
 /** Handler stored as a METHOD → bivariant params → satisfies the unknown-constraint. */
 export interface ActionSpec<S, P> {
-  reduce(state: S, payload: P): S;
+  /**
+   * Pure transition. Return the changed keys — they are merged into state, so a
+   * one-field update is `(s) => ({ count: s.count + 1 })`, no spread needed.
+   * `state` is read-only: it is the live store snapshot, not a copy (ADR-0010).
+   */
+  reduce(state: Readonly<S>, payload: P): Partial<S>;
 }
 export type OnBuilder<S> = <P = void>(
-  reduce: (state: S, payload: P) => S,
+  reduce: (state: Readonly<S>, payload: P) => Partial<S>,
 ) => ActionSpec<S, P>;
 
 type PayloadOf<Sp> = Sp extends ActionSpec<any, infer P> ? P : never;
@@ -183,13 +188,17 @@ export function createContainer<
   const cleanups: Array<() => void> = [];
 
   const $state = {} as Record<string, WriteSignal<unknown>>;
-  for (const key of Object.keys(initial)) $state[key] = signal(initial[key]);
+  // Plain-object shadow of state, kept in sync on every commit. Dispatch hands
+  // this to the reducer as `prev` and `getState()` clones it — so neither has to
+  // peek every signal per call, keeping dispatch O(changed) not O(fields).
+  const mirror = {} as Record<string, unknown>;
+  for (const key of Object.keys(initial)) {
+    $state[key] = signal(initial[key]);
+    mirror[key] = initial[key];
+  }
 
-  const snapshot = (): S => {
-    const out = {} as Record<string, unknown>;
-    for (const key of Object.keys($state)) out[key] = $state[key].peek();
-    return out as S;
-  };
+  // Clone on read so callers can't mutate the live mirror behind the signals.
+  const snapshot = (): S => ({ ...mirror }) as S;
 
   const interpreters = (opts?.interpreters ?? {}) as unknown as Record<
     string,
@@ -215,12 +224,19 @@ export function createContainer<
   const actions = {} as Record<string, (payload?: unknown) => void>;
   for (const key of Object.keys(specs)) {
     actions[key] = (payload?: unknown) => {
-      const prev = snapshot();
-      const next = specs[key].reduce(prev, payload) as Record<string, unknown>;
+      // Hand the live mirror as `prev` (read-only by contract — see ActionSpec).
+      // The reducer returns only the changed keys; write those signals + keep the
+      // mirror in lockstep so it stays an accurate shadow of state.
+      const next = specs[key].reduce(mirror as S, payload) as Record<
+        string,
+        unknown
+      >;
       batch(() => {
         for (const k of Object.keys(next)) {
-          if (!Object.is(next[k], (prev as Record<string, unknown>)[k]))
+          if (!Object.is(next[k], mirror[k])) {
             $state[k].value = next[k];
+            mirror[k] = next[k];
+          }
         }
       });
       for (const fn of actionListeners) fn(key, payload); // committed → notify (ADR-0005)

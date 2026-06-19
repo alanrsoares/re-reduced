@@ -124,9 +124,9 @@ export function BenchScaling() {
         </text>
       </svg>
       <figcaption className="mt-1 text-xs text-fd-muted-foreground">
-        Bumping one field in an N-field container. re-reduced is O(fields)
-        (snapshot + diff); zustand stays near-flat. Still nanoseconds at realistic
-        sizes.
+        Bumping one field in an N-field container. re-reduced writes only the
+        changed key, so it stays flat; zustand allocates a merged state object per{" "}
+        <code>set</code>, so it grows with field count.
       </figcaption>
       <NumberTable
         head={["Fields", "re-reduced", "zustand"]}
