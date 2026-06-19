@@ -3,7 +3,13 @@ title: Benchmarks
 description: How re-reduced compares to Zustand and useReducer on renders and throughput.
 ---
 
-Numbers are **indicative** (Apple M3 Max, Bun) — run them yourself:
+<Callout type="info">
+  Numbers are **indicative** (Apple M3 Max, Bun) — your hardware will differ.
+  Run them yourself; the harness lives in
+  [`bench/`](https://github.com/alanrsoares/re-reduced/tree/main/bench).
+</Callout>
+
+Run them yourself:
 
 - `bun run --filter @re-reduced/bench bench` — throughput + derivations
 - `bun run --filter @re-reduced/bench bench:scaling` — dispatch vs field count
