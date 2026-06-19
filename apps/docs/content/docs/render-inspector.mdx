@@ -10,8 +10,11 @@ running on a grid of DOM nodes, driven by **two state backends at the same
 time** from one set of controls. The board and the actions are shared — the
 _only_ difference is how each side subscribes to state.
 
-Press **Play** (or **Step**), and watch the render pulses and the
-`cell re-renders` counters.
+<Callout title="Try it">
+  Press **Play** (or **Step**) and watch the render pulses and the
+  `cell re-renders` counters. Drag on a grid to draw; switch to **rr only** /
+  **ctx only** with **⚡ Max (rAF)** to read each backend's true FPS.
+</Callout>
 
 <RenderInspector />
 
@@ -34,13 +37,15 @@ selectors.
 
 ## The honest part
 
-The re-reduced tick is still **O(cells)** in JavaScript — it snapshots and
-diffs every field on each dispatch (see the
-[dispatch scaling](/docs/benchmarks#how-dispatch-scales-with-state-size)
-numbers). But that cost is tens of microseconds; the DOM commit it avoids is
-milliseconds. In the browser, the render savings dominate by orders of
-magnitude — which is why the re-reduced board stays smooth while the Context
-board stutters.
+<Callout type="warn">
+  The re-reduced tick is still **O(cells)** in JavaScript — it snapshots and
+  diffs every field on each dispatch (see the
+  [dispatch scaling](/docs/benchmarks#how-dispatch-scales-with-state-size)
+  numbers). But that cost is tens of microseconds; the DOM commit it avoids is
+  milliseconds. In the browser, the render savings dominate by orders of
+  magnitude — which is why the re-reduced board stays smooth while the Context
+  board stutters.
+</Callout>
 
 ## The container
 
