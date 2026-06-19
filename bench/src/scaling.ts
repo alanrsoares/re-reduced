@@ -16,9 +16,7 @@
 import { createContainer, defineContainer } from "@re-reduced/core";
 import { bench, run, summary } from "mitata";
 import { createStore } from "zustand/vanilla";
-
-/** mitata's parameterized-bench state (its `k_state` type isn't exported). */
-type BenchState = { get(name: string): unknown };
+import type { BenchState } from "./_mitata";
 
 const FIELDS = [1, 4, 16, 64];
 
