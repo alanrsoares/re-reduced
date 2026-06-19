@@ -9,6 +9,7 @@
     "bench:scaling": "bun run src/scaling.ts",
     "bench:derive": "bun run src/derive.ts",
     "bench:all": "bun run src/throughput.ts && bun run src/scaling.ts && bun run src/derive.ts",
+    "capture": "bun run src/capture.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "bun test"
   },
