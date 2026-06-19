@@ -39,14 +39,15 @@ export const todos = defineContainer("todos", {
     status: "idle" as Status,
     error: null as string | null,
   },
+  // Handlers return only the keys that change — they're merged into state
+  // (ADR-0010), so no `...s` spread. `s` is read-only.
   actions: (on) => ({
-    draftChanged: on<string>((s, draft) => ({ ...s, draft, error: null })),
-    filterChanged: on<Filter>((s, filter) => ({ ...s, filter })),
+    draftChanged: on<string>((_s, draft) => ({ draft, error: null })),
+    filterChanged: on<Filter>((_s, filter) => ({ filter })),
     submit: on((s) =>
       s.draft.trim().length === 0
-        ? { ...s, error: "Title can't be empty" }
+        ? { error: "Title can't be empty" }
         : {
-            ...s,
             items: [
               { id: makeId(), title: s.draft.trim(), done: false },
               ...s.items,
@@ -55,21 +56,14 @@ export const todos = defineContainer("todos", {
           },
     ),
     toggled: on<{ id: string }>((s, { id }) => ({
-      ...s,
       items: s.items.map((t) => (t.id === id ? { ...t, done: !t.done } : t)),
     })),
     removed: on<{ id: string }>((s, { id }) => ({
-      ...s,
       items: s.items.filter((t) => t.id !== id),
     })),
-    load: on((s) => ({ ...s, status: "loading" as Status })),
-    loaded: on<Todo[]>((s, items) => ({
-      ...s,
-      items,
-      status: "ready" as Status,
-    })),
-    loadFailed: on<string>((s, error) => ({
-      ...s,
+    load: on(() => ({ status: "loading" as Status })),
+    loaded: on<Todo[]>((_s, items) => ({ items, status: "ready" as Status })),
+    loadFailed: on<string>((_s, error) => ({
       status: "ready" as Status,
       error,
     })),

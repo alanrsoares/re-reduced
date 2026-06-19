@@ -81,10 +81,8 @@ export const defineLife = (rc: RecomputeCounter) =>
   defineContainer("life", {
     state: emptyBoard(),
     actions: (on) => ({
-      setCell: on((s, p: { i: number; v: Cell }) => ({
-        ...s,
-        [cellKey(p.i)]: p.v,
-      })),
+      // partial return — one cell flips, the other ~899 are untouched (ADR-0010)
+      setCell: on((_s, p: { i: number; v: Cell }) => ({ [cellKey(p.i)]: p.v })),
       tick: on((s) => nextGeneration(s)),
       load: on((_s, board: LifeState) => board),
       clear: on(() => emptyBoard()),

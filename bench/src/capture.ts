@@ -69,7 +69,8 @@ for (const n of FIELDS) {
   const c = createContainer(
     defineContainer(`c${n}`, {
       state: mkFields(n),
-      actions: (on) => ({ inc: on((s) => ({ ...s, f0: s.f0 + 1 })) }),
+      // partial return — change one key, the rest are untouched (ADR-0010)
+      actions: (on) => ({ inc: on((s) => ({ f0: s.f0 + 1 })) }),
     }),
   );
   const z = createStore<Record<string, number>>(() => mkFields(n));
