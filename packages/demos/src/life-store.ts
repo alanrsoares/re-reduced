@@ -28,7 +28,9 @@ export const CELL_KEYS = Array.from({ length: CELL_COUNT }, (_, i) =>
   cellKey(i),
 );
 
-export type LifeState = Record<string, number>;
+/** A cell is dead (0) or alive (1) — the board never holds any other value. */
+export type Cell = 0 | 1;
+export type LifeState = Record<string, Cell>;
 
 export const emptyBoard = (): LifeState => {
   const state: LifeState = {};
@@ -79,7 +81,7 @@ export const defineLife = (rc: RecomputeCounter) =>
   defineContainer("life", {
     state: emptyBoard(),
     actions: (on) => ({
-      setCell: on((s, p: { i: number; v: number }) => ({
+      setCell: on((s, p: { i: number; v: Cell }) => ({
         ...s,
         [cellKey(p.i)]: p.v,
       })),
@@ -97,7 +99,7 @@ export const defineLife = (rc: RecomputeCounter) =>
 
 /** Concrete store type so the React view can type cell props without `any`. */
 export type LifeActions = {
-  setCell: ActionSpec<LifeState, { i: number; v: number }>;
+  setCell: ActionSpec<LifeState, { i: number; v: Cell }>;
   tick: ActionSpec<LifeState, void>;
   load: ActionSpec<LifeState, LifeState>;
   clear: ActionSpec<LifeState, void>;
@@ -107,7 +109,7 @@ export type LifeStore = Store<LifeState, LifeActions, LifeDerived>;
 
 // ── naive useReducer + Context backend (same board, no fine-grained reads) ──
 export type LifeAction =
-  | { type: "setCell"; i: number; v: number }
+  | { type: "setCell"; i: number; v: Cell }
   | { type: "tick" }
   | { type: "load"; board: LifeState }
   | { type: "clear" };
