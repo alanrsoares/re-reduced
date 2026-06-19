@@ -1,7 +1,8 @@
 /**
  * The re-reduced mark — indigo node-hexagon around a coral isometric cube.
  * Inlined (not an <img>) so it renders crisp at any size and ignores basePath.
- * `currentColor` is not used: the brand colors are fixed in both themes.
+ * Nodes lighten on dark via the `.rr-logo-node` rule in global.css (the deep
+ * indigo has no contrast on a dark nav); the coral edges + cube read on both.
  */
 export function Logo({ size = 22 }: { size?: number }) {
   return (
@@ -21,7 +22,7 @@ export function Logo({ size = 22 }: { size?: number }) {
         <line x1="11.22" y1="38.5" x2="11.22" y2="25.5" />
         <line x1="15.98" y1="17.25" x2="27.24" y2="10.75" />
       </g>
-      <g fill="#2E2A7C">
+      <g className="rr-logo-node" fill="#2E2A7C">
         <circle cx="32" cy="8" r="4.5" />
         <circle cx="52.78" cy="20" r="4.5" />
         <circle cx="52.78" cy="44" r="4.5" />

@@ -1,5 +1,10 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="re-reduced">
   <title>re-reduced</title>
+  <!-- deep indigo has no contrast on dark chrome — lighten the nodes there -->
+  <style>
+    .rr-logo-node { fill: #2E2A7C; }
+    @media (prefers-color-scheme: dark) { .rr-logo-node { fill: #9D9AEA; } }
+  </style>
   <!-- coral edge segments (gapped, between the nodes) -->
   <g stroke="#EF5C4C" stroke-width="3" stroke-linecap="round">
     <line x1="36.76" y1="10.75" x2="48.02" y2="17.25" />
@@ -10,7 +15,7 @@
     <line x1="15.98" y1="17.25" x2="27.24" y2="10.75" />
   </g>
   <!-- indigo nodes at the hexagon vertices -->
-  <g fill="#2E2A7C">
+  <g class="rr-logo-node" fill="#2E2A7C">
     <circle cx="32" cy="8" r="4.5" />
     <circle cx="52.78" cy="20" r="4.5" />
     <circle cx="52.78" cy="44" r="4.5" />
