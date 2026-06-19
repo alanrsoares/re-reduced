@@ -3,26 +3,30 @@ title: Benchmarks
 description: How re-reduced compares to Zustand and useReducer on renders and throughput.
 ---
 
-<Callout type="info">
-  Numbers are **indicative** (Apple M3 Max, Bun) — your hardware will differ.
-  Run them yourself; the harness lives in
-  [`bench/`](https://github.com/alanrsoares/re-reduced/tree/main/bench).
-</Callout>
+Every number below is rendered from
+[`bench-results.json`](https://github.com/alanrsoares/re-reduced/blob/main/apps/docs/lib/bench-results.json),
+which [`bench/src/capture.ts`](https://github.com/alanrsoares/re-reduced/blob/main/bench/src/capture.ts)
+writes from a real [mitata](https://github.com/evanwashere/mitata) `measure()`
+run — nothing here is hand-typed, so the page can't drift from the harness. The
+render-count claim is asserted by a committed test. Reproduce it all yourself:
 
-Run them yourself:
-
-- `bun run --filter @re-reduced/bench bench` — throughput + derivations
-- `bun run --filter @re-reduced/bench bench:scaling` — dispatch vs field count
-- `bun run --filter @re-reduced/bench bench:derive` — derivation crossover sweep
-- `bun run --filter @re-reduced/bench bench:all` — all of the above
+- `bun run --filter @re-reduced/bench capture` — regenerate the data on _your_ machine
+- `bun run --filter @re-reduced/bench bench:all` — the same probes, printed
 - `bun test bench` — the render-count comparison
 
-The harness lives in [`bench/`](https://github.com/alanrsoares/re-reduced/tree/main/bench).
+<BenchProvenance />
+
+<Callout type="info">
+  Microbenchmarks are **indicative**, not a leaderboard — your hardware, your
+  workload, and React's own render cost all move the needle. The point is the
+  _shape_ of each curve, not the third significant figure.
+</Callout>
 
 ## Fine-grained re-renders (the headline)
 
 A container with `{ a, b }`; one leaf reads `a`, another reads `b`. Bump `a` and
-count which leaves re-render:
+count which leaves re-render (asserted in
+[`render-count.spec.tsx`](https://github.com/alanrsoares/re-reduced/blob/main/bench/test/render-count.spec.tsx)):
 
 | Approach | `a` leaf | `b` leaf |
 | --- | --- | --- |
@@ -37,31 +41,20 @@ equality selectors to get it.
 
 ## Dispatch throughput
 
-A `count: count + 1` transition, dispatched + read in a tight loop (no React):
+A `count + 1` transition, dispatched + read in a tight loop (no React):
 
-| Operation | Time / op |
-| --- | --- |
-| plain reducer (baseline) | ~2.6 ns |
-| **re-reduced** dispatch + read | ~47 ns |
-| Zustand dispatch + read | ~54 ns |
+<BenchThroughput />
 
-re-reduced is in the same class as Zustand (a touch faster here), ~18× a bare
-function call — the cost of the signal write + shallow diff that buys the
-fine-grained updates above. For UI event rates this is far below the noise floor.
+re-reduced is in the same class as Zustand — the cost is a signal write plus a
+shallow diff, which is what buys the fine-grained updates above. At UI event
+rates it's far below the noise floor.
 
 ### How dispatch scales with state size
 
-The single-field number above uses a one-field container. Each dispatch
-snapshots current state (to hand the reducer a plain object) and shallow-diffs
-the result, so cost grows with field count. Bumping **one** field in a container
-of `N` fields:
+Each dispatch snapshots current state (to hand the reducer a plain object) and
+shallow-diffs the result, so cost grows with field count:
 
-| Fields | re-reduced | Zustand |
-| --- | --- | --- |
-| 1 | ~61 ns | ~46 ns |
-| 4 | ~107 ns | ~68 ns |
-| 16 | ~349 ns | ~149 ns |
-| 64 | ~1.2 µs | ~609 ns |
+<BenchScaling />
 
 re-reduced dispatch is **O(fields)**; Zustand stays near-flat because it holds a
 single state object and merges shallow patches without a per-field diff. This is
@@ -69,33 +62,22 @@ a deliberate tradeoff, not a missing optimisation: pure `(state) => state`
 reducers (you spread the old state) plus per-field signals (what enables the
 render bail-out above) together mean each dispatch materialises the whole state.
 We tried a lazy-proxy state to dodge the snapshot — it made the common spread
-reducer **7× slower**, because spreading enumerates every field through the proxy
-traps. The snapshot is the cheaper path.
-
-In absolute terms this is still nanoseconds at realistic container sizes — far
-below the cost of the React render it triggers. Reach for `re-reduced` for the
+reducer **~7× slower**, because spreading enumerates every field through the
+proxy traps. The snapshot is the cheaper path. Reach for re-reduced for the
 render granularity, not to win a dispatch microbenchmark.
 
 ## Derivation reads
 
-An expensive derivation (reduce over 1,000 items) read repeatedly while its
-input is unchanged:
+An expensive derivation read repeatedly while its input is unchanged — the
+scenario memoization targets:
 
-| Read | Time / op |
-| --- | --- |
-| **re-reduced** `derive` (memoized) | ~10 ns (cached) |
-| manual recompute each read | **~75× slower** |
+<BenchDerive />
 
-This is what memoization is for: derivations recompute only when a tracked input
-changes, so repeated reads cost a flat **~10 ns** dependency-version check
-regardless of how heavy the computation is.
-
-**The crossover.** That ~10 ns is a floor, not zero. Sweeping the work size
-(`bench:derive`), a recompute costs ~8 ns at 1 item, ~16 ns at 4, ~49 ns at 16 —
-so memoization starts paying off at roughly **3–4 items of work (~10 ns)**. Below
-that (e.g. `count * 2`), the cached read is *slower* than just recomputing. Rule
-of thumb: reach for `derive` when the computation exceeds ~10 ns or is read far
-more often than its inputs change; skip it for trivial scalar math.
+A memoized `derive` read is a flat dependency-version check regardless of how
+heavy the computation is — but that floor isn't zero. Below the crossover (a
+handful of items, e.g. `count * 2`), recomputing is cheaper than the cached
+read. Rule of thumb: reach for `derive` when the computation is non-trivial or
+read far more often than its inputs change; skip it for trivial scalar math.
 
 ## Takeaways
 
@@ -104,5 +86,5 @@ more often than its inputs change; skip it for trivial scalar math.
 - **Dispatch:** Zustand-class at small state; scales **O(fields)** because each
   dispatch snapshots + diffs the whole state — the deliberate price of pure
   reducers over per-field signals. Still nanoseconds at realistic sizes.
-- **Derivations:** memoized — a large win above a ~10 ns crossover, a small loss
+- **Derivations:** memoized — a large win above the crossover, a small loss
   below it. Use `derive` for non-trivial computed values read repeatedly.
