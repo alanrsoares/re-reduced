@@ -9,8 +9,10 @@ A **Container Definition** (`defineContainer`) is a blueprint: pure data and
 pure functions. A **Store** (`createContainer`, or `useContainer` in a
 component) is a live, signal-backed instance of that blueprint.
 
-```ts
-const def = defineContainer("todos", { state: { /* ... */ }, actions: (on) => ({}) });
+```ts twoslash
+import { createContainer, defineContainer } from "@re-reduced/react";
+// ---cut---
+const def = defineContainer("todos", { state: { draft: "" }, actions: (on) => ({}) });
 const store = createContainer(def); // live Store
 ```
 
@@ -21,7 +23,12 @@ immutably as usual; on dispatch the Store shallow-diffs the returned object and
 writes only the keys that changed. A reader of one field re-renders only when
 that field changes — granularity is structural, not selector-discipline.
 
-```ts
+```ts twoslash
+import { createContainer, defineContainer } from "@re-reduced/react";
+const store = createContainer(
+  defineContainer("todos", { state: { draft: "" }, actions: (on) => ({}) }),
+);
+// ---cut---
 store.$state.draft; // ReadSignal<string>
 store.getState();   // glitch-free snapshot
 ```
@@ -56,11 +63,18 @@ submit: on((s) =>
 when the signals it reads change, and a reader bails out when its value is
 unchanged.
 
-```ts
-derive: ($) => ({
-  activeCount: () => $.items.value.filter((t) => !t.done).length,
-  canSubmit: () => $.draft.value.trim().length > 0,
-})
+```ts twoslash
+import { createContainer, defineContainer, useSelect } from "@re-reduced/react";
+// ---cut---
+const todos = defineContainer("todos", {
+  state: { items: [] as { done: boolean }[], draft: "" },
+  actions: (on) => ({}),
+  derive: ($) => ({
+    activeCount: () => $.items.value.filter((t) => !t.done).length,
+    canSubmit: () => $.draft.value.trim().length > 0,
+  }),
+});
+const store = createContainer(todos);
 
 useSelect(store, (_s, d) => d.canSubmit.value);
 ```

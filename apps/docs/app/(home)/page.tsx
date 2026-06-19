@@ -1,6 +1,7 @@
-import { DynamicCodeBlock } from "fumadocs-ui/components/dynamic-codeblock";
 import { ArrowRight, Layers, ShieldCheck, Workflow, Zap } from "lucide-react";
 import Link from "next/link";
+import { TwoslashSnippet } from "@/components/twoslash-snippet";
+import { snippets } from "@/lib/snippets.generated";
 import { gitConfig } from "@/lib/shared";
 
 const features = [
@@ -25,20 +26,6 @@ const features = [
     body: "The same container definition runs under React and Preact. Server state stays in your data layer — re-reduced composes, it doesn't replace.",
   },
 ];
-
-const SNIPPET = `const counter = defineContainer()("counter", {
-  state: { count: 0 },
-  actions: (on) => ({
-    increment: on((s) => ({ count: s.count + 1 })),
-    add: on<number>((s, n) => ({ count: s.count + n })),
-  }),
-  derive: ($) => ({ isEven: () => $.count.value % 2 === 0 }),
-});
-
-// in a component — re-renders only when \`count\` changes
-const store = useContainer(counter);
-const count = useSelect(store, (s) => s.count.value);
-store.actions.add(5);`;
 
 export default function HomePage() {
   return (
@@ -78,9 +65,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* code sample — shiki-highlighted via fumadocs */}
+      {/* code sample — extracted from a type-checked module, hover types live */}
       <section className="w-full max-w-3xl pb-20 text-left">
-        <DynamicCodeBlock lang="ts" code={SNIPPET} />
+        <TwoslashSnippet code={snippets.counter.twoslash} />
       </section>
 
       {/* features */}

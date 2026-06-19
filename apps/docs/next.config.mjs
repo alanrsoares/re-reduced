@@ -20,6 +20,10 @@ const config = {
     "@re-reduced/adapter-kit",
     "@re-reduced/demos",
   ],
+  // twoslash + its VFS do dynamic fs/module access the bundler can't statically
+  // resolve; keep them external so they run as plain Node when prerendering the
+  // server-rendered snippets (components/twoslash-snippet.tsx).
+  serverExternalPackages: ["twoslash", "typescript", "@typescript/vfs"],
 };
 
 export default withMDX(config);
