@@ -3,6 +3,12 @@ import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import { Popup, PopupContent, PopupTrigger } from "fumadocs-twoslash/ui";
 import type { MDXComponents } from "mdx/types";
+import {
+  BenchDerive,
+  BenchProvenance,
+  BenchScaling,
+  BenchThroughput,
+} from "@/components/bench";
 import { Snippet } from "@/components/snippet";
 
 export function getMDXComponents(components?: MDXComponents) {
@@ -18,6 +24,11 @@ export function getMDXComponents(components?: MDXComponents) {
     PopupTrigger,
     // <Snippet id="…" /> — render a generated, type-checked snippet module
     Snippet,
+    // benchmark charts + tables, rendered from lib/bench-results.json
+    BenchProvenance,
+    BenchThroughput,
+    BenchScaling,
+    BenchDerive,
     ...components,
   } satisfies MDXComponents;
 }

@@ -1,0 +1,82 @@
+{
+  "provenance": {
+    "cpu": "Apple M3 Max",
+    "cores": 16,
+    "runtime": "Bun 1.3.14",
+    "os": "darwin arm64",
+    "date": "2026-06-19",
+    "versions": {
+      "@re-reduced/core": "0.1.0",
+      "zustand": "5.0.14",
+      "mitata": "1.0.34"
+    }
+  },
+  "throughput": [
+    {
+      "label": "plain reducer",
+      "ns": 2.3
+    },
+    {
+      "label": "re-reduced",
+      "ns": 43.2
+    },
+    {
+      "label": "zustand",
+      "ns": 53.1
+    }
+  ],
+  "scaling": [
+    {
+      "fields": 1,
+      "reReduced": 54,
+      "zustand": 41.7
+    },
+    {
+      "fields": 4,
+      "reReduced": 93.5,
+      "zustand": 62.6
+    },
+    {
+      "fields": 16,
+      "reReduced": 334,
+      "zustand": 139
+    },
+    {
+      "fields": 64,
+      "reReduced": 982,
+      "zustand": 576
+    }
+  ],
+  "derive": [
+    {
+      "work": 1,
+      "memoized": 10.6,
+      "recompute": 6.9
+    },
+    {
+      "work": 4,
+      "memoized": 11.5,
+      "recompute": 13.6
+    },
+    {
+      "work": 16,
+      "memoized": 11.2,
+      "recompute": 44.5
+    },
+    {
+      "work": 64,
+      "memoized": 11.1,
+      "recompute": 213
+    },
+    {
+      "work": 256,
+      "memoized": 11.1,
+      "recompute": 891
+    },
+    {
+      "work": 1024,
+      "memoized": 11.2,
+      "recompute": 3582
+    }
+  ]
+}
