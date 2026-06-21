@@ -1,8 +1,17 @@
 import { ArrowRight, Layers, ShieldCheck, Workflow, Zap } from "lucide-react";
 import Link from "next/link";
+import { CodeTabs } from "@/components/code-tabs";
 import { TwoslashSnippet } from "@/components/twoslash-snippet";
 import { snippets } from "@/lib/snippets.generated";
 import { gitConfig } from "@/lib/shared";
+
+// File tabs for the landing-page code frame — each maps to a generated,
+// type-checked snippet module (packages/demos/src/snippets/*).
+const examples = [
+  { id: "counter", filename: "counter.ts", lang: "ts" },
+  { id: "counter-component", filename: "Counter.tsx", lang: "tsx" },
+  { id: "users", filename: "users.ts", lang: "ts" },
+] as const;
 
 const features = [
   {
@@ -65,9 +74,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* code sample — extracted from a type-checked module, hover types live */}
+      {/* code sample — file tabs live in the browser chrome bar; each panel is
+          extracted from a type-checked module, hover types live */}
       <section className="w-full max-w-3xl pb-20 text-left">
-        <TwoslashSnippet code={snippets.counter.twoslash} />
+        <CodeTabs
+          tabs={examples.map(({ id, filename }) => ({ label: id, filename }))}
+        >
+          {examples.map(({ id, lang }) => (
+            <TwoslashSnippet key={id} code={snippets[id].twoslash} lang={lang} />
+          ))}
+        </CodeTabs>
       </section>
 
       {/* features */}
