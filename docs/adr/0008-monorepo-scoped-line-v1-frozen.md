@@ -1,5 +1,10 @@
 # Monorepo, scoped v2 line, v1 frozen as re-reduced@2
 
+> **Superseded:** `packages/legacy` (the frozen `re-reduced@2.x`) was removed from this
+> repo. Nothing in the v2 line imported it and it was already excluded from releases.
+> The published `re-reduced@2.x` on npm is unaffected; its source now lives only in git
+> history. The rest of this record stands as the rationale for the v2 split.
+
 This repo becomes a bun-workspaces monorepo (preserving history, the type harness, CONTEXT/ADRs). The v2 line ships scoped-only — `@re-reduced/{core,signals,react,preact,adapter-kit}` — starting at `0.x` and graduating to `1.0`. The existing v1 library moves to `packages/legacy` and continues publishing as **`re-reduced@2.x`, frozen**, so existing `^2` consumers are untouched.
 
 ## Context
