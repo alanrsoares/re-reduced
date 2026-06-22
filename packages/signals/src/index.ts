@@ -2,9 +2,7 @@
  * @re-reduced/signals — façade over the signal engine (ADR-0001).
  *
  * Core and adapters program against THIS, never the engine directly, so the
- * engine is swappable. Default engine: @preact/signals-core. The `.raw` escape
- * hatch exposes the underlying native signal for engine-specific fast paths
- * (e.g. Preact JSX auto-subscription) — see ADR-0001.
+ * engine is swappable. Default engine: @preact/signals-core (ADR-0001).
  */
 import {
   batch as _batch,
