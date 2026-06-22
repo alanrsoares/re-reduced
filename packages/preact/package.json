@@ -1,6 +1,6 @@
 {
   "name": "@re-reduced/preact",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Preact bindings for re-reduced (native signal rendering).",
   "type": "module",
   "main": "./src/index.ts",
