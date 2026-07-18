@@ -17,14 +17,19 @@
     }
   },
   "publishConfig": {
-    "main": "./dist/index.js",
+    "main": "./dist/index.cjs",
     "module": "./dist/index.mjs",
-    "types": "./dist/index.d.ts",
+    "types": "./dist/index.d.mts",
     "exports": {
       ".": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.mjs",
-        "require": "./dist/index.js"
+        "import": {
+          "types": "./dist/index.d.mts",
+          "default": "./dist/index.mjs"
+        },
+        "require": {
+          "types": "./dist/index.d.cts",
+          "default": "./dist/index.cjs"
+        }
       }
     }
   },
@@ -34,7 +39,9 @@
   ],
   "scripts": {
     "build": "tsdown src/index.ts --format esm,cjs --dts --clean",
-    "typecheck": "tsc -p tsconfig.test.json"
+    "typecheck": "tsc -p tsconfig.test.json",
+    "prepack": "node ../../scripts/swap-publish-fields.mjs prepack",
+    "postpack": "node ../../scripts/swap-publish-fields.mjs postpack"
   },
   "license": "MIT",
   "peerDependencies": {
