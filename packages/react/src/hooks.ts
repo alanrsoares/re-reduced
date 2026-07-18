@@ -91,3 +91,84 @@ export function useWatch<S, R, D extends Record<string, () => unknown>, T>(
   effectRef.current = effectFn;
   useEffect(() => effectRef.current(value), [value]);
 }
+
+/** Plain values of the derived block (the computed results, not the thunks). */
+export type DerivedValues<D> = {
+  [K in keyof D]: D[K] extends () => infer T ? T : never;
+};
+
+interface ValueSource {
+  peek(): unknown;
+  subscribe(run: () => void): () => void;
+}
+
+/**
+ * Destructuring read. Returns a proxy over state + derived where reading a key
+ * during render subscribes the component to THAT key only — the per-field
+ * bail-out is preserved, so `const { a } = useStoreValues(store)` re-renders
+ * only when `a` changes (same discipline as a primitive `useSelect`).
+ *
+ * Destructure the keys you read; do NOT spread or `Object.keys` the result —
+ * that touches every field and subscribes to all of them.
+ */
+export function useStoreValues<S, R, D extends Record<string, () => unknown>>(
+  store: Store<S, R, D>,
+): S & DerivedValues<D> {
+  const accessed = useRef<Set<string>>(new Set());
+  const snap = useRef<Record<string, unknown>>({});
+
+  const sources = useMemo(
+    () =>
+      ({ ...store.$state, ...store.$derived }) as Record<string, ValueSource>,
+    [store],
+  );
+
+  const subscribe = useMemo(
+    () => (onChange: () => void) => {
+      const unsubs = Object.keys(sources).map((k) =>
+        sources[k].subscribe(() => {
+          if (accessed.current.has(k)) onChange(); // gate: only accessed keys wake us
+        }),
+      );
+      return () => {
+        for (const u of unsubs) u();
+      };
+    },
+    [sources],
+  );
+
+  // Stable identity unless an *accessed* value changed → absorbs the spurious
+  // immediate-fire on subscribe and keeps useSyncExternalStore from re-rendering
+  // on untracked fields.
+  const getSnapshot = useMemo(
+    () => () => {
+      let changed = false;
+      for (const k of accessed.current) {
+        const v = sources[k].peek();
+        if (!Object.is(v, snap.current[k])) {
+          snap.current[k] = v;
+          changed = true;
+        }
+      }
+      if (changed) snap.current = { ...snap.current };
+      return snap.current;
+    },
+    [sources],
+  );
+
+  useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+
+  return useMemo(
+    () =>
+      new Proxy({} as S & DerivedValues<D>, {
+        get(_t, key) {
+          if (typeof key !== "string") return undefined;
+          const sig = sources[key];
+          if (!sig) return undefined;
+          accessed.current.add(key); // tracked from now on
+          return sig.peek();
+        },
+      }),
+    [sources],
+  );
+}
