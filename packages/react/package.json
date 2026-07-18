@@ -43,7 +43,7 @@
     "typescript": ">=6"
   },
   "dependencies": {
-    "@re-reduced/core": "workspace:*"
+    "@re-reduced/core": "^0.3.0"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^20.10.6",

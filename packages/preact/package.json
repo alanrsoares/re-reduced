@@ -44,7 +44,7 @@
     "typescript": ">=6"
   },
   "dependencies": {
-    "@re-reduced/core": "workspace:*"
+    "@re-reduced/core": "^0.3.0"
   },
   "devDependencies": {
     "@preact/signals": "^1.3.0",
