@@ -3,6 +3,11 @@
   "version": "0.2.0",
   "type": "module",
   "description": "Biome GritQL plugin: lint rules for the re-reduced container API.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alanrsoares/re-reduced.git",
+    "directory": "packages/biome-plugin"
+  },
   "license": "MIT",
   "publishConfig": {
     "access": "public"

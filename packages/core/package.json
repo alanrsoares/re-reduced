@@ -2,6 +2,11 @@
   "name": "@re-reduced/core",
   "version": "0.3.0",
   "description": "Signal-backed functional state-machine + effect container.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alanrsoares/re-reduced.git",
+    "directory": "packages/core"
+  },
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",

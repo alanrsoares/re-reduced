@@ -2,6 +2,11 @@
   "name": "@re-reduced/preact",
   "version": "0.2.1",
   "description": "Preact bindings for re-reduced (native signal rendering).",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alanrsoares/re-reduced.git",
+    "directory": "packages/preact"
+  },
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
