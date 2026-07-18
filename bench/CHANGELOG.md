@@ -1,5 +1,13 @@
 # @re-reduced/bench
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [dddefa0]
+  - @re-reduced/core@0.3.2
+  - @re-reduced/react@0.3.1
+
 ## 0.0.3
 
 ### Patch Changes
