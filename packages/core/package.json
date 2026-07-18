@@ -1,6 +1,6 @@
 {
   "name": "@re-reduced/core",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Signal-backed functional state-machine + effect container.",
   "repository": {
     "type": "git",
