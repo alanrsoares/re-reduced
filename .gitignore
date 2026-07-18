@@ -13,5 +13,5 @@ coverage/
 !.vscode/extensions.json
 .docz/
 .size-snapshot.json
-
+.serena/
 
