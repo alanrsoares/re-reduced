@@ -28,7 +28,7 @@ jobs:
         env:
           # project page is served under /<repo>
           NEXT_PUBLIC_BASE_PATH: /re-reduced
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v3
         with:
           path: apps/docs/out
