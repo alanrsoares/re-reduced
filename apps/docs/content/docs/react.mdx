@@ -20,8 +20,10 @@ import {
 - **`useContainer(def, opts?)`** — creates a Store once for the component and
   disposes it on unmount. `opts.interpreters` registers effect interpreters;
   `opts.init` shallow-merges initial state at construction. StrictMode-safe.
-- **`useSelect(store, selector)`** — subscribes via `useSyncExternalStore` to a
-  computed selector; re-renders only when the selected value changes.
+- **`useSelect(store, selector, equals?)`** — subscribes via `useSyncExternalStore` to a
+  computed selector; re-renders only when the selected value changes. A selector
+  that returns an object needs `equals`, for example `shallow` from
+  `@re-reduced/core`, to keep the bail-out.
 - **`useWatch(store, selector, effect)`** — runs an effect when a derived slice
   changes.
 - **`createContainerContext(def, opts?)`** — returns `{ Provider, use }` to lift

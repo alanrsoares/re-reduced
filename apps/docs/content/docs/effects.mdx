@@ -32,6 +32,9 @@ effects: (fx) => [
 
   // when a predicate transitions into true
   fx.onEnter((s) => s.items.value.length >= 10, ({ actions }) => actions.warn()),
+
+  // once, when the Store is created
+  fx.onMount(({ actions }) => actions.load()),
 ]
 ```
 

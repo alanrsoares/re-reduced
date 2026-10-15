@@ -79,6 +79,25 @@ it("load emits a query intent", () => {
 });
 ```
 
+`createContainer` throws when an emitted intent kind has no interpreter, so the
+registry above must list every kind. `createTestStore` removes that work. It
+stubs every kind and records the emitted intents in `store.intents`:
+
+```ts
+import { createTestStore } from "@re-reduced/core";
+
+it("load emits a query intent", () => {
+  const store = createTestStore(todos);
+
+  store.actions.load();
+
+  expect(store.intents.map((i) => i.kind)).toEqual(["query"]);
+});
+```
+
+Pass `interpreters` to run a real interpreter for chosen kinds. The store still
+records those intents. Call `store.clearIntents()` to reset the record.
+
 To test the result path, drive the captured intent's callback and assert the
 follow-up action landed:
 
