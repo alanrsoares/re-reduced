@@ -27,5 +27,10 @@ export const makeStorageInterpreter =
     ).localStorage,
   ) =>
   (intent: StorageSetIntent, _ctx: InterpCtx<A>): void => {
-    backend?.setItem(intent.key, JSON.stringify(intent.value));
+    try {
+      backend?.setItem(intent.key, JSON.stringify(intent.value));
+    } catch {
+      // Storage is best-effort: unavailable, full or blocked storage, and
+      // unserializable values (BigInt, cycles), must not break a dispatch.
+    }
   };
