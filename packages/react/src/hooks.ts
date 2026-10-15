@@ -59,22 +59,36 @@ export function useContainer<
  * the component re-renders only when that value changes (ADR-0002 bail-out).
  *
  * Return primitives or stable references — a selector that builds a new object
- * each call defeats the bail-out, same as Redux/Zustand selectors.
+ * each call defeats the bail-out, same as Redux/Zustand selectors. To select an
+ * object anyway, pass `equals` (for example `shallow`) to keep the previous
+ * reference while the new value is equal.
  */
 export function useSelect<S, R, D extends Record<string, () => unknown>, T>(
   store: Store<S, R, D>,
   selector: (state: StateSignals<S>, derived: DerivedSignals<D>) => T,
+  equals?: (a: T, b: T) => boolean,
 ): T {
   const selectorRef = useRef(selector);
   selectorRef.current = selector;
+  const equalsRef = useRef(equals);
+  equalsRef.current = equals;
   // Stable subscribe/getSnapshot per store — uSES requires stable identities,
   // else it re-subscribes every render (and preact's immediate-invoke on
   // subscribe would register as a spurious store change → extra renders).
   const { subscribe, getSnapshot } = useMemo(() => {
     const sig = store.select((s, d) => selectorRef.current(s, d));
+    // With `equals`, keep the previous reference while the new value is equal,
+    // so a selector that returns an object does not re-render on every change.
+    let last: { value: T } | undefined;
     return {
       subscribe: (onChange: () => void) => sig.subscribe(onChange),
-      getSnapshot: () => sig.peek(),
+      getSnapshot: () => {
+        const next = sig.peek();
+        const eq = equalsRef.current;
+        if (eq && last && eq(last.value, next)) return last.value;
+        last = { value: next };
+        return next;
+      },
     };
   }, [store]);
   return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);

@@ -43,6 +43,7 @@ export function useContainer<
 export function useSelect<S, R, D extends Record<string, () => unknown>, T>(
   store: Store<S, R, D>,
   selector: (state: StateSignals<S>, derived: DerivedSignals<D>) => T,
+  equals?: (a: T, b: T) => boolean,
 ): T {
   const selectorRef = useRef(selector);
   selectorRef.current = selector;
@@ -50,7 +51,12 @@ export function useSelect<S, R, D extends Record<string, () => unknown>, T>(
     () => store.select((s, d) => selectorRef.current(s, d)),
     [store],
   );
-  return sig.value;
+  const last = useRef<{ value: T } | undefined>(undefined);
+  const next = sig.value;
+  if (equals && last.current && equals(last.current.value, next))
+    return last.current.value;
+  last.current = { value: next };
+  return next;
 }
 
 /** Run an effect when a derived slice changes. */
