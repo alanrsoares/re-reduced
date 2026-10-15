@@ -25,7 +25,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       # Opens a "Version Packages" PR when changesets are pending, or publishes
       # the @re-reduced/* packages to npm once that PR is merged.
-      - uses: changesets/action@v1
+      - uses: changesets/action@v2
         with:
           version: bun run version
           publish: bun run release
