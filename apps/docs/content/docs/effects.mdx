@@ -32,6 +32,9 @@ effects: (fx) => [
 
   // when a predicate transitions into true
   fx.onEnter((s) => s.items.value.length >= 10, ({ actions }) => actions.warn()),
+
+  // once, when the Store is created
+  fx.onMount(({ actions }) => actions.load()),
 ]
 ```
 
@@ -55,6 +58,35 @@ const store = useContainer(todos, {
   },
 });
 ```
+
+### Persisting state
+
+`storageSet(key, value)` writes `JSON.stringify(value)` to storage. The
+`makeStorageInterpreter` function never throws. If storage is unavailable, full
+or blocked, or the value cannot be serialized, the write is skipped.
+
+`storageRemove(key)` and `makeStorageRemoveInterpreter` remove a key. The
+`storageRemove` intent is not in `BuiltinIntent`, so add it to your own
+registry when you use it.
+
+To restore a value, read it with `readStored` and pass it as `init`:
+
+```ts
+import { readStored } from "@re-reduced/core";
+
+const volume = readStored("volume", (v) => (typeof v === "number" ? v : undefined));
+
+const store = useContainer(player, {
+  // `init` is shallow-merged, so an `undefined` value would replace the default.
+  // Only pass a key when the read found a value.
+  init: volume === undefined ? {} : { volume },
+  interpreters: { storageSet: makeStorageInterpreter() },
+});
+```
+
+`readStored` returns `undefined` when the key is missing, the JSON is not valid,
+or `parse` rejects the value. It never throws. A `StorageBackend` needs
+`getItem` for `readStored` and `removeItem` for the remove interpreter.
 
 The registry is **typed**: you must supply an interpreter for every intent kind
 the container can emit, and each interpreter receives its narrowed intent type.

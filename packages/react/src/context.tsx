@@ -58,8 +58,9 @@ export function createContainerContext<
   /** One slice, primitive/stable ref — preserves bail-out. */
   function useCtxSelect<T>(
     selector: (state: StateSignals<S>, derived: DerivedSignals<D>) => T,
+    equals?: (a: T, b: T) => boolean,
   ): T {
-    return useSelect(useStore(), selector);
+    return useSelect(useStore(), selector, equals);
   }
 
   /** The action map (stable callbacks). */

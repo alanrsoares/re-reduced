@@ -30,8 +30,14 @@ const store = createContainer(
 );
 // ---cut---
 store.$state.draft; // ReadSignal<string>
-store.getState();   // glitch-free snapshot
+store.getState();   // glitch-free snapshot (a shallow copy)
+store.get("draft"); // one field, no copy: use in hot handlers
 ```
+
+`getState()` copies the top-level keys on every call. `store.get(key)` reads one
+field without a copy. To observe every committed action, for logging or
+devtools, call `store.onAction((name, payload) => …)`. It returns an
+unsubscribe function.
 
 ## Actions are pure transitions
 

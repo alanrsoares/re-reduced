@@ -25,6 +25,15 @@ export interface StorageSetIntent {
   readonly value: unknown;
 }
 
+/**
+ * Not part of `BuiltinIntent`: adding a kind there would make every existing
+ * full interpreter registry fail to typecheck. Add it to your own union.
+ */
+export interface StorageRemoveIntent {
+  readonly kind: "storageRemove";
+  readonly key: string;
+}
+
 export type BuiltinIntent = QueryIntent | TimeoutIntent | StorageSetIntent;
 
 export const query = <T>(spec: {
@@ -50,4 +59,9 @@ export const storageSet = (key: string, value: unknown): StorageSetIntent => ({
   kind: "storageSet",
   key,
   value,
+});
+
+export const storageRemove = (key: string): StorageRemoveIntent => ({
+  kind: "storageRemove",
+  key,
 });
