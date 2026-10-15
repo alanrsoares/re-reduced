@@ -1,5 +1,12 @@
 # @re-reduced/preact
 
+## 0.2.4
+
+### Patch Changes
+
+- Updated dependencies [dbb0209]
+  - @re-reduced/core@0.4.0
+
 ## 0.2.3
 
 ### Patch Changes
