@@ -1,5 +1,16 @@
 # @re-reduced/react
 
+## 0.4.0
+
+### Minor Changes
+
+- dbb0209: Add `store.get(key)` and `store.onAction(listener)`, `fx.onMount`, `createTestStore` and a `shallow` equality helper to core. Add `storageRemove`, `makeStorageRemoveInterpreter` and `readStored` for storage. `useSelect` takes an optional `equals` argument in the React adapter. The storage interpreters no longer throw when storage is unavailable or the value cannot be serialized.
+
+### Patch Changes
+
+- Updated dependencies [dbb0209]
+  - @re-reduced/core@0.4.0
+
 ## 0.3.1
 
 ### Patch Changes
