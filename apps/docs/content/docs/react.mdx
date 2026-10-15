@@ -29,6 +29,58 @@ import {
 - **`createContainerContext(def, opts?)`** — returns `{ Provider, use }` to lift
   a Store to a subtree; reads still bail out via signals.
 
+### `useStoreValues` and the context hooks
+
+`useStoreValues(store)` returns a proxy over state and derived values. Reading a
+key subscribes the component to that key only:
+
+```tsx
+const { count } = useStoreValues(store); // re-renders when `count` changes
+```
+
+The subscription lasts as long as the component. A key stays subscribed after
+the render that first read it. This includes a read inside an event handler,
+for example `values.items` in an `onClick`. To read a value in a handler without
+subscribing, use `store.get("items")`.
+
+`createContainerContext(def, opts?)` returns these:
+
+- `Provider` creates the Store. `<Provider init={{ … }}>` overrides `opts.init`.
+- `use()` returns the raw Store.
+- `useContainer()` returns values and actions in one object, so you can write
+  `const { count, increment } = Counter.useContainer()`. Destructure it. Do not
+  spread it.
+- `useSelect(selector, equals?)` and `useActions()` work like the plain hooks,
+  and they read the Store from the nearest Provider.
+
+`useWatch(store, selector, effect)` runs `effect` when the selected value
+changes. The effect can return a cleanup function.
+
+### Use outside React
+
+A Store does not need a renderer. Use `createContainer` from
+`@re-reduced/core` in scripts, workers and tests:
+
+```ts
+import { createContainer } from "@re-reduced/core";
+
+const store = createContainer(counter, { init: { count: 5 } });
+const off = store.onAction((name, payload) => console.log(name, payload));
+store.actions.increment();
+store.select((s) => s.count.value).subscribe((n) => console.log(n));
+off();
+store.destroy();
+```
+
+You must call `destroy()` when you finish. It aborts in-flight work and clears
+the listeners.
+
+### Initial state
+
+`init` shallow-merges over the `state` in the definition when the Store is
+created. It is read once. Use it for values that you only know at runtime, such
+as a stored preference or server data.
+
 ## Server data
 
 Keep server state in your query library; bridge fetches via the query
