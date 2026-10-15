@@ -74,8 +74,12 @@ To restore a value, read it with `readStored` and pass it as `init`:
 ```ts
 import { readStored } from "@re-reduced/core";
 
+const volume = readStored("volume", (v) => (typeof v === "number" ? v : undefined));
+
 const store = useContainer(player, {
-  init: { volume: readStored("volume", (v) => (typeof v === "number" ? v : undefined)) },
+  // `init` is shallow-merged, so an `undefined` value would replace the default.
+  // Only pass a key when the read found a value.
+  init: volume === undefined ? {} : { volume },
   interpreters: { storageSet: makeStorageInterpreter() },
 });
 ```

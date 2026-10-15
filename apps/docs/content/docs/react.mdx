@@ -69,7 +69,8 @@ import { createContainer } from "@re-reduced/core";
 const store = createContainer(counter, { init: { count: 5 } });
 const off = store.onAction((name, payload) => console.log(name, payload));
 store.actions.increment();
-store.select((s) => s.count.value).subscribe((n) => console.log(n));
+const unsubscribe = store.select((s) => s.count.value).subscribe(console.log);
+unsubscribe();
 off();
 store.destroy();
 ```

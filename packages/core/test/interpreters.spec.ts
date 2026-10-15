@@ -110,3 +110,28 @@ describe("readStored", () => {
     expect(readStored<unknown>("flag", undefined, b)).toBe(1);
   });
 });
+
+describe("blocked default storage", () => {
+  it("does not throw when reading globalThis.localStorage throws", () => {
+    const g = globalThis as { localStorage?: unknown };
+    const desc = Object.getOwnPropertyDescriptor(g, "localStorage");
+    Object.defineProperty(g, "localStorage", {
+      configurable: true,
+      get() {
+        throw new Error("SecurityError");
+      },
+    });
+    try {
+      expect(() =>
+        makeStorageInterpreter()(storageSet("k", 1), ctx),
+      ).not.toThrow();
+      expect(() =>
+        makeStorageRemoveInterpreter()(storageRemove("k"), ctx),
+      ).not.toThrow();
+      expect(readStored("k")).toBeUndefined();
+    } finally {
+      if (desc) Object.defineProperty(g, "localStorage", desc);
+      else delete g.localStorage;
+    }
+  });
+});

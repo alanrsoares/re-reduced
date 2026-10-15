@@ -27,8 +27,14 @@ export interface StorageBackend {
   removeItem?(key: string): void;
 }
 
-const defaultBackend = (): StorageBackend | undefined =>
-  (globalThis as { localStorage?: StorageBackend }).localStorage;
+// Reading `localStorage` can throw (SecurityError) when storage is blocked.
+const defaultBackend = (): StorageBackend | undefined => {
+  try {
+    return (globalThis as { localStorage?: StorageBackend }).localStorage;
+  } catch {
+    return undefined;
+  }
+};
 
 /** Defaults to globalThis.localStorage; inject a backend for tests/SSR. */
 export const makeStorageInterpreter =
