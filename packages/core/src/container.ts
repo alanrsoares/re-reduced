@@ -325,6 +325,7 @@ export function createContainer<
     const reactions = def.effects(fx) as ReadonlyArray<
       Reaction<S, Actions<R>, I>
     >;
+    const starters: Array<() => void> = [];
     for (const reaction of reactions) {
       if (reaction.kind === "action") {
         const { name, run } = reaction;
@@ -354,16 +355,22 @@ export function createContainer<
         );
       } else {
         const { predicate, run } = reaction;
-        let was = false;
-        cleanups.push(
-          effect(() => {
-            const now = predicate($state as StateSignals<S>);
-            if (now && !was) dispatchIntents(run(ctx));
-            was = now;
-          }),
-        );
+        // An enter effect fires at install if its predicate is already true, and
+        // its handler may dispatch. Defer it until every reaction is installed,
+        // so a later `onAction` still sees an action dispatched on mount.
+        starters.push(() => {
+          let was = false;
+          cleanups.push(
+            effect(() => {
+              const now = predicate($state as StateSignals<S>);
+              if (now && !was) dispatchIntents(run(ctx));
+              was = now;
+            }),
+          );
+        });
       }
     }
+    for (const start of starters) start();
   }
 
   return api;

@@ -86,3 +86,18 @@ describe("createTestStore", () => {
     );
   });
 });
+
+describe("fx.onMount ordering", () => {
+  it("a mount action reaches an onAction declared later", () => {
+    const d = defineContainer("order", {
+      state: { n: 0 },
+      actions: (on) => ({ load: on(() => ({ n: 1 })) }),
+      effects: (fx) => [
+        fx.onMount<never>(({ actions }) => actions.load()),
+        fx.onAction("load", () => storageSet("loaded", true)),
+      ],
+    });
+    const store = createTestStore(d);
+    expect(store.intents.map((i) => i.kind)).toEqual(["storageSet"]);
+  });
+});

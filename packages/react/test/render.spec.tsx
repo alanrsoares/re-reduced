@@ -112,7 +112,10 @@ describe("useSelect equals", () => {
     let actions!: ReturnType<typeof PairCtx.useActions>;
     function Reader() {
       actions = PairCtx.useActions();
-      PairCtx.useSelect((s) => ({ a: s.a.value, b: s.b.value }), equals);
+      PairCtx.useSelect(
+        (s) => ({ a: Math.floor(s.a.value / 2), b: s.b.value }),
+        equals,
+      );
       renders += 1;
       return null;
     }
@@ -124,19 +127,20 @@ describe("useSelect equals", () => {
     return { actions, renders: () => renders };
   };
 
-  it("without equals, a new object re-renders on any dependency change", () => {
+  it("without equals, a new object re-renders on a dependency change", () => {
     const r = run();
     const before = r.renders();
-    act(() => r.actions.bumpA());
+    act(() => r.actions.bumpA()); // selected value is equal, object is new
     expect(r.renders()).toBeGreaterThan(before);
   });
 
-  it("with shallow, an unrelated change does not re-render", () => {
+  it("with shallow, an equal selection does not re-render", () => {
     const r = run(shallow as (a: unknown, b: unknown) => boolean);
     const before = r.renders();
     act(() => r.actions.bumpOther());
+    act(() => r.actions.bumpA()); // a: 0 -> 1, selected floor(a / 2) stays 0
     expect(r.renders()).toBe(before);
-    act(() => r.actions.bumpA());
+    act(() => r.actions.bumpA()); // a: 2, selected value changes
     expect(r.renders()).toBe(before + 1);
   });
 });

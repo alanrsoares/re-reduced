@@ -23,7 +23,9 @@ import {
 - **`useSelect(store, selector, equals?)`** — subscribes via `useSyncExternalStore` to a
   computed selector; re-renders only when the selected value changes. A selector
   that returns an object needs `equals`, for example `shallow` from
-  `@re-reduced/core`, to keep the bail-out.
+  `@re-reduced/core`, to keep the bail-out. This argument exists in the React adapter only. In
+  Preact, a signal read subscribes the component, so Preact re-renders before
+  `equals` can run.
 - **`useWatch(store, selector, effect)`** — runs an effect when a derived slice
   changes.
 - **`createContainerContext(def, opts?)`** — returns `{ Provider, use }` to lift
