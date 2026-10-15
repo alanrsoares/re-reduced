@@ -64,6 +64,8 @@ export type Interpreters<I extends { kind: string }, A> = {
 // ── reactions (ADR-0005) ──
 export interface ReactionCtx<S, A> {
   getState(): S;
+  /** Read one field without copying state. */
+  get<K extends keyof S>(key: K): S[K];
   readonly actions: A;
 }
 type Emit<I> = I | I[] | void;
@@ -111,6 +113,10 @@ export interface EffectBuilder<S, ActionName extends string, A> {
     predicate: (s: StateSignals<S>) => boolean,
     handler: (ctx: ReactionCtx<S, A>) => Emit<I>,
   ): Reaction<S, A, I>;
+  /** Fires once when the container is created. */
+  onMount<I = never>(
+    handler: (ctx: ReactionCtx<S, A>) => Emit<I>,
+  ): Reaction<S, A, I>;
 }
 
 /** The intent union emitted by a tuple of reactions (`never` when there are none). */
@@ -144,6 +150,15 @@ export interface Store<S, R, D extends Record<string, () => unknown>> {
   /** True once destroy() has run. Adapters use this to recover under StrictMode. */
   readonly destroyed: boolean;
   getState(): S;
+  /** Read one field without copying state. Prefer this to `getState()` in hot handlers. */
+  get<K extends keyof S>(key: K): S[K];
+  /**
+   * Observe every committed action. The listener runs after state is updated.
+   * Returns an unsubscribe function. All listeners clear on `destroy()`.
+   */
+  onAction(
+    listener: (name: keyof R & string, payload: unknown) => void,
+  ): () => void;
   select<T>(
     sel: (s: StateSignals<S>, d: DerivedSignals<D>) => T,
   ): ReadSignal<T>;
@@ -199,6 +214,8 @@ export function createContainer<
 
   // Clone on read so callers can't mutate the live mirror behind the signals.
   const snapshot = (): S => ({ ...mirror }) as S;
+  const read = <K extends keyof S>(key: K): S[K] =>
+    mirror[key as string] as S[K];
 
   const interpreters = (opts?.interpreters ?? {}) as unknown as Record<
     string,
@@ -259,6 +276,13 @@ export function createContainer<
       return destroyed;
     },
     getState: snapshot,
+    get: read,
+    onAction: (listener) => {
+      const wrapped = (name: string, payload: unknown) =>
+        listener(name as keyof R & string, payload);
+      actionListeners.add(wrapped);
+      return () => void actionListeners.delete(wrapped);
+    },
     select: (sel) =>
       computed(() =>
         sel($state as StateSignals<S>, $derived as DerivedSignals<D>),
@@ -275,6 +299,7 @@ export function createContainer<
   if (def.effects) {
     const ctx: ReactionCtx<S, Actions<R>> = {
       getState: snapshot,
+      get: read,
       actions: api.actions,
     };
     // The builder just constructs descriptors; createContainer wires them.
@@ -288,6 +313,11 @@ export function createContainer<
       onEnter: (predicate: unknown, run: unknown) => ({
         kind: "enter",
         predicate,
+        run,
+      }),
+      onMount: (run: unknown) => ({
+        kind: "enter",
+        predicate: () => true,
         run,
       }),
     } as unknown as EffectBuilder<S, keyof R & string, Actions<R>>;
