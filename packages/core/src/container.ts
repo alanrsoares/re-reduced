@@ -125,7 +125,7 @@ export type IntentOf<RS> = RS extends readonly []
   : RS extends ReadonlyArray<{ __intent?: infer I }>
     ? [unknown] extends [I]
       ? never
-      : I
+      : Exclude<I, void>
     : never;
 
 export interface ContainerDef<

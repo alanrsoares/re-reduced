@@ -93,11 +93,34 @@ describe("fx.onMount ordering", () => {
       state: { n: 0 },
       actions: (on) => ({ load: on(() => ({ n: 1 })) }),
       effects: (fx) => [
-        fx.onMount<never>(({ actions }) => actions.load()),
+        fx.onMount(({ actions }) => actions.load()),
         fx.onAction("load", () => storageSet("loaded", true)),
       ],
     });
     const store = createTestStore(d);
     expect(store.intents.map((i) => i.kind)).toEqual(["storageSet"]);
+  });
+});
+
+describe("void reactions", () => {
+  it("emit no intents, so no interpreter is required", () => {
+    const d = defineContainer("void", {
+      state: { n: 0 },
+      actions: (on) => ({
+        inc: on((s) => ({ n: s.n + 1 })),
+        reset: on(() => ({ n: 0 })),
+      }),
+      effects: (fx) => [
+        fx.onMount(({ actions }) => actions.inc()),
+        fx.onEnter(
+          (s) => s.n.value >= 2,
+          ({ actions }) => actions.reset(),
+        ),
+      ],
+    });
+    const store = createContainer(d);
+    expect(store.get("n")).toBe(1);
+    store.actions.inc();
+    expect(store.get("n")).toBe(0);
   });
 });
