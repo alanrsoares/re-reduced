@@ -28,7 +28,7 @@
         "fumadocs-ui": "^16.10.4",
         "lucide-react": "^1.20.0",
         "next": "16.2.9",
-        "react": "^19.2.7",
+        "react": "^19.3.0",
         "react-dom": "^19.2.7",
         "tailwind-merge": "^3.7.0",
         "twoslash": "^0.3.8",
@@ -38,7 +38,7 @@
         "@tailwindcss/postcss": "^4.3.1",
         "@types/mdx": "^2.0.14",
         "@types/node": "^25.9.3",
-        "@types/react": "^19.2.17",
+        "@types/react": "^19.3.0",
         "@types/react-dom": "^19.2.3",
         "postcss": "^8.5.15",
         "tailwindcss": "^4.3.1",
@@ -52,13 +52,13 @@
         "@re-reduced/core": "workspace:*",
         "@re-reduced/react": "workspace:*",
         "mitata": "^1.0.34",
-        "react": "^19.0.0",
+        "react": "^19.3.0",
         "react-dom": "^19.0.0",
         "zustand": "^5.0.14",
       },
       "devDependencies": {
         "@testing-library/react": "^16.1.0",
-        "@types/react": "^19.0.0",
+        "@types/react": "^19.3.0",
         "@types/react-dom": "^19.0.0",
       },
     },
@@ -83,12 +83,12 @@
       "version": "0.0.0",
       "dependencies": {
         "@re-reduced/demos": "workspace:*",
-        "react": "^19.0.0",
+        "react": "^19.3.0",
         "react-dom": "^19.0.0",
       },
       "devDependencies": {
         "@testing-library/react": "^16.1.0",
-        "@types/react": "^19.0.0",
+        "@types/react": "^19.3.0",
         "@types/react-dom": "^19.0.0",
         "@vitejs/plugin-react": "^6.1.2",
         "vite": "^6.0.0",
@@ -99,12 +99,12 @@
       "version": "0.0.0",
       "dependencies": {
         "@re-reduced/demos": "workspace:*",
-        "react": "^19.0.0",
+        "react": "^19.3.0",
         "react-dom": "^19.0.0",
       },
       "devDependencies": {
         "@testing-library/react": "^16.1.0",
-        "@types/react": "^19.0.0",
+        "@types/react": "^19.3.0",
         "@types/react-dom": "^19.0.0",
         "@vitejs/plugin-react": "^6.1.2",
         "vite": "^6.0.0",
@@ -155,7 +155,7 @@
         "@re-reduced/react": "workspace:*",
       },
       "devDependencies": {
-        "@types/react": "^19.0.0",
+        "@types/react": "^19.3.0",
       },
       "peerDependencies": {
         "react": ">=18",
@@ -193,10 +193,10 @@
         "@happy-dom/global-registrator": "^20.10.6",
         "@testing-library/dom": "^10.4.0",
         "@testing-library/react": "^16.1.0",
-        "@types/react": "^19.0.0",
+        "@types/react": "^19.3.0",
         "@types/react-dom": "^19.0.0",
         "happy-dom": "^21.0.1",
-        "react": "^19.0.0",
+        "react": "^19.3.0",
         "react-dom": "^19.0.0",
         "ts-expect": "^1.3.0",
       },
@@ -751,7 +751,7 @@
 
     "@types/node": ["@types/node@25.9.3", "", { "dependencies": { "undici-types": ">=7.24.0 <7.24.7" } }, "sha512-603BddQMv3pUcr4U2dhujk83N2tTDVr/34wII2B6bJy6g+8WD6yUb11jszNs0gdi4PesVWl7ABt8nYMVpnLUcg=="],
 
-    "@types/react": ["@types/react@19.2.17", "", { "dependencies": { "csstype": "^3.2.2" } }, "sha512-MXfmqaVPEVgkBT/aY0aGCkRWWtByiYQXo3xdQ8r5RzuFrPiRn8Gar2tQdXSUQ2GKV3bkXckek89V8wQBY2Q/Aw=="],
+    "@types/react": ["@types/react@19.3.0", "", { "dependencies": { "csstype": "^3.2.2" } }, "sha512-N0rFCuH9YoxG9/m61l9MfpJKfmLOVU0em7ipIz6TRgSSkvReLB9vL85GB+yr8Bs5leqpvg96JSwF4ZS1s4viQg=="],
 
     "@types/react-dom": ["@types/react-dom@19.2.3", "", { "peerDependencies": { "@types/react": "^19.2.0" } }, "sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ=="],
 
@@ -1399,7 +1399,7 @@
 
     "queue-microtask": ["queue-microtask@1.2.3", "", {}, "sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A=="],
 
-    "react": ["react@19.2.7", "", {}, "sha512-HNe9WslTbXmFK8o8cmwgAeJFSBvt1bPdHCVKtaaV+WlAN36mpT4hcRpwbf3fY56ar2oIXzsBpOAiIRHAdY0OlQ=="],
+    "react": ["react@19.3.0", "", {}, "sha512-E8LUcbtBWt20bbl2YoHfx4ZDBdxVTfOKtCZn9cDSJ4l6/nuoApcpIBcj47t2wZoVX8g2ZHuMHbiShgCR1T5Sog=="],
 
     "react-dom": ["react-dom@19.2.7", "", { "dependencies": { "scheduler": "^0.27.0" }, "peerDependencies": { "react": "^19.2.7" } }, "sha512-t0BRVXvbiE/o20Hfw669rLbMCDWtYZLvmJigy2f0MxsXF+71pxhR3xOkspmsO8h3ZlNzyibAmtCa3l4lYKk6gQ=="],
 

@@ -18,13 +18,13 @@
     "@re-reduced/core": "workspace:*",
     "@re-reduced/react": "workspace:*",
     "mitata": "^1.0.34",
-    "react": "^19.0.0",
+    "react": "^19.3.0",
     "react-dom": "^19.0.0",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@testing-library/react": "^16.1.0",
-    "@types/react": "^19.0.0",
+    "@types/react": "^19.3.0",
     "@types/react-dom": "^19.0.0"
   }
 }
