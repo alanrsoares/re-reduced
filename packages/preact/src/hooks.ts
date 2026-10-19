@@ -43,13 +43,24 @@ export function useContainer<
 export function useSelect<S, R, D extends Record<string, () => unknown>, T>(
   store: Store<S, R, D>,
   selector: (state: StateSignals<S>, derived: DerivedSignals<D>) => T,
+  equals?: (a: T, b: T) => boolean,
 ): T {
   const selectorRef = useRef(selector);
   selectorRef.current = selector;
-  const sig = useMemo(
-    () => store.select((s, d) => selectorRef.current(s, d)),
-    [store],
-  );
+  const equalsRef = useRef(equals);
+  equalsRef.current = equals;
+  const sig = useMemo(() => {
+    // With `equals`, keep the previous reference while the new value is equal,
+    // so the computed does not notify and the component does not re-render.
+    let last: { value: T } | undefined;
+    return store.select((s, d) => {
+      const next = selectorRef.current(s, d);
+      const eq = equalsRef.current;
+      if (eq && last && eq(last.value, next)) return last.value;
+      last = { value: next };
+      return next;
+    });
+  }, [store]);
   return sig.value;
 }
 

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { defineContainer } from "@re-reduced/core";
-import { cleanup, fireEvent, render } from "@testing-library/react";
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { createContainerContext } from "../src";
 
 const todos = defineContainer("todos", {
@@ -100,5 +100,42 @@ describe("@re-reduced/react — destructured useContainer (real DOM)", () => {
     expect(counts.controls).toBe(baseline.controls); // action-only did NOT
     expect(getByTestId("total").textContent).toBe("1");
     expect(getByTestId("list").querySelectorAll("li").length).toBe(1);
+  });
+});
+
+describe("useContainer — reads outside render", () => {
+  const pair = defineContainer("pair", {
+    state: { a: 0, b: 0 },
+    actions: (on) => ({
+      bumpA: on((s) => ({ a: s.a + 1 })),
+      bumpB: on((s) => ({ b: s.b + 1 })),
+    }),
+  });
+  const PairCtx = createContainerContext(pair);
+
+  it("a key read only in a handler stops subscribing after one render", () => {
+    let renders = 0;
+    let api!: ReturnType<typeof PairCtx.useContainer>;
+    function Reader() {
+      api = PairCtx.useContainer();
+      const { a } = api;
+      renders += 1;
+      return <span>{a}</span>;
+    }
+    render(
+      <PairCtx.Provider>
+        <Reader />
+      </PairCtx.Provider>,
+    );
+
+    act(() => api.bumpB());
+    const untracked = renders;
+    expect(api.b).toBe(1); // handler-style read: now tracked until next render
+
+    act(() => api.bumpB());
+    expect(renders).toBe(untracked + 1); // one extra render, then dropped
+
+    act(() => api.bumpB());
+    expect(renders).toBe(untracked + 1);
   });
 });
