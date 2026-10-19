@@ -123,12 +123,16 @@ interface ValueSource {
  * only when `a` changes (same discipline as a primitive `useSelect`).
  *
  * Destructure the keys you read; do NOT spread or `Object.keys` the result —
- * that touches every field and subscribes to all of them.
+ * that touches every field and subscribes to all of them. In event handlers,
+ * prefer `store.get(key)`: a handler read costs at most one extra render.
  */
 export function useStoreValues<S, R, D extends Record<string, () => unknown>>(
   store: Store<S, R, D>,
 ): S & DerivedValues<D> {
   const accessed = useRef<Set<string>>(new Set());
+  // Only reads made during this render subscribe. A key read once in an event
+  // handler stays tracked until the next render, then drops out.
+  accessed.current.clear();
   const snap = useRef<Record<string, unknown>>({});
 
   const sources = useMemo(
